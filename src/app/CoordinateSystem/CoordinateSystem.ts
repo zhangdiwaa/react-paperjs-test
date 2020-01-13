@@ -1,6 +1,3 @@
-import {
-    Element
-} from "../Element"
 import { Point } from "../Element/element"
 
 export abstract class CoordinateSystem{

@@ -1,6 +1,4 @@
-import * as CS from "../CoordinateSystem/CoordinateSystem";
 import * as paper from "paper";
-import { Point } from "../Element/element";
 
 //直线选择算法不准确
 function selectLine(item:any,p:paper.Point){

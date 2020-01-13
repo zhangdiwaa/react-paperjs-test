@@ -1,9 +1,11 @@
+/*
+这是软件的入口ts文件。
+没有使用模块CoordinateSystem和Element，所以看代码时请忽略这两个文件夹。
+*/
+
 import { RectTool,CircleTool, CurveTool, LineTool, EllipseTool } from "./app/Tool/tool";
 import * as Layer from "./app/Layer/layer";
 import * as paper from "paper";
-import * as CoordinateSystem from "./app/CoordinateSystem/CoordinateSystem";
-import { Point, Circle } from "./app/Element/element";
-import { Tool } from "./app/Tool";
 var lastTool:any=null;
 var circleTool:CircleTool;
 var rectTool:RectTool;
@@ -15,25 +17,30 @@ var drawLayoutFlag:boolean;
 var layoutTool:any=null;
 
 window.onload=function(){
+    //创建绘图工具
     circleTool=new CircleTool("ShowPanel",true);
     rectTool=new RectTool("ShowPanel",true);
     curveTool=new CurveTool("ShowPanel",true);
     layoutTool=lastTool=lineTool=new LineTool("ShowPanel",true);
     ellipseTool=new EllipseTool("ShowPanel",true);
-    drawLayoutFlag=false;
-    layer=new Layer.Layer();
 
+    drawLayoutFlag=false;//`是否为布局绘画`
+    layer=new Layer.Layer();//新图层
+
+    //将绘图工具挂起，使其处于未激活状态
     rectTool.hangUp();
     circleTool.hangUp();
     curveTool.hangUp();
     lineTool.hangUp();
     ellipseTool.hangUp();
+    
+    //使html里按键绑定工具的激活函数
     document.getElementById("RectTool").onclick=function(){
-        drawLayoutFlag=false;
+        drawLayoutFlag=false;//设置`是否为布局绘画`为false
         if(lastTool!=null){
-            lastTool.hangUp();
+            lastTool.hangUp();//挂起上一个绘画工具
         }
-        rectTool.activate();
+        rectTool.activate();//激活矩形绘画工具
         lastTool=rectTool;
     }
     document.getElementById("CircleTool").onclick=function(){
@@ -68,6 +75,8 @@ window.onload=function(){
         ellipseTool.activate();
         lastTool=ellipseTool;
     }
+
+    //html的按钮绑定布局绘画工具的创建函数
     document.getElementById("CurveLayoutTool").onclick=function(){
         drawLayoutFlag=true;
         layoutTool=new CurveTool("showPanel",false);
@@ -80,10 +89,24 @@ window.onload=function(){
         layoutTool.activate();
         console.log("点击了CircleLayout",layoutTool)
     }
+
+
+    document.getElementById("ShowPanel").onmousedown=function(event){
+        if(drawLayoutFlag){
+            layer.setLayoutShape(layoutTool.tool.last_shape,layoutTool.tool.last_shape.position,layoutTool.type);//如果drawLayoutFlag为true，则将刚画的图形设置为布局图形
+        }else{
+            let p=new paper.Point(event.offsetX,event.offsetY);//否则就是选择绘画板中的图形
+            layer.selectShape(p);
+            console.log(layer)
+        }
+    }
+
+
     document.getElementById("ShowPanel").onmouseup=function(){
         if(drawLayoutFlag){
-            layer.updateLayout();
+            layer.updateLayout();//如果drawLayoutFlag为true，则更新布局
         }else{
+            //否则判断图形形状，并给出对应的type
             let type:string;
             if(typeof(lastTool.tool.last_shape)!="undefined"){
                 if(typeof(lastTool.tool.last_shape.type)=="undefined"){
@@ -115,15 +138,6 @@ window.onload=function(){
                     }
                 }
             }
-        }
-    }
-    document.getElementById("ShowPanel").onmousedown=function(event){
-        if(drawLayoutFlag){
-            layer.setLayoutShape(layoutTool.tool.last_shape,layoutTool.tool.last_shape.position,layoutTool.type);
-        }else{
-            let p=new paper.Point(event.offsetX,event.offsetY);
-            layer.selectShape(p);
-            console.log(layer)
         }
     }
 }

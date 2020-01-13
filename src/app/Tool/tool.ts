@@ -5,7 +5,7 @@ export class Tool{
     type:string;
     visible:boolean;
     constructor(visible:boolean){
-        this.visible=visible;
+        this.visible=visible;//图形是否可见
     }
 }
 
