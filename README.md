@@ -10,25 +10,33 @@ base on:
 3. ant design
 4. paper.js
 
-这个软件是使用create-react-app开发的。以下是如何启动的事项：
+这个软件是使用create-react-app开发的。
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+如何使用
+
+## how to start
 
 In the project directory, you can run:
+
+### `yarn install`
+
+if you don't have yarn,  `npm install -g yarn`
+
+if you are in XX mainland, `yarn config set registry http://registry.npm.taobao.org/`
 
 ### `yarn start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:4321](http://localhost:4321) to view it in the browser.
 
-if you don't have yarn,  `npm install -g yarn`
-
-if you are in XX mainland, `yarn config set registry http://registry.npm.taobao.org/`
-
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
+
+--------------------------------------------------
+
+## other script
 
 ### `yarn test`
 
