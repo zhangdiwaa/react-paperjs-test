@@ -1,27 +1,31 @@
 {
-  "name": "dataink_test",
+  "name": "chartink",
   "version": "0.1.0",
   "private": true,
-  "main": "index.js",
-  "scripts": {
-    "dev": "npx webpack-dev-server --mode development --content-base ./dist",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --config webpack.config.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/paper": "^0.12.3",
-    "@types/react": "^16.9.17",
-    "@types/react-dom": "^16.9.4",
-    "paper": "^0.12.4",
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "antd": "^3.26.9",
+    "babel-plugin-import": "^1.13.0",
+    "cross-env": "^7.0.0",
+    "customize-cra": "^0.9.1",
     "react": "^16.12.0",
+    "react-app-rewired": "^2.1.5",
     "react-dom": "^16.12.0",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.7.4",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1"
+    "react-scripts": "3.3.1",
+    "react-split-pane": "^0.1.89",
+    "typescript": "~3.7.2"
+  },
+  "scripts": {
+    "start": "cross-env PORT=4321 react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
