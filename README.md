@@ -1,3 +1,17 @@
+这是一个信息图绘制软件。
+
+this is an prototype for drawing infograph on web.
+
+基于以下类库制作。
+base on:
+
+1. react
+2. typescript
+3. ant design
+4. paper.js
+
+这个软件是使用create-react-app开发的。以下是如何启动的事项：
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -7,7 +21,11 @@ In the project directory, you can run:
 ### `yarn start`
 
 Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open [http://localhost:4321](http://localhost:4321) to view it in the browser.
+
+if you don't have yarn,  `npm install -g yarn`
+
+if you are in XX mainland, `yarn config set registry http://registry.npm.taobao.org/`
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
