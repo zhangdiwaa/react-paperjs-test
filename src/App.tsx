@@ -1,21 +1,24 @@
-import React, { Component } from 'react';
-import { Layout, Menu, Icon } from 'antd';
+//ts中引入的写法
+import * as React from "react";
+//react中引入的写法
+import { Layout } from 'antd';
+import Sidebar from './UI/Sidebar'
 import SplitPane from 'react-split-pane';
 import { PaperContainer, Circle, Layer } from '@psychobolt/react-paperjs';
 import './App.css';
 const { Header, Sider, Content } = Layout;
-const SubMenu = Menu.SubMenu;
 const Shapes = () => <Circle center={[120, 50]} radius={35} fillColor="#00FF00" />;
+
 
 function App() {
   return (
     <Layout className="me-layout">
-      <Header>
-        Header
+      <Header className="me-header">
+        ChartInk 0.1
       </Header>
       <Layout>
         <Sider width={48} className="me-left-bar">
-          Sider
+          <Sidebar />
         </Sider>
         <Content className="me-canvas">
           <PaperContainer>

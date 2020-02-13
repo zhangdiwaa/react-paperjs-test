@@ -6,8 +6,10 @@
 .me-layout{
   height: 100%;
 }
-header {
+.me-header {
   color: #fff;
+  height: 48px;
+  line-height: 48px;
 }
 .me-left-bar{
   min-height: 100%; 
@@ -15,17 +17,19 @@ header {
   color: white;
   background: #666
 }
+.me-left-bar button {
+  margin: 8px 0 4px 8px;
+}
 .me-canvas {
     min-height: 100%;
     background: #f8f8f8; 
     width: 70%;
-    border: 1px red solid;
+    border-right: 1px red solid;
 }
 .me-right-bar{
   min-height: 100%;
     background: #f8f8f8; 
     width: 30%;
-    border: 1px green solid;
 }
 
 /*react-split-pane*/
