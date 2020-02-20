@@ -7,6 +7,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "cross-env": "^7.0.0",
+    "eslint-plugin-react-hooks": "^2.4.0",
     "paper": "^0.12.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -19,7 +20,14 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "plugins": [
+      "react-hooks"
+    ],
+    "rules": {
+      "react-hooks/rules-of-hooks": "error", 
+      "react-hooks/exhaustive-deps": "warn" 
+    }
   },
   "browserslist": {
     "production": [

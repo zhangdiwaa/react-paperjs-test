@@ -6,9 +6,9 @@ const Drawing = () => {
     let myCanvas = null;
     /*
         Effect Hook 用于执行函数组件中的副功能，相当于
-        componentDidMount （class挂在实例化时执行的操作）
-        componentDidUpdate （class组件被重新渲染时可执行的操作）
-        componentWillUnmount（class组件被卸载销毁时时可执行的操作）
+        componentDidMount （class组件 挂载/实例化 时执行的操作）
+        componentDidUpdate （class组件 被重新渲染 时可执行的操作）
+        componentWillUnmount（class组件 被卸载/销毁 时时可执行的操作）
         这三个函数的组合。
         这里用来执行paper.js的画板初始化功能。
         这意味着每次重新绘图，都刷新一下画板
