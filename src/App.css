@@ -82,3 +82,10 @@
 .Resizer.disabled:hover {
   border-color: transparent;
 }
+
+#myCanvas{
+  width: 97%;
+  height: 99%;
+  padding: 0px;
+  margin-left: 0px;
+}
