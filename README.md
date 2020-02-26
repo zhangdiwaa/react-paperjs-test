@@ -4,17 +4,14 @@
 - Clone this repository `git clone git@github.com:zhangdiwaa/react-paperjs-test.git`
 - Install the dependencies `yarn install`
 - Start the app `yarn start`
+- Open [http://localhost:4321](http://localhost:4321) to view it in the browser.
 
 ### 程序说明
+基于以下类库制作。
+base on:
 
-- 本程序基于create-react-app编写。
+1. react
+2. typescript
+3. ant design
+4. paper.js
 
-- 入口文件是./src/App.js
-
-- 使用react编写的paper.js组件有：
-
-- ./component/Drawing_class.js  //遵循react传统写法的类式组件
-- ./component/Drawing_hook.js   //遵循react hook写法的函数式组件
-
-- 要切换组件，请在./src/App.js文件中修改import的对象文件名。
-- 具体说明详见代码内注释。
