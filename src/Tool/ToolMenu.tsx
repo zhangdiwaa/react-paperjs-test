@@ -1,4 +1,5 @@
 import React from "react";
+import * as paper from "paper"
 import { Button , Icon ,Layout} from 'antd';
 const IconFont = Icon.createFromIconfontCN({
     scriptUrl: '//at.alicdn.com/t/font_1638575_i23xlb5oazk.js',
