@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import * as paper from "paper"
 import { Button, Icon, Layout, Tooltip } from 'antd';
 const IconFont = Icon.createFromIconfontCN({
@@ -108,6 +108,62 @@ const ToolMenu = () => {
             });
         }
     }
+    /**
+    * name ToolSelectPath
+    * desc 选中路径并编辑
+    */
+    const ToolSelectPath = () => {
+        RemoveTool()
+        let tool: paper.Tool = new paper.Tool()
+        let hitOptions = {
+            segments: true,
+            stroke: true,
+            fill: true,
+            tolerance: 5
+        };
+
+        let segment:any, path:any;
+        tool.onMouseDown = (event: paper.ToolEvent) => {
+            segment = path = null;
+            let hitResult = paper.project.hitTest(event.point, hitOptions);
+
+            if (event.modifiers.shift) {
+                if (hitResult.type == 'segment') {
+                    hitResult.segment.remove();
+                };
+                return;
+            }
+
+            if (hitResult) {
+                path = hitResult.item;
+                if (hitResult.type == 'segment') {
+                    segment = hitResult.segment;
+                } else if (hitResult.type == 'stroke') {
+                    let location = hitResult.location;
+                    segment = path.insert(location.index + 1, event.point);
+                    path.smooth();
+                }
+                hitResult.item.bringToFront();
+            }
+        }
+        //当鼠标移到path上面就高亮
+        tool.onMouseMove = (event: paper.ToolEvent) => {
+            let hitResult = paper.project.hitTest(event.point, hitOptions);
+            paper.project.activeLayer.selected = false;
+            if (hitResult && hitResult.item)
+                hitResult.item.selected = true;
+        }
+
+        tool.onMouseDrag = (event: paper.ToolEvent) => {
+            if (segment) {
+                segment.point += event.delta;
+                path.smooth();
+            } else if (path) {
+                path.position += event.delta;
+            }
+        }
+    }
+
 
     //清除所有工具的辅助函数，每一个工具函数使用前都要先执行
     const RemoveTool = () => {
@@ -128,6 +184,7 @@ const ToolMenu = () => {
             case 'pen': return ToolFreePen;
             case 'segment': return ToolDrawSegment;
             case 'text': return ToolPointText;
+            case 'select': return ToolSelectPath;
         }
     }
 
@@ -156,9 +213,9 @@ const ToolMenu = () => {
                     <Button type="primary" shape="circle"><IconFont type="icon-zoom" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"select"}>
-                    <Button type="primary" shape="circle"><IconFont type="icon-Link-Select" /></Button>
+                    <Button type="primary" shape="circle"  onClick={FunctionMap("select")}><IconFont type="icon-Link-Select" /></Button>
                 </Tooltip>
-                
+
             </div>
         </Sider>
     )
