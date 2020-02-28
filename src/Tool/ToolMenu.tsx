@@ -71,7 +71,6 @@ const ToolMenu = () => {
         }
         tool.onMouseDrag = (event: paper.ToolEvent) => {
             path.add(event.point)
-            path.removeOnDrag()
         }
     }
 
