@@ -18,11 +18,11 @@ const ToolMenu=()=>{
     return (
         <Sider width={48} className="me-left-bar">
             <div>
-                <Button type="primary" shape="circle" onClick={FunctionMap("circle")}><IconFont type="icon-pen" /></Button>
-                <Button type="primary" shape="circle" onClick={FunctionMap("translate")}><IconFont type="icon-Line" /></Button>
-                <Button type="primary" shape="circle"><IconFont type="icon-Select-1" /></Button>
+                <Button type="primary" shape="circle"><IconFont type="icon-pen" /></Button>
+                <Button type="primary" shape="circle" ><IconFont type="icon-Line" /></Button>
+                <Button type="primary" shape="circle" onClick={FunctionMap("circle")}><IconFont type="icon-Select-1" /></Button>
                 <Button type="primary" shape="circle"><IconFont type="icon-Select-" /></Button>
-                <Button type="primary" shape="circle"><IconFont type="icon-hand" /></Button>
+                <Button type="primary" shape="circle" onClick={FunctionMap("translate")}><IconFont type="icon-hand" /></Button>
                 <Button type="primary" shape="circle"><IconFont type="icon-Text-box" /></Button>
                 <Button type="primary" shape="circle"><IconFont type="icon-zoom" /></Button>
                 <Button type="primary" shape="circle"><IconFont type="icon-Link-Select" /></Button>
