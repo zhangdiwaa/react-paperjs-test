@@ -120,16 +120,22 @@ const ToolMenu = () => {
             }
             nowLayer=layerCache.pop()
             nowLayer.children.forEach((item:paper.Path)=>{
-                console.log(item)
                 if(item.className=='Layer'){
                     layerCache.push(item)
                 }else{
                     item.bounds.selected=false;
                     if(item.closed==false && !foundIt){
-                        //直线检测算法
-                        foundIt=point.subtract(item.segments[0].point).angle.toFixed(0)==item.segments[1].point.subtract(item.segments[0].point).angle.toFixed(0)?true:false;
-                        item.bounds.selected=foundIt;
-                        shape=foundIt?item:null;
+                        if(item.segments.length==2){
+                            //直线检测算法
+                            foundIt=point.subtract(item.segments[0].point).angle.toFixed(0)==item.segments[1].point.subtract(item.segments[0].point).angle.toFixed(0)?true:false;
+                            item.bounds.selected=foundIt;
+                            shape=foundIt?item:null;
+                        }else if(item.contains(point) && !foundIt){
+                            //曲线检测
+                            item.bounds.selected=!foundIt;//这条语句和foundIt=true先后顺序不能调换
+                            shape=item
+                            foundIt=true;
+                        }
                     }else if(item.contains(point) && !foundIt){//判断是否包含该点（Line的contains得重写）
                         item.bounds.selected=!foundIt;//这条语句和foundIt=true先后顺序不能调换
                         shape=item
@@ -153,8 +159,8 @@ const ToolMenu = () => {
     //点击边界检测(待改进)
     const ClickBounds=(event:paper.ToolEvent,selectedShape:paper.Path)=>{
         if(selectedShape!=null){
-            let xTest=(event.downPoint.x>selectedShape.bounds.left && event.downPoint.x<selectedShape.bounds.right)?true:false;
-            let yTest=(event.downPoint.y>selectedShape.bounds.top && event.downPoint.y<selectedShape.bounds.bottom)?true:false;
+            let xTest=(event.point.x>selectedShape.bounds.left && event.point.x<selectedShape.bounds.right)?true:false;
+            let yTest=(event.point.y>selectedShape.bounds.top && event.point.y<selectedShape.bounds.bottom)?true:false;
             return xTest && yTest;
         }
         return false;
@@ -183,7 +189,7 @@ const ToolMenu = () => {
                     let factor=x.divide(y).abs()
                     selectedShape.scale(factor)
                     //缩放
-                }else if(selectedShape.contains(event.point)){//如果包含了拖拽事件的这个点，则移动物体。如果鼠标移动幅度大，则会失效
+                }else if(ClickBounds(event,selectedShape)){
                     selectedShape.translate(event.delta)
                 }
             }
@@ -211,7 +217,6 @@ const ToolMenu = () => {
             if(selectedShape!=null){
                 if(rotateFlag){
                     //旋转(到底怎么确定角度，有待进一步探索)
-                    console.log(selectedShape.bounds.center.getAngleInRadians(event.point))
                     selectedShape.rotate(event.delta.angleInRadians,selectedShape.bounds.center)
                 }
             }
