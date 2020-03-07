@@ -4,7 +4,7 @@ import * as React from "react";
 import { Layout } from 'antd';
 import SplitPane from 'react-split-pane';
 import MyCanvas from "./MyCanvas/MyCanvas";
-import ToolMenu from "./UI/ToolMenu"
+import SiderBar from "./UI/SiderBar"
 import HeaderBar from "./UI/HeaderBar"
 import './App.css';
 
@@ -16,7 +16,7 @@ const App=()=>{
     <Layout className="me-layout">
         <HeaderBar></HeaderBar>
       <Layout>
-        <ToolMenu></ToolMenu>
+        <SiderBar></SiderBar>
         <MyCanvas></MyCanvas>
         <Content className="me-right-bar">
             <SplitPane

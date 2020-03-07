@@ -1,8 +1,10 @@
 import React from "react";
-import { Button, Icon, Layout, Tooltip } from 'antd';
+import { Button, Layout, Tooltip } from 'antd';
+import { createFromIconfontCN } from '@ant-design/icons';
+import Config from "../Common/Config";
 const { Header } = Layout;
-const IconFont = Icon.createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/font_1638575_pd6soe45mnh.js',
+const IconFont = createFromIconfontCN({
+    scriptUrl: Config.IconUrl,
 });
 
 const HeaderBar = () => {

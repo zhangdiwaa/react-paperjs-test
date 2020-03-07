@@ -10,13 +10,15 @@ import {
     ToolRotate,
     ToolEnlarge
 } from "../MyCanvas/PaperTools"
-import { Button, Icon, Layout, Tooltip } from 'antd';
-const IconFont = Icon.createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/font_1638575_pd6soe45mnh.js',
+import { Button, Layout, Tooltip } from 'antd';
+import { createFromIconfontCN } from '@ant-design/icons';
+import Config from "../Common/Config";
+const IconFont = createFromIconfontCN({
+    scriptUrl: Config.IconUrl,
 });
 const { Sider } = Layout;
 
-const ToolMenu = () => {
+const SiderBar = () => {
 
     //工具映射函数
     const FunctionMap = (ToolType: string) => {
@@ -71,4 +73,4 @@ const ToolMenu = () => {
 
 
 
-export default ToolMenu;
+export default SiderBar;
