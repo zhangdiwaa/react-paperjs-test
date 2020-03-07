@@ -15,3 +15,9 @@ base on:
 3. ant design
 4. paper.js
 
+### 2020年3月7日重大修改
+1. 修改了工程目录。现在的目录结构是:
+-  src
+-  |---- MyCanvas //与paper.js相关的功能组件
+-  |---- UI //界面相关的组件
+-  App.tsx 入口组件

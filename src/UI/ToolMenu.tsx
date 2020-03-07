@@ -9,10 +9,10 @@ import {
     ToolEditPath,
     ToolRotate,
     ToolEnlarge
-} from "./PaperTools"
+} from "../MyCanvas/PaperTools"
 import { Button, Icon, Layout, Tooltip } from 'antd';
 const IconFont = Icon.createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/font_1638575_gt2wsuux7d.js',
+    scriptUrl: '//at.alicdn.com/t/font_1638575_pd6soe45mnh.js',
 });
 const { Sider } = Layout;
 

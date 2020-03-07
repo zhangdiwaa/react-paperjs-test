@@ -4,7 +4,8 @@ import * as React from "react";
 import { Layout } from 'antd';
 import SplitPane from 'react-split-pane';
 import MyCanvas from "./MyCanvas/MyCanvas";
-import ToolMenu from "./Tool/ToolMenu"
+import ToolMenu from "./UI/ToolMenu"
+import HeaderBar from "./UI/HeaderBar"
 import './App.css';
 
 const { Header, Content } = Layout;
@@ -13,9 +14,7 @@ const App=()=>{
 
   return (
     <Layout className="me-layout">
-      <Header className="me-header">
-        ChartInk 0.1
-      </Header>
+        <HeaderBar></HeaderBar>
       <Layout>
         <ToolMenu></ToolMenu>
         <MyCanvas></MyCanvas>

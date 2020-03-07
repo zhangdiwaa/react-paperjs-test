@@ -11,6 +11,9 @@
   height: 48px;
   line-height: 48px;
 }
+.me-header button{
+    margin-left: 20px;
+}
 .me-left-bar{
   min-height: 100%; 
   width: 48px;
