@@ -28,9 +28,9 @@ export const Redo = () => {
     let future: string[] | null = JSON.parse(localStorage.getItem("future"));
     let history: string[] | null = JSON.parse(localStorage.getItem("history"));
     if (future && future.length != 0) {
+        history.push(paper.project.exportJSON());
         paper.project.clear();
         let last = future.pop();
-        history.push(last);
         paper.project.importJSON(last);
         localStorage.setItem("history", JSON.stringify(history));
         localStorage.setItem("future", JSON.stringify(future));
@@ -47,9 +47,9 @@ export const Undo = () => {
         future = [];
     }
     if (history && history.length != 0) {
-        if (future.length == 0) {
-            history.pop()
-        }
+        // if (future.length == 0) {
+        //     history.pop()
+        // }
         future.push(paper.project.exportJSON());
         localStorage.setItem("future", JSON.stringify(future));
         paper.project.clear();

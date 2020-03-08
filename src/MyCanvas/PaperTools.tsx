@@ -44,7 +44,7 @@ const ToolDrawRect = () => {
         })
         path.removeOnDrag()
     }
-    tool.onMouseUp = (event: paper.ToolEvent) => {
+    tool.onMouseDown = (event: paper.ToolEvent) => {
         //Test-切换工具的时候保存canvas
         PageChange()
     }
