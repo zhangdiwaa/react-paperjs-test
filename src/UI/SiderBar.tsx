@@ -40,31 +40,31 @@ const SiderBar = () => {
         <Sider width={48} className="me-left-bar">
             <div>
                 <Tooltip placement="right" title={"pen"}>
-                    <Button type="primary" shape="circle" onClick={FunctionMap("pen")} ><IconFont type="icon-pen" /></Button>
+                    <Button onClick={FunctionMap("pen")} ><IconFont type="icon-pen" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"segment"}>
-                    <Button type="primary" shape="circle" onClick={FunctionMap("segment")}><IconFont type="icon-Line" /></Button>
+                    <Button onClick={FunctionMap("segment")}><IconFont type="icon-Line" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"circle"}>
-                    <Button type="primary" shape="circle" onClick={FunctionMap("circle")}><IconFont type="icon-Select-1" /></Button>
+                    <Button onClick={FunctionMap("circle")}><IconFont type="icon-Select-1" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"rect"}>
-                    <Button type="primary" shape="circle" onClick={FunctionMap("rect")}><IconFont type="icon-Select-" /></Button>
+                    <Button onClick={FunctionMap("rect")}><IconFont type="icon-Select-" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"translate"}>
-                    <Button type="primary" shape="circle" onClick={FunctionMap("translate")}><IconFont type="icon-hand" /></Button>
+                    <Button onClick={FunctionMap("translate")}><IconFont type="icon-hand" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"text"}>
-                    <Button type="primary" shape="circle" onClick={FunctionMap("text")}><IconFont type="icon-Text-box" /></Button>
+                    <Button onClick={FunctionMap("text")}><IconFont type="icon-text" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"enlarge"}>
-                    <Button type="primary" shape="circle" onClick={FunctionMap("enlarge")}><IconFont type="icon-zoom" /></Button>
+                    <Button onClick={FunctionMap("enlarge")}><IconFont type="icon-zoom" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"edit"}>
-                    <Button type="primary" shape="circle"  onClick={FunctionMap("edit")}><IconFont type="icon-Link-Select" /></Button>
+                    <Button onClick={FunctionMap("edit")}><IconFont type="icon-Link-Select" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"rotate"}>
-                    <Button type="primary" shape="circle"  onClick={FunctionMap("rotate")}><IconFont type="icon-Link-Select" /></Button>
+                    <Button onClick={FunctionMap("rotate")}><IconFont type="icon-Link-Select" /></Button>
                 </Tooltip>
             </div>
         </Sider>

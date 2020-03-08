@@ -97,6 +97,7 @@ const ToolPointText = () => {
             fontWeight: 'bold',
             fontSize: 25
         });
+        
     }
 }
 /**
