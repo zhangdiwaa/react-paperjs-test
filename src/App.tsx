@@ -8,7 +8,7 @@ import SiderBar from "./UI/SiderBar"
 import HeaderBar from "./UI/HeaderBar"
 import './App.css';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 const App=()=>{
 
