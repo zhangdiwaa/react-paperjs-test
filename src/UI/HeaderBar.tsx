@@ -1,9 +1,18 @@
 import React from "react";
+<<<<<<< HEAD
 import { Button, Layout, Tooltip, Menu } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
 import Config from "../Common/Config";
 const { Header } = Layout;
 const { SubMenu } = Menu;
+=======
+import {Button, Layout, Tooltip} from 'antd';
+import {createFromIconfontCN} from '@ant-design/icons';
+import Config from "../Common/Config";
+import {Redo, Undo} from '../Common/UndoAndRedo';
+
+const {Header} = Layout;
+>>>>>>> remotes/origin/ZhiliangJia
 const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
@@ -20,6 +29,7 @@ const HeaderBar = () => {
 
     return (
         <Header className="me-header">
+<<<<<<< HEAD
             <div className="logo">
                 <IconFont type="icon--pencil" style={{ fontSize: '32px'}} />
             </div>
@@ -56,6 +66,15 @@ const HeaderBar = () => {
                 </Tooltip>
             </div>
 
+=======
+            ChartInk 0.1
+            <Tooltip placement="bottom" title={"undo"}>
+                <Button onClick={Undo}><IconFont type="icon-undo"/></Button>
+            </Tooltip>
+            <Tooltip placement="bottom" title={"redo"}>
+                <Button onClick={Redo}><IconFont type="icon-redo"/></Button>
+            </Tooltip>
+>>>>>>> remotes/origin/ZhiliangJia
         </Header>
     )
 }
