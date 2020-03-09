@@ -11,7 +11,6 @@ import {
     ToolEnlarge
 } from "../MyCanvas/PaperTools"
 import { Button, Layout, Tooltip } from 'antd';
-import { PageChange } from '../Common/UndoAndRedo'
 import { createFromIconfontCN } from '@ant-design/icons';
 import Config from "../Common/Config";
 const IconFont = createFromIconfontCN({

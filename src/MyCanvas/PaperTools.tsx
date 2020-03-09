@@ -1,5 +1,5 @@
 import * as paper from "paper"
-import {PageChange} from "../Common/UndoAndRedo";
+import EventHub from "../Common/Observer";
 
 /**
  * name ToolMove
@@ -46,7 +46,7 @@ const ToolDrawRect = () => {
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
         //Test-切换工具的时候保存canvas
-        PageChange()
+        EventHub.emit('mouseDownBefore', null)
     }
 }
 /**
