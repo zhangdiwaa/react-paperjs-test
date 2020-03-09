@@ -28,6 +28,9 @@ const ToolDrawCircle = () => {
         })
         path.removeOnDrag()
     }
+    tool.onMouseDown = (event: paper.ToolEvent) => {
+        EventHub.emit('mouseDownBefore', null)
+    }
 }
 /**
  * name ToolDrawRect
@@ -45,7 +48,7 @@ const ToolDrawRect = () => {
         path.removeOnDrag()
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        //Test-切换工具的时候保存canvas
+        //页面发生改变之时
         EventHub.emit('mouseDownBefore', null)
     }
 }
@@ -63,6 +66,7 @@ const ToolFreePen = () => {
     })
     //每当鼠标按下就新建一条路径
     tool.onMouseDown = (event: paper.ToolEvent) => {
+        EventHub.emit("mouseDownBefore", null)
         path = new paper.Path({
             strokeColor: "black"
         })
@@ -86,6 +90,9 @@ const ToolDrawSegment = () => {
         path.add(event.downPoint, event.point);
         path.removeOnDrag()
     }
+    tool.onMouseDown = (event: paper.ToolEvent) => {
+        EventHub.emit('mouseDownBefore', null)
+    }
 }
 /**
  * name ToolPointText
@@ -95,6 +102,7 @@ const ToolPointText = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDown = (event: paper.ToolEvent) => {
+        EventHub.emit("mouseDownBefore", null)
         let text: paper.PointText = new paper.PointText({
             point: event.downPoint,
             content: 'wawa',
@@ -104,6 +112,7 @@ const ToolPointText = () => {
             fontSize: 25
         });
     }
+
 }
 /**
  * name ToolSelectPath
@@ -117,6 +126,7 @@ const ToolEditPath = () => {
 
 
     tool.onMouseDown = (event: paper.ToolEvent) => {
+        EventHub.emit("mouseDownBefore", null)
         if (!ClickBounds(event, selectedShape)) {
             selectedShape = Ergodic(project.layers[0], event.point)
         }
@@ -147,6 +157,7 @@ const ToolRotate = () => {
     let rotateFlag: boolean = false;
 
     tool.onMouseDown = (event: paper.ToolEvent) => {
+        EventHub.emit("mouseDownBefore", null)
         if (!ClickBounds(event, selectedShape)) {
             selectedShape = Ergodic(project.layers[0], event.point)
         } else {

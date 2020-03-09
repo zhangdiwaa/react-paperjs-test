@@ -27,7 +27,7 @@ const App=()=>{
               paneStyle={{ background: '#eee' }}
               pane2Style={{ background: '#aaa4ba' }}
             >
-              <div />
+              <div >wawawawa</div>
               <div />
             </SplitPane>
           </Content>
