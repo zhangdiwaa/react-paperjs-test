@@ -29,7 +29,7 @@ const ToolDrawCircle = () => {
         path.removeOnDrag()
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit('mouseDownBefore', null)
+        EventHub.emit('pageChangeBefore', null)
     }
 }
 /**
@@ -49,7 +49,7 @@ const ToolDrawRect = () => {
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
         //页面发生改变之时
-        EventHub.emit('mouseDownBefore', null)
+        EventHub.emit('pageChangeBefore', null)
     }
 }
 /**
@@ -66,7 +66,7 @@ const ToolFreePen = () => {
     })
     //每当鼠标按下就新建一条路径
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit("mouseDownBefore", null)
+        EventHub.emit("pageChangeBefore", null)
         path = new paper.Path({
             strokeColor: "black"
         })
@@ -91,7 +91,7 @@ const ToolDrawSegment = () => {
         path.removeOnDrag()
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit('mouseDownBefore', null)
+        EventHub.emit('pageChangeBefore', null)
     }
 }
 /**
@@ -102,7 +102,7 @@ const ToolPointText = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit("mouseDownBefore", null)
+        EventHub.emit("pageChangeBefore", null)
         let text: paper.PointText = new paper.PointText({
             point: event.downPoint,
             content: 'wawa',
@@ -126,7 +126,7 @@ const ToolEditPath = () => {
 
 
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit("mouseDownBefore", null)
+        EventHub.emit("pageChangeBefore", null)
         if (!ClickBounds(event, selectedShape)) {
             selectedShape = Ergodic(project.layers[0], event.point)
         }
@@ -157,7 +157,7 @@ const ToolRotate = () => {
     let rotateFlag: boolean = false;
 
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit("mouseDownBefore", null)
+        EventHub.emit("pageChangeBefore", null)
         if (!ClickBounds(event, selectedShape)) {
             selectedShape = Ergodic(project.layers[0], event.point)
         } else {

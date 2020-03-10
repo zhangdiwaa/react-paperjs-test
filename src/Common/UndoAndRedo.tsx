@@ -29,7 +29,7 @@ const PageChange = () => {
 localStorage.setItem("history", JSON.stringify([]))
 localStorage.setItem("future", JSON.stringify([]))
 // 当观察者收到mouseDownBefore的操作之后，执行PageChange方法
-EventHub.on('mouseDownBefore', PageChange)
+EventHub.on('pageChangeBefore', PageChange)
 /**
  * 重做需要执行的代码
  * @constructor
