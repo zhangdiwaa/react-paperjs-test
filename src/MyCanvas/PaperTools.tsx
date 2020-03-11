@@ -1,5 +1,6 @@
 import * as paper from "paper"
 import EventHub from "../Common/Observer";
+import {render} from "react-dom";
 
 /**
  * name ToolMove
@@ -29,7 +30,12 @@ const ToolDrawCircle = () => {
         path.removeOnDrag()
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
+        //页面发生改变之前
         EventHub.emit('pageChangeBefore', null)
+    }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        //页面发生改变之后
+        EventHub.emit('pageChangeAfter', null)
     }
 }
 /**
@@ -48,8 +54,10 @@ const ToolDrawRect = () => {
         path.removeOnDrag()
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        //页面发生改变之时
         EventHub.emit('pageChangeBefore', null)
+    }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        EventHub.emit('pageChangeAfter', null)
     }
 }
 /**
@@ -74,6 +82,9 @@ const ToolFreePen = () => {
     tool.onMouseDrag = (event: paper.ToolEvent) => {
         path.add(event.point)
     }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        EventHub.emit('pageChangeAfter', null)
+    }
 }
 
 /**
@@ -93,6 +104,9 @@ const ToolDrawSegment = () => {
     tool.onMouseDown = (event: paper.ToolEvent) => {
         EventHub.emit('pageChangeBefore', null)
     }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        EventHub.emit('pageChangeAfter', null)
+    }
 }
 /**
  * name ToolPointText
@@ -111,6 +125,9 @@ const ToolPointText = () => {
             fontWeight: 'bold',
             fontSize: 25
         });
+    }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        EventHub.emit('pageChangeAfter', null)
     }
 
 }
@@ -144,6 +161,9 @@ const ToolEditPath = () => {
             }
         }
     }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        EventHub.emit('pageChangeAfter', null)
+    }
 }
 /**
  * name ToolRotate
@@ -174,6 +194,7 @@ const ToolRotate = () => {
     }
     tool.onMouseUp = (event: paper.ToolEvent) => {
         rotateFlag = false;
+        EventHub.emit('pageChangeAfter', null)
     }
 }
 /**
