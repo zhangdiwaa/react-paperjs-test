@@ -16,10 +16,12 @@ class App extends Component {
       }
   }
   onRightClick = (e) => {
+    var x = e.event.currentTarget.offsetLeft + e.event.currentTarget.clientWidth;
+    var y = e.event.currentTarget.offsetTop ;
     this.setState({
       rightClickNodeTreeItem: {
-        pageX: e.event.pageX,
-        pageY: e.event.pageY,
+        pageX: x,
+        pageY: y,
         id: e.node.props["data-key"],
         categoryName: e.node.props["data-title"]
       }
@@ -29,7 +31,8 @@ getNodeTreeRightClickMenu = () => {
   const { pageX, pageY, id, categoryName } = { ...this.state.rightClickNodeTreeItem };
   const tmpStyle = {
     position: 'absolute' as 'absolute',
-    left:`${pageX + 20}px`,
+    textAlign: 'center'as 'center',
+    left:`${pageX + 40}px`,
     top: `${pageY}px`,
   };
   const menu = (

@@ -10,9 +10,7 @@ import Layer from "./UI/Layers"
 import './App.css';
 
 const { Content } = Layout;
-
 const App=()=>{
-
   return (
     <Layout className="me-layout">
         <HeaderBar></HeaderBar>
