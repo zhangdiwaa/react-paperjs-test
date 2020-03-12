@@ -7,7 +7,6 @@ import MyCanvas from "./MyCanvas/MyCanvas";
 import SiderBar from "./UI/SiderBar"
 import HeaderBar from "./UI/HeaderBar"
 import Layer from "./UI/Layers"
-import Menu from "./UI/Layers"
 import './App.css';
 
 const { Content } = Layout;
@@ -32,7 +31,6 @@ const App=()=>{
               <div >wawawawa</div>
               <div>
                 <Layer></Layer>
-                <Menu></Menu>
               </div>
               <div />
             </SplitPane>

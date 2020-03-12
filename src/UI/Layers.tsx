@@ -1,10 +1,11 @@
 import React, { useState,Component } from 'react';
-import { Tree,Menu, Dropdown } from 'antd';
+import { Tree,Menu } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 const { TreeNode } = Tree;
+const {SubMenu} = Menu;
 class App extends Component {
     sonSelect = (selectedKeys, info) => {
-      console.log('selected', selectedKeys, info);
+      console.log('selected', selectedKeys, info);  
     } 
     state = {
       rightClickNodeTreeItem: {
@@ -13,49 +14,49 @@ class App extends Component {
         id: "",
         categoryName: ""
       }
-    }
-    id:any;
-    categoryName:any;
-    // tree列表上右键事件
-    onRightClick = (e) => {    
-      this.setState({      
-        display: 'block',     
-         rightClickNodeTreeItem: {       
-            pageX: e.event.pageX,        
-            pageY: e.event.pageY,        
-            id: e.node.props['data-key'],     
-            categoryName: e.node.props['data-title'],    
-            contextMenuVisiable: true,  
-            contextMenuStyle: { top: e.event.clientY, left: e.event.clientX },
-          },    
-        });
-    };
-
-    getNodeTreeRightClickMenu = () => {      
-      const { pageX, pageY, id, categoryName } = { ...this.state.rightClickNodeTreeItem };     
-          const tmpStyle = {
-            height: 200,
-            lineHeight: '200px',
-          }; 
-          const menu = (
-            <div style={tmpStyle} className="self-right-menu">
-              <a >新建图层</a>
-              <a >删除图层</a>
-              <a >隐藏图层</a>
-              <a >显示图层</a>
-              <a >重命名图层</a>
-            </div>
-          );
-          return this.state.rightClickNodeTreeItem == null ? "" : menu;
-        }
+  }
+  onRightClick = (e) => {
+    this.setState({
+      rightClickNodeTreeItem: {
+        pageX: e.event.pageX,
+        pageY: e.event.pageY,
+        id: e.node.props["data-key"],
+        categoryName: e.node.props["data-title"]
+      }
+    });
+};
+getNodeTreeRightClickMenu = () => {
+  const { pageX, pageY, id, categoryName } = { ...this.state.rightClickNodeTreeItem };
+  const tmpStyle = {
+    position: 'absolute' as 'absolute',
+    left:`${pageX + 20}px`,
+    top: `${pageY}px`,
+  };
+  const menu = (
+    <div style={tmpStyle} className="self-right-menu">
+        <Menu>
+        <Menu.Item>New</Menu.Item>
+        <Menu.Item>Delete</Menu.Item>
+        <Menu.Item>Rename</Menu.Item>
+        </Menu>
+    </div>
+  );
+  return this.state.rightClickNodeTreeItem == null ? "" : menu;
+};
+clearMenu = () => {
+  this.setState({
+    NodeTreeItem: null
+  })
+}
     render() {      
         return (
+          <div>
           <Tree
           showLine
           switcherIcon={<DownOutlined />}
           defaultExpandedKeys={['0-0-0']}
           onSelect={this.sonSelect}
-          onRightClick={this.onRightClick }
+          onRightClick={this.onRightClick}         
         >
           <TreeNode title="parent 1" key="0-0" >
             <TreeNode title="parent 1-0" key="0-0-0" >
@@ -71,8 +72,9 @@ class App extends Component {
               <TreeNode title="leaf" key="0-0-2-1" />
             </TreeNode>
           </TreeNode>
-        </Tree>
-        
+        </Tree> 
+        {this.getNodeTreeRightClickMenu()}
+        </div>
       );
     }
 }
