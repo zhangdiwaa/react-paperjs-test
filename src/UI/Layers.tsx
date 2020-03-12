@@ -27,6 +27,11 @@ class App extends Component {
       }
     });
 };
+clearMenu = () => {
+  this.setState({
+    rightClickNodeTreeItem: null
+  })
+}
 getNodeTreeRightClickMenu = () => {
   const { pageX, pageY, id, categoryName } = { ...this.state.rightClickNodeTreeItem };
   const tmpStyle = {
@@ -38,19 +43,15 @@ getNodeTreeRightClickMenu = () => {
   const menu = (
     <div style={tmpStyle} className="self-right-menu">
         <Menu>
-        <Menu.Item>New</Menu.Item>
-        <Menu.Item>Delete</Menu.Item>
-        <Menu.Item>Rename</Menu.Item>
+        <Menu.Item onClick={this.clearMenu}>New</Menu.Item>
+        <Menu.Item onClick={this.clearMenu}>Delete</Menu.Item>
+        <Menu.Item onClick={this.clearMenu}>Rename</Menu.Item>
         </Menu>
     </div>
   );
   return this.state.rightClickNodeTreeItem == null ? "" : menu;
 };
-clearMenu = () => {
-  this.setState({
-    NodeTreeItem: null
-  })
-}
+
     render() {      
         return (
           <div>
