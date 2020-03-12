@@ -1,4 +1,6 @@
 import * as paper from "paper"
+import EventHub from "../Common/Observer";
+
 /**
  * name ToolMove
  * desc 拖拽画布
@@ -12,9 +14,9 @@ const ToolMove = () => {
     }
 }
 /**
-* name ToolDrawCircle
-* desc 画圆
-*/
+ * name ToolDrawCircle
+ * desc 画圆
+ */
 const ToolDrawCircle = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
@@ -28,9 +30,9 @@ const ToolDrawCircle = () => {
     }
 }
 /**
-* name ToolDrawRect
-* desc 画方
-*/
+ * name ToolDrawRect
+ * desc 画方
+ */
 const ToolDrawRect = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
@@ -42,11 +44,15 @@ const ToolDrawRect = () => {
         })
         path.removeOnDrag()
     }
+    tool.onMouseDown = (event: paper.ToolEvent) => {
+        //Test-切换工具的时候保存canvas
+        EventHub.emit('mouseDownBefore', null)
+    }
 }
 /**
-* name ToolFreePen
-* desc 画笔
-*/
+ * name ToolFreePen
+ * desc 画笔
+ */
 const ToolFreePen = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
@@ -67,9 +73,9 @@ const ToolFreePen = () => {
 }
 
 /**
-* name ToolDrawSegment
-* desc 画线段
-*/
+ * name ToolDrawSegment
+ * desc 画线段
+ */
 const ToolDrawSegment = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
@@ -82,9 +88,9 @@ const ToolDrawSegment = () => {
     }
 }
 /**
-* name ToolPointText
-* desc 写字
-*/
+ * name ToolPointText
+ * desc 写字
+ */
 const ToolPointText = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
@@ -97,12 +103,13 @@ const ToolPointText = () => {
             fontWeight: 'bold',
             fontSize: 25
         });
+
     }
 }
 /**
-* name ToolSelectPath
-* desc 选中路径并编辑
-*/
+ * name ToolSelectPath
+ * desc 选中路径并编辑
+ */
 const ToolEditPath = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool();
@@ -160,16 +167,40 @@ const ToolRotate = () => {
     }
 }
 /**
-* name ToolEnlarge
-* desc 点击放大
-*/
+ * name ToolEnlarge
+ * desc 点击放大
+ */
 const ToolEnlarge = () => {
     RemoveTool();
     let tool: paper.Tool = new paper.Tool();
     tool.onMouseDown = (event: paper.ToolEvent) => {
         let view: paper.View = paper.view;
-        view.scale(1.5, event.point);//1.5是放大比例系数，后面的event.point是放大的中心点    
+        view.scale(1.5, event.point);//1.5是放大比例系数，后面的event.point是放大的中心点
     }
+}
+
+//点击缩小
+const ToolShrink = () => {
+    RemoveTool();
+    let tool: paper.Tool = new paper.Tool();
+    tool.onMouseDown = (event: paper.ToolEvent) => {
+        let view: paper.View = paper.view;
+        view.scale(0.5, event.point);//0.75是放大比例系数，后面的event.point是放大的中心点
+    }
+}
+
+//zoom to fit canvas
+const ToolZoomauto = () => {
+    paper.project.activeLayer.fitBounds(paper.view.bounds);
+}
+
+//底角放大
+const ToolZoomin = () => {
+    paper.view.scale(1.5, 1.5);
+}
+//底角缩小
+const ToolZoomout = () => {
+    paper.view.scale(0.5, 0.5);
 }
 
 //递归遍历layer树
@@ -249,5 +280,9 @@ export {
     ToolPointText,
     ToolEditPath,
     ToolRotate,
-    ToolEnlarge
+    ToolEnlarge,
+    ToolShrink,
+    ToolZoomauto,
+    ToolZoomin,
+    ToolZoomout
 }
