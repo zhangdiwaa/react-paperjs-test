@@ -4,6 +4,7 @@ import * as React from "react";
 import {Button, Layout, Tooltip} from 'antd';
 import SplitPane from 'react-split-pane';
 import MyCanvas from "./MyCanvas/MyCanvas";
+import MiniMap from "./UI/MiniMap"
 import SiderBar from "./UI/SiderBar"
 import HeaderBar from "./UI/HeaderBar"
 import './App.css';
@@ -27,8 +28,7 @@ const App=()=>{
               paneStyle={{ background: '#eee' }}
               pane2Style={{ background: '#aaa4ba' }}
             >
-              <div >wawawawa</div>
-              <div />
+              <MiniMap></MiniMap>
             </SplitPane>
           </Content>
       </Layout>
