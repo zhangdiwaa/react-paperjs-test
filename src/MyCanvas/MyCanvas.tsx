@@ -1,8 +1,20 @@
 import React from "react"
 import * as Paper from "paper";
-import { Layout } from 'antd';
+import {Button, Layout, Tooltip} from 'antd';
 import { useEffect } from "react";
+import { createFromIconfontCN } from '@ant-design/icons';
+import Config from "../Common/Config";
+import {
+    ToolZoomauto,
+    ToolZoomin,
+    ToolZoomout
+} from "./PaperTools";
+
 const { Content } = Layout;
+const { Header } = Layout;
+const IconFont = createFromIconfontCN({
+    scriptUrl: Config.IconUrl,
+});
 
 
 const MyCanvas=()=>{
@@ -10,7 +22,8 @@ const MyCanvas=()=>{
     useEffect(() => {
         Paper.install(window);
         Paper.setup(MyCanvas);
-        //使用React提供的onWheel会提示“渲染过多”    
+        Paper.activate();
+        //使用React提供的onWheel会提示“渲染过多”
         //下面这段代码是实现缩放功能的初始化
         MyCanvas.onwheel=(event)=>{
             let v=Paper.view
@@ -22,10 +35,21 @@ const MyCanvas=()=>{
         }
     });
     return (
-        <Content className="me-canvas">
-          <canvas 
+        <Content className="me-canvas under-bottonbox">
+          <canvas
           ref={ref=>{MyCanvas=ref}}
           id="myCanvas"></canvas>
+            <div className="under-botton">
+                <Tooltip placement="bottom" title={"zoomin"}>
+                    <Button onClick={ToolZoomin}><IconFont type="icon-zoomin" /></Button>
+                </Tooltip>
+                <Tooltip placement="bottom" title={"zoomout"}>
+                    <Button onClick={ToolZoomout}><IconFont type="icon-zoomout" /></Button>
+                </Tooltip>
+                <Tooltip placement="bottom" title={"zoomauto"}>
+                    <Button onClick={ToolZoomauto}><IconFont type="icon-zoom1" /></Button>
+                </Tooltip>
+            </div>
         </Content>
     )
 }

@@ -128,3 +128,15 @@
     padding: 0px;
     margin-left: 0px;
 }
+
+.under-bottonbox{
+    position: relative;
+}
+
+.under-botton{
+    position: absolute;
+    left: 85%;
+    top: 95%;
+    transform: translate(-5%,-50%);
+}
+

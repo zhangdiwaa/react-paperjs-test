@@ -8,7 +8,9 @@ import {
     ToolPointText,
     ToolEditPath,
     ToolRotate,
-    ToolEnlarge
+    ToolEnlarge,
+    ToolShrink,
+    ToolZoomauto
 } from "../MyCanvas/PaperTools"
 import { Button, Layout, Tooltip } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
@@ -32,6 +34,8 @@ const SiderBar = () => {
             case 'text': return ToolPointText;
             case 'edit': return ToolEditPath;
             case 'enlarge': return ToolEnlarge;
+            case'shrink': return ToolShrink;
+            case'zoomauto': return ToolZoomauto;
             case 'rotate': return ToolRotate;
         }
     }
@@ -58,7 +62,13 @@ const SiderBar = () => {
                     <Button onClick={FunctionMap("text")}><IconFont type="icon-text" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"enlarge"}>
-                    <Button onClick={FunctionMap("enlarge")}><IconFont type="icon-zoom" /></Button>
+                    <Button onClick={FunctionMap("enlarge")}><IconFont type="icon-zoomin" /></Button>
+                </Tooltip>
+                <Tooltip placement="right" title={"shrink"}>
+                    <Button onClick={FunctionMap("shrink")}><IconFont type="icon-zoomout" /></Button>
+                </Tooltip>
+                <Tooltip placement="right" title={"zoomauto"}>
+                    <Button onClick={FunctionMap("zoomauto")}><IconFont type="icon-zoom1" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"edit"}>
                     <Button onClick={FunctionMap("edit")}><IconFont type="icon-Link-Select" /></Button>
@@ -74,3 +84,5 @@ const SiderBar = () => {
 
 
 export default SiderBar;
+
+

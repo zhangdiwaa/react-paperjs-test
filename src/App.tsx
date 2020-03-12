@@ -1,14 +1,14 @@
 //ts中引入的写法
 import * as React from "react";
 //react中引入的写法
-import { Layout } from 'antd';
+import {Button, Layout, Tooltip} from 'antd';
 import SplitPane from 'react-split-pane';
 import MyCanvas from "./MyCanvas/MyCanvas";
 import SiderBar from "./UI/SiderBar"
 import HeaderBar from "./UI/HeaderBar"
 import './App.css';
 
-const { Header, Content } = Layout;
+const {  Content } = Layout;
 
 const App=()=>{
 
@@ -33,6 +33,7 @@ const App=()=>{
           </Content>
       </Layout>
     </Layout>
+
   );
 }
 
