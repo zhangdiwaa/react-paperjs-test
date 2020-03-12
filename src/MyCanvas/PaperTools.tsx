@@ -103,7 +103,7 @@ const ToolPointText = () => {
             fontWeight: 'bold',
             fontSize: 25
         });
-        
+
     }
 }
 /**
@@ -177,6 +177,30 @@ const ToolEnlarge = () => {
         let view: paper.View = paper.view;
         view.scale(1.5, event.point);//1.5是放大比例系数，后面的event.point是放大的中心点
     }
+}
+
+//点击缩小
+const ToolShrink = () => {
+    RemoveTool();
+    let tool: paper.Tool = new paper.Tool();
+    tool.onMouseDown = (event: paper.ToolEvent) => {
+        let view: paper.View = paper.view;
+        view.scale(0.5, event.point);//0.75是放大比例系数，后面的event.point是放大的中心点
+    }
+}
+
+//zoom to fit canvas
+const ToolZoomauto = () => {
+    paper.project.activeLayer.fitBounds(paper.view.bounds);
+}
+
+//底角放大
+const ToolZoomin = () => {
+    paper.view.scale(1.5, 1.5);
+}
+//底角缩小
+const ToolZoomout = () => {
+    paper.view.scale(0.5, 0.5);
 }
 
 //递归遍历layer树
@@ -256,5 +280,9 @@ export {
     ToolPointText,
     ToolEditPath,
     ToolRotate,
-    ToolEnlarge
+    ToolEnlarge,
+    ToolShrink,
+    ToolZoomauto,
+    ToolZoomin,
+    ToolZoomout
 }

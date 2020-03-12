@@ -17,7 +17,9 @@
     background-color: #E9E9E9;
     border-bottom: 1px solid rgba(34,36,38,.15);
 }
-
+.ant-btn{
+    padding: 4px 8px;
+}
 .me-header .logo {
     float: left;
     height: 48px;
@@ -38,7 +40,6 @@
 }
 
 .buttons button {
-    padding: 4px 8px;
     margin-left: 8px;
 }
 
@@ -52,7 +53,6 @@
 .me-left-bar button {
     margin-left: 8px;
     margin-top: 8px;
-    padding: 4px 8px;
 }
 
 .me-canvas {
@@ -128,3 +128,15 @@
     padding: 0px;
     margin-left: 0px;
 }
+
+.under-bottonbox{
+    position: relative;
+}
+
+.under-botton{
+    position: absolute;
+    left: 85%;
+    top: 95%;
+    transform: translate(-5%,-50%);
+}
+
