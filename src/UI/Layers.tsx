@@ -15,7 +15,13 @@ class App extends Component {
         categoryName: ""
       }
   }
+  /**
+   * 定义鼠标右键事件
+   */
   onRightClick = (e) => {
+    /**
+     * 设置位置，使右键菜单出现在鼠标右侧不远处
+     */
     var x = e.event.currentTarget.offsetLeft + e.event.currentTarget.clientWidth;
     var y = e.event.currentTarget.offsetTop ;
     this.setState({
@@ -27,11 +33,17 @@ class App extends Component {
       }
     });
 };
+/**
+ * 清理组件函数，调用之后，使得右键菜单在点击之后消失
+ */
 clearMenu = () => {
   this.setState({
     rightClickNodeTreeItem: null
   })
 }
+/**
+ * 自定义右键菜单，包括样式等等
+ */
 getNodeTreeRightClickMenu = () => {
   const { pageX, pageY, id, categoryName } = { ...this.state.rightClickNodeTreeItem };
   const tmpStyle = {
@@ -51,7 +63,9 @@ getNodeTreeRightClickMenu = () => {
   );
   return this.state.rightClickNodeTreeItem == null ? "" : menu;
 };
-
+/**
+ * 树状组件以及右键菜单输出
+ */
     render() {      
         return (
           <div>
