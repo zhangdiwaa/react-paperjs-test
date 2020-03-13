@@ -2,6 +2,15 @@ import * as paper from "paper"
 import EventHub from "../Common/Observer";
 import {render} from "react-dom";
 
+const pageChange = {
+    pageChangeBefore: () => {
+        EventHub.emit('pageChangeBefore', null)
+    },
+    pageChangeAfter: () => {
+        EventHub.emit('pageChangeAfter', null)
+    }
+}
+
 /**
  * name ToolMove
  * desc 拖拽画布
@@ -31,11 +40,11 @@ const ToolDrawCircle = () => {
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
         //页面发生改变之前
-        EventHub.emit('pageChangeBefore', null)
+        pageChange.pageChangeBefore()
     }
     tool.onMouseUp = (event: paper.ToolEvent) => {
         //页面发生改变之后
-        EventHub.emit('pageChangeAfter', null)
+        pageChange.pageChangeAfter()
     }
 }
 /**
@@ -54,10 +63,10 @@ const ToolDrawRect = () => {
         path.removeOnDrag()
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit('pageChangeBefore', null)
+        pageChange.pageChangeBefore()
     }
     tool.onMouseUp = (event: paper.ToolEvent) => {
-        EventHub.emit('pageChangeAfter', null)
+        pageChange.pageChangeAfter()
     }
 }
 /**
@@ -74,7 +83,7 @@ const ToolFreePen = () => {
     })
     //每当鼠标按下就新建一条路径
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit("pageChangeBefore", null)
+        pageChange.pageChangeBefore()
         path = new paper.Path({
             strokeColor: "black"
         })
@@ -83,7 +92,7 @@ const ToolFreePen = () => {
         path.add(event.point)
     }
     tool.onMouseUp = (event: paper.ToolEvent) => {
-        EventHub.emit('pageChangeAfter', null)
+        pageChange.pageChangeAfter()
     }
 }
 
@@ -102,10 +111,10 @@ const ToolDrawSegment = () => {
         path.removeOnDrag()
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit('pageChangeBefore', null)
+        pageChange.pageChangeBefore()
     }
     tool.onMouseUp = (event: paper.ToolEvent) => {
-        EventHub.emit('pageChangeAfter', null)
+        pageChange.pageChangeAfter()
     }
 }
 /**
@@ -127,7 +136,7 @@ const ToolPointText = () => {
         });
     }
     tool.onMouseUp = (event: paper.ToolEvent) => {
-        EventHub.emit('pageChangeAfter', null)
+        pageChange.pageChangeAfter()
     }
 
 }
@@ -143,7 +152,7 @@ const ToolEditPath = () => {
 
 
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit("pageChangeBefore", null)
+        pageChange.pageChangeBefore()
         if (!ClickBounds(event, selectedShape)) {
             selectedShape = Ergodic(project.layers[0], event.point)
         }
@@ -162,7 +171,7 @@ const ToolEditPath = () => {
         }
     }
     tool.onMouseUp = (event: paper.ToolEvent) => {
-        EventHub.emit('pageChangeAfter', null)
+        pageChange.pageChangeAfter()
     }
 }
 /**
@@ -194,7 +203,7 @@ const ToolRotate = () => {
     }
     tool.onMouseUp = (event: paper.ToolEvent) => {
         rotateFlag = false;
-        EventHub.emit('pageChangeAfter', null)
+        pageChange.pageChangeAfter()
     }
 }
 /**
