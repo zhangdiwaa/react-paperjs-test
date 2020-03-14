@@ -6,12 +6,11 @@ import SplitPane from 'react-split-pane';
 import MyCanvas from "./MyCanvas/MyCanvas";
 import SiderBar from "./UI/SiderBar"
 import HeaderBar from "./UI/HeaderBar"
+import Layer from "./UI/Layers"
 import './App.css';
 
-const {  Content } = Layout;
-
+const { Content } = Layout;
 const App=()=>{
-
   return (
     <Layout className="me-layout">
         <HeaderBar></HeaderBar>
@@ -28,6 +27,9 @@ const App=()=>{
               pane2Style={{ background: '#aaa4ba' }}
             >
               <div >wawawawa</div>
+              <div>
+                <Layer></Layer>
+              </div>
               <div />
             </SplitPane>
           </Content>

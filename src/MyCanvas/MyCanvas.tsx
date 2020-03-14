@@ -38,21 +38,23 @@ const MyCanvas=()=>{
     });
     return (
         <Content className="me-canvas under-bottonbox">
+            <div className="under-botton">
+                    <Tooltip placement="bottom" title={"zoomin"}>
+                        <Button onClick={ToolZoomin}><IconFont type="icon-zoomin" /></Button>
+                    </Tooltip>
+                    <Tooltip placement="bottom" title={"zoomout"}>
+                        <Button onClick={ToolZoomout}><IconFont type="icon-zoomout" /></Button>
+                    </Tooltip>
+                    <Tooltip placement="bottom" title={"zoomauto"}>
+                        <Button onClick={ToolZoomauto}><IconFont type="icon-zoom1" /></Button>
+                    </Tooltip>
+                </div>
           <canvas
           ref={ref=>{MyCanvas=ref}}
           id="myCanvas"></canvas>
-            <div className="under-botton">
-                <Tooltip placement="bottom" title={"zoomin"}>
-                    <Button onClick={ToolZoomin}><IconFont type="icon-zoomin" /></Button>
-                </Tooltip>
-                <Tooltip placement="bottom" title={"zoomout"}>
-                    <Button onClick={ToolZoomout}><IconFont type="icon-zoomout" /></Button>
-                </Tooltip>
-                <Tooltip placement="bottom" title={"zoomauto"}>
-                    <Button onClick={ToolZoomauto}><IconFont type="icon-zoom1" /></Button>
-                </Tooltip>
-            </div>
+
         </Content>
+
     )
 }
 

@@ -135,9 +135,9 @@
 
 .under-botton{
     position: absolute;
-    left: 85%;
-    top: 95%;
-    transform: translate(-5%,-50%);
+    display: flex;
+    bottom: 10px;
+    left: 88%;
 }
 
 .edit{
@@ -149,3 +149,4 @@
 .rotate{
     cursor:ne-resize
 }
+
