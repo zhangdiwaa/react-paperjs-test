@@ -2,7 +2,7 @@ import React from "react";
 import {Button, Layout, Tooltip, Menu} from 'antd';
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
-import {Undo, Redo} from '../Common/UndoAndRedo';
+import {Redo, Undo} from '../Common/UndoAndRedo';
 
 const {Header} = Layout;
 const {SubMenu} = Menu;

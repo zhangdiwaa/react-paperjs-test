@@ -54,6 +54,8 @@ const Redo = () => {
         //将修改后的数组存放至本地中
         localStorage.setItem("history", JSON.stringify(history));
         localStorage.setItem("future", JSON.stringify(future));
+        //发送执行redo的消息
+        EventHub.emit('redo', null)
     }
 }
 /**
@@ -74,6 +76,8 @@ const Undo = () => {
         //将修改后的数组存放至本地中
         localStorage.setItem("future", JSON.stringify(future));
         localStorage.setItem("history", JSON.stringify(history));
+        //发送执行redo的消息
+        EventHub.emit('undo', null)
     }
 }
 

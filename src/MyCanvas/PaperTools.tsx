@@ -1,6 +1,7 @@
 import * as paper from "paper"
 import EventHub from "../Common/Observer";
 import {render} from "react-dom";
+import * as Paper from "paper";
 
 const pageChange = {
     pageChangeBefore: () => {
@@ -34,7 +35,8 @@ const ToolDrawCircle = () => {
         let path: paper.Path.Circle = new paper.Path.Circle({
             center: event.downPoint,
             radius: event.downPoint.subtract(event.point).length,
-            strokeColor: "black"
+            strokeColor: "black",
+            name: 'Circle'
         })
         path.removeOnDrag()
     }
@@ -58,7 +60,8 @@ const ToolDrawRect = () => {
         let path: paper.Path.Rectangle = new paper.Path.Rectangle({
             from: event.downPoint,
             to: event.point,
-            strokeColor: "black"
+            strokeColor: "black",
+            name: 'Rectangle'
         })
         path.removeOnDrag()
     }
@@ -78,14 +81,13 @@ const ToolFreePen = () => {
     let tool: paper.Tool = new paper.Tool()
     tool.minDistance = 10;
 
-    let path: paper.Path = new paper.Path({
-        strokeColor: "black"
-    })
+    let path: paper.Path;
     //每当鼠标按下就新建一条路径
     tool.onMouseDown = (event: paper.ToolEvent) => {
         pageChange.pageChangeBefore()
         path = new paper.Path({
-            strokeColor: "black"
+            strokeColor: "black",
+            name: 'Path'
         })
     }
     tool.onMouseDrag = (event: paper.ToolEvent) => {
@@ -105,7 +107,8 @@ const ToolDrawSegment = () => {
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDrag = (event: paper.ToolEvent) => {
         let path: paper.Path = new paper.Path({
-            strokeColor: "black"
+            strokeColor: "black",
+            name: 'Segment'
         })
         path.add(event.downPoint, event.point);
         path.removeOnDrag()
@@ -125,14 +128,15 @@ const ToolPointText = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit("pageChangeBefore", null)
+        pageChange.pageChangeBefore()
         let text: paper.PointText = new paper.PointText({
             point: event.downPoint,
             content: 'wawa',
             fillColor: 'black',
             fontFamily: 'Courier New',
             fontWeight: 'bold',
-            fontSize: 25
+            fontSize: 25,
+            name: 'Text'
         });
     }
     tool.onMouseUp = (event: paper.ToolEvent) => {
@@ -186,7 +190,7 @@ const ToolRotate = () => {
     let rotateFlag: boolean = false;
 
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        EventHub.emit("pageChangeBefore", null)
+        pageChange.pageChangeBefore()
         if (!ClickBounds(event, selectedShape)) {
             selectedShape = Ergodic(project.layers[0], event.point)
         } else {
@@ -217,6 +221,30 @@ const ToolEnlarge = () => {
         let view: paper.View = paper.view;
         view.scale(1.5, event.point);//1.5是放大比例系数，后面的event.point是放大的中心点
     }
+}
+
+//点击缩小
+const ToolShrink = () => {
+    RemoveTool();
+    let tool: paper.Tool = new paper.Tool();
+    tool.onMouseDown = (event: paper.ToolEvent) => {
+        let view: paper.View = paper.view;
+        view.scale(0.5, event.point);//0.75是放大比例系数，后面的event.point是放大的中心点
+    }
+}
+
+//zoom to fit canvas
+const ToolZoomauto = () => {
+    paper.project.activeLayer.fitBounds(paper.view.bounds);
+}
+
+//底角放大
+const ToolZoomin = () => {
+    paper.view.scale(1.5, 1.5);
+}
+//底角缩小
+const ToolZoomout = () => {
+    paper.view.scale(0.5, 0.5);
 }
 
 //递归遍历layer树
@@ -296,5 +324,9 @@ export {
     ToolPointText,
     ToolEditPath,
     ToolRotate,
-    ToolEnlarge
+    ToolEnlarge,
+    ToolShrink,
+    ToolZoomauto,
+    ToolZoomin,
+    ToolZoomout
 }
