@@ -140,3 +140,12 @@
     transform: translate(-5%,-50%);
 }
 
+.edit{
+    cursor:se-resize
+}
+.move{
+    cursor:move
+}
+.rotate{
+    cursor:ne-resize
+}
