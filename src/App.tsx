@@ -4,20 +4,18 @@ import * as React from "react";
 import { Layout } from 'antd';
 import SplitPane from 'react-split-pane';
 import MyCanvas from "./MyCanvas/MyCanvas";
-import ToolMenu from "./Tool/ToolMenu"
+import SiderBar from "./UI/SiderBar"
+import HeaderBar from "./UI/HeaderBar"
+import Layer from "./UI/Layers"
 import './App.css';
 
-const { Header, Content } = Layout;
-
+const { Content } = Layout;
 const App=()=>{
-
   return (
     <Layout className="me-layout">
-      <Header className="me-header">
-        ChartInk 0.1
-      </Header>
+        <HeaderBar></HeaderBar>
       <Layout>
-        <ToolMenu></ToolMenu>
+        <SiderBar></SiderBar>
         <MyCanvas></MyCanvas>
         <Content className="me-right-bar">
             <SplitPane
@@ -28,12 +26,16 @@ const App=()=>{
               paneStyle={{ background: '#eee' }}
               pane2Style={{ background: '#aaa4ba' }}
             >
-              <div />
+              <div >wawawawa</div>
+              <div>
+                <Layer></Layer>
+              </div>
               <div />
             </SplitPane>
           </Content>
       </Layout>
     </Layout>
+
   );
 }
 

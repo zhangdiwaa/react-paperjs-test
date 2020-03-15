@@ -1,70 +1,38 @@
-这是一个信息图绘制软件。
+## 🎣 本项目是一个用于将paper.js和react合写的测试demo.
 
-this is an prototype for drawing infograph on web.
+### 如何开始
+- Clone this repository `git clone git@github.com:zhangdiwaa/react-paperjs-test.git`
+- Install the dependencies `yarn install`
+- Start the app `yarn start`
+- Open [http://localhost:4321](http://localhost:4321) to view it in the browser.
 
-基于以下类库制作。
-base on:
+### 程序说明
+本项目基于以下类库制作。
+This project is based on:
 
 1. react
 2. typescript
 3. ant design
 4. paper.js
 
-这个软件是使用create-react-app开发的。
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-如何使用
-
-## how to start
-
-In the project directory, you can run:
-
-### `yarn install`
-
-if you don't have yarn,  `npm install -g yarn`
-
-if you are in XX mainland, `yarn config set registry http://registry.npm.taobao.org/`
-
-### `yarn start`
-
-Runs the app in the development mode.<br />
-Open [http://localhost:4321](http://localhost:4321) to view it in the browser.
-
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
---------------------------------------------------
-
-## other script
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 2020年3月7日重大修改
+1. 修改了工程目录结构。现在的目录结构是:
+```javascript
+-  src
+-  |---- MyCanvas               //与paper.js相关的功能组件
+-  |---- |---- MyCanvas.tsx     //paper.js画布生成与初始化组件
+-  |---- |---- PaperTool.tsx    //paper.js交互工具组件
+-  |
+-  |---- UI                     //界面相关的组件
+-  |---- |---- HeaderBar.tsx    //界面首部及其按钮组
+-  |---- |---- siderBar.tsx     //界面侧边栏及其按钮组
+-  |
+-  |---- Common                 //通用组件
+-  |---- |---- config.tsx       //配置数组
+-  |
+-  |---- App.tsx                //入口组件
+-  |---- App.css                //全局样式文件
+-  剩余文件都是create-react-app 默认的文件
+```
+2. 更新了antDesign插件到4.0.1版本
+- yarn upgrade-interactive --latest // 使用此命令更新依赖包。注意此命令输入后还需要手动选择升级的依赖包，按空格键选择，a 键切换所有，i 键反选选择，回车确定升级
