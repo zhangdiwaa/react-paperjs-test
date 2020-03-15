@@ -1,6 +1,15 @@
 import * as paper from "paper"
 import EventHub from "../Common/Observer";
 
+const pageChange = {
+    pageChangeBefore: () => {
+        EventHub.emit('pageChangeBefore', null)
+    },
+    pageChangeAfter: () => {
+        EventHub.emit('pageChangeAfter', null)
+    }
+}
+
 /**
  * name ToolMove
  * desc 拖拽画布
@@ -24,9 +33,18 @@ const ToolDrawCircle = () => {
         let path: paper.Path.Circle = new paper.Path.Circle({
             center: event.downPoint,
             radius: event.downPoint.subtract(event.point).length,
-            strokeColor: "black"
+            strokeColor: "black",
+            name: 'Circle'
         })
         path.removeOnDrag()
+    }
+    tool.onMouseDown = (event: paper.ToolEvent) => {
+        //页面发生改变之前
+        pageChange.pageChangeBefore()
+    }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        //页面发生改变之后
+        pageChange.pageChangeAfter()
     }
 }
 /**
@@ -40,13 +58,16 @@ const ToolDrawRect = () => {
         let path: paper.Path.Rectangle = new paper.Path.Rectangle({
             from: event.downPoint,
             to: event.point,
-            strokeColor: "black"
+            strokeColor: "black",
+            name: 'Rectangle'
         })
         path.removeOnDrag()
     }
     tool.onMouseDown = (event: paper.ToolEvent) => {
-        //Test-切换工具的时候保存canvas
-        EventHub.emit('mouseDownBefore', null)
+        pageChange.pageChangeBefore()
+    }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        pageChange.pageChangeAfter()
     }
 }
 /**
@@ -58,17 +79,20 @@ const ToolFreePen = () => {
     let tool: paper.Tool = new paper.Tool()
     tool.minDistance = 10;
 
-    let path: paper.Path = new paper.Path({
-        strokeColor: "black"
-    })
+    let path: paper.Path;
     //每当鼠标按下就新建一条路径
     tool.onMouseDown = (event: paper.ToolEvent) => {
+        pageChange.pageChangeBefore()
         path = new paper.Path({
-            strokeColor: "black"
+            strokeColor: "black",
+            name: 'Path'
         })
     }
     tool.onMouseDrag = (event: paper.ToolEvent) => {
         path.add(event.point)
+    }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        pageChange.pageChangeAfter()
     }
 }
 
@@ -81,10 +105,17 @@ const ToolDrawSegment = () => {
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDrag = (event: paper.ToolEvent) => {
         let path: paper.Path = new paper.Path({
-            strokeColor: "black"
+            strokeColor: "black",
+            name: 'Segment'
         })
         path.add(event.downPoint, event.point);
         path.removeOnDrag()
+    }
+    tool.onMouseDown = (event: paper.ToolEvent) => {
+        pageChange.pageChangeBefore()
+    }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        pageChange.pageChangeAfter()
     }
 }
 /**
@@ -95,16 +126,23 @@ const ToolPointText = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDown = (event: paper.ToolEvent) => {
+        pageChange.pageChangeBefore()
         let text: paper.PointText = new paper.PointText({
             point: event.downPoint,
             content: 'wawa',
             fillColor: 'black',
             fontFamily: 'Courier New',
             fontWeight: 'bold',
-            fontSize: 25
+            fontSize: 25,
+            name: 'Text'
         });
     }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        pageChange.pageChangeAfter()
+    }
+
 }
+
 /**
  * name ToolEnlarge
  * desc 点击放大

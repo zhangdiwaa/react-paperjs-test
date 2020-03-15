@@ -1,7 +1,7 @@
 //ts中引入的写法
 import * as React from "react";
 //react中引入的写法
-import {Button, Layout, Tooltip} from 'antd';
+import { Layout } from 'antd';
 import SplitPane from 'react-split-pane';
 import MyCanvas from "./MyCanvas/MyCanvas";
 import SiderBar from "./UI/SiderBar"

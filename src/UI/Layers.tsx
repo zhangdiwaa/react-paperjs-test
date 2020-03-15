@@ -1,99 +1,173 @@
-import React, { useState,Component } from 'react';
-import { Tree,Menu } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-const { TreeNode } = Tree;
-const {SubMenu} = Menu;
-class App extends Component {
-    sonSelect = (selectedKeys, info) => {
-      console.log('selected', selectedKeys, info);  
-    } 
-    state = {
-      rightClickNodeTreeItem: {
-        pageX: "",
-        pageY: "",
-        id: "",
-        categoryName: ""
-      }
-  }
-  /**
-   * 定义鼠标右键事件
-   */
-  onRightClick = (e) => {
-    /**
-     * 设置位置，使右键菜单出现在鼠标右侧不远处
-     */
-    var x = e.event.currentTarget.offsetLeft + e.event.currentTarget.clientWidth;
-    var y = e.event.currentTarget.offsetTop ;
-    this.setState({
-      rightClickNodeTreeItem: {
-        pageX: x,
-        pageY: y,
-        id: e.node.props["data-key"],
-        categoryName: e.node.props["data-title"]
-      }
-    });
-};
+import React, {ReactDOM, useState} from 'react';
+import {Tree, Button} from 'antd';
+import * as Paper from 'paper';
+import EventHub from "../Common/Observer";
+
+//用于保存layer的数组
+let canvasTree = [];
+
+//菜单的数据
+const menuOptions = {}
+
+let treeDataGlobal, setTreeDataGlobal;
 /**
- * 清理组件函数，调用之后，使得右键菜单在点击之后消失
+ * 加载Layer的children对象
+ * @param layerChild
  */
-clearMenu = () => {
-  this.setState({
-    rightClickNodeTreeItem: null
-  })
-}
-/**
- * 自定义右键菜单，包括样式等等
- */
-getNodeTreeRightClickMenu = () => {
-  const { pageX, pageY, id, categoryName } = { ...this.state.rightClickNodeTreeItem };
-  const tmpStyle = {
-    position: 'absolute' as 'absolute',
-    textAlign: 'center'as 'center',
-    left:`${pageX + 40}px`,
-    top: `${pageY}px`,
-  };
-  const menu = (
-    <div style={tmpStyle} className="self-right-menu">
-        <Menu>
-        <Menu.Item onClick={this.clearMenu}>New</Menu.Item>
-        <Menu.Item onClick={this.clearMenu}>Delete</Menu.Item>
-        <Menu.Item onClick={this.clearMenu}>Rename</Menu.Item>
-        </Menu>
-    </div>
-  );
-  return this.state.rightClickNodeTreeItem == null ? "" : menu;
-};
-/**
- * 树状组件以及右键菜单输出
- */
-    render() {      
-        return (
-          <div>
-          <Tree
-          showLine
-          switcherIcon={<DownOutlined />}
-          defaultExpandedKeys={['0-0-0']}
-          onSelect={this.sonSelect}
-          onRightClick={this.onRightClick}         
-        >
-          <TreeNode title="parent 1" key="0-0" >
-            <TreeNode title="parent 1-0" key="0-0-0" >
-              <TreeNode title="leaf" key="0-0-0-0" />
-              <TreeNode title="leaf" key="0-0-0-1" />
-              <TreeNode title="leaf" key="0-0-0-2" />
-            </TreeNode>
-            <TreeNode title="parent 1-1" key="0-0-1">
-              <TreeNode title="leaf" key="0-0-1-0" />
-            </TreeNode>
-            <TreeNode title="parent 1-2" key="0-0-2">
-              <TreeNode title="leaf" key="0-0-2-0" />
-              <TreeNode title="leaf" key="0-0-2-1" />
-            </TreeNode>
-          </TreeNode>
-        </Tree> 
-        {this.getNodeTreeRightClickMenu()}
-        </div>
-      );
+const parseLeafJSON = (layerChild) => {
+    //将child保存为数组
+    let leaf = [];
+    //便利layer的child,生成node，并添加到数组中
+    for (let i = 0; i < layerChild.length; i++) {
+        const leafNode = {
+            key: layerChild[i].id.toString(),
+            title: layerChild[i].name
+        }
+        leaf = [...leaf, leafNode]
     }
+    //返回数组在其中保存
+    return leaf
 }
-export default App;
+
+/**
+ * 当页面改变之后，重新对Layer进行渲染，Layer调用对其Children的渲染
+ * @constructor
+ */
+const LoadLayer = () => {
+    //清空canvasTree
+    canvasTree.splice(0)
+    //获取所有layer
+    let layers = Paper.project.layers;
+    if (layers.length == 0) {
+        setTreeDataGlobal([{
+            key: '0',
+            title: 'None'
+        }])
+        return
+    }
+    //对layer进行遍历
+    for (let i = 0; i < layers.length; i++) {
+        const layerNode = {
+            key: layers[i].id.toString(),
+            title: layers[i].className,
+            children: []
+        }
+        //对layer的children进行解析，返回结果保存
+        let leaf = parseLeafJSON(layers[i].children,);
+        layerNode.children = leaf
+        //将layer保存
+        canvasTree = [...canvasTree, layerNode]
+    }
+    setTreeDataGlobal(canvasTree)
+}
+const RightMenu = () => {
+
+}
+/**
+ * 生成LayerList
+ * @constructor
+ */
+const Layer = () => {
+    //useState 是允许你在 React 函数组件中添加 state 的 Hook
+    const [treeData, setTreeData] = useState(canvasTree);
+    const [rightData, setRightData] = useState({
+        id: 0,
+        pageX: 0,
+        pageY: 0,
+        isSelected: false
+    })
+    //保存为全局变量
+    treeDataGlobal = treeData
+    setTreeDataGlobal = setTreeData
+    /**
+     * 用于清除右键菜单
+     * @constructor
+     */
+    const ClearRightData = () => {
+        setRightData({
+            id: 0,
+            pageX: 0,
+            pageY: 0,
+            isSelected: false
+        })
+    }
+    /**
+     * 生成右键菜单
+     * @constructor
+     */
+    const CreateRightMenu = () => {
+        //获取数据
+        const {id, pageX, pageY} = rightData;
+        //menu菜单
+        const menu = (
+            <div style={{
+                position: 'absolute',
+                textAlign: 'center',
+                left: `${pageX + 20}px`,
+                top: `${pageY}px`,
+                border: '1px solid #ccc',
+                backgroundColor: '#fff'
+            }} onMouseLeave={(e) => {
+                ClearRightData()
+            }}>
+                <Button onClick={(e) => {
+                    EventHub.emit('pageChangeBefore', null)
+                    Paper.project.getItems({id: id}).forEach(item => {
+                        item.remove()
+                    })
+                    ClearRightData()
+                    EventHub.emit('pageChangeAfter', null)
+                }} type='link'>Delete</Button>
+                <hr style={{
+                    margin: '0px',
+                    padding: '0px'
+                }}/>
+                <Button type='link'>Edit</Button>
+            </div>
+        )
+        return rightData.isSelected ? menu : ''
+    }
+    /**
+     * 在LayerList上右击之后，执行的操作
+     * @param event 事件
+     * @param node 被选中的节点
+     * @constructor
+     */
+    const RightClick = ({event, node}) => {
+        setRightData({
+            pageX: event.currentTarget.offsetLeft,
+            pageY: event.currentTarget.offsetTop,
+            id: parseInt(node.key),
+            isSelected: true
+        })
+    }
+
+    return <div style={{
+        width: '300px',
+        height: '300px',
+        overflow: 'scroll',
+        position: 'relative'
+    }}>
+        <Tree defaultExpandAll={true}
+              onRightClick={RightClick}
+              onSelect={(sk, e) => {
+                  //清除之前已经选中的
+                  Paper.project.layers.forEach(layer => {
+                      layer.selected = false
+                  })
+                  //当二次点击的时候代表的取消选中，因此我们需要清楚这个
+                  if (sk.length == 0) {
+                      return
+                  }
+                  //选中点击的对象
+                  Paper.project.getItems({id: parseInt(sk[0].toString())}).forEach(item => {
+                      item.selected = true
+                  })
+              }} treeData={treeDataGlobal}/>
+        {CreateRightMenu()}
+    </div>;
+};
+export default Layer;
+export {
+    LoadLayer
+}
