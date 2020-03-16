@@ -246,20 +246,17 @@ const ToolEditPath = () => {
                 selected:true,
                 tolerance:16
             })
-            selectedShape.forEach(element => {
-                if(element.contains(event.point)){
-                    moveShape=element
-                    return;
-                }else{
-                    moveShape=null
-                }
-            });
+            moveShape=project.getItem({
+                overlapping:event.point,
+                selected:true,
+                class:paper.Path
+            })
             if(editShape){
                 myCanvas.className="edit"
-            }else if(rotateShape){
-                myCanvas.className="rotate"
             }else if(moveShape){
                 myCanvas.className="move"
+            }else if(rotateShape){
+                myCanvas.className="rotate"
             }else{
                 myCanvas.className="none"
             }
@@ -319,7 +316,7 @@ const selectOnMouseDrag=(event:paper.ToolEvent)=>{
 const selectOnMouseUp=(event:paper.ToolEvent,project:paper.Project)=>{
     let selectedShape=null
     if(event.downPoint.equals(event.point)){
-        selectedShape=project.getItems({//获取与矩形框交叠的图形
+        selectedShape=project.getItems({//获取与点交叠的图形
             overlapping:new paper.Point(event.point)
         })
     }else{
@@ -330,7 +327,6 @@ const selectOnMouseUp=(event:paper.ToolEvent,project:paper.Project)=>{
             })
         })
     }
-    
     if(selectedShape){
         selectedShape.forEach(element => {
             //必须判断是否是Layer，否则设置Layer的selected为true，其内的所有图形selected都变成true
