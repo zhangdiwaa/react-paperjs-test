@@ -3,13 +3,23 @@ import {Tree, Button} from 'antd';
 import * as Paper from 'paper';
 import EventHub from "../Common/Observer";
 
+let treeRef;
 //用于保存layer的数组
-let canvasTree = [];
+let canvasTree = [{
+    key: '0',
+    title: 'None',
+}];
+//用于保存选择的节点、
+let nodeCheckedArray = []
+//展开的节点
+let nodeExpandArray = []
 
 //菜单的数据
 const menuOptions = {}
 
 let treeDataGlobal, setTreeDataGlobal;
+let nodeCheckedGlobal, setNodeCheckedGlobal;
+let nodeExpandGlobal, setNodeExpandGlobal;
 /**
  * 加载Layer的children对象
  * @param layerChild
@@ -41,7 +51,7 @@ const LoadLayer = () => {
     if (layers.length == 0) {
         setTreeDataGlobal([{
             key: '0',
-            title: 'None'
+            title: 'None',
         }])
         return
     }
@@ -53,7 +63,7 @@ const LoadLayer = () => {
             children: []
         }
         //对layer的children进行解析，返回结果保存
-        let leaf = parseLeafJSON(layers[i].children,);
+        let leaf = parseLeafJSON(layers[i].children);
         layerNode.children = leaf
         //将layer保存
         canvasTree = [...canvasTree, layerNode]
@@ -61,6 +71,10 @@ const LoadLayer = () => {
     setTreeDataGlobal(canvasTree)
 }
 const RightMenu = () => {
+
+}
+
+const treeSelect = () => {
 
 }
 /**
@@ -76,9 +90,15 @@ const Layer = () => {
         pageY: 0,
         isSelected: false
     })
+    const [checkedData, setCheckedData] = useState(nodeCheckedArray)
+    const [expandedData, setExpandData] = useState(nodeExpandArray)
     //保存为全局变量
     treeDataGlobal = treeData
     setTreeDataGlobal = setTreeData
+    nodeCheckedGlobal = checkedData
+    setNodeCheckedGlobal = setCheckedData
+    nodeExpandGlobal = expandedData
+    setNodeExpandGlobal = setExpandData
     /**
      * 用于清除右键菜单
      * @constructor
@@ -148,22 +168,32 @@ const Layer = () => {
         overflow: 'scroll',
         position: 'relative'
     }}>
-        <Tree defaultExpandAll={true}
+        <Tree checkable={true}
+              autoExpandParent={true}
+              defaultExpandAll={true}
               onRightClick={RightClick}
-              onSelect={(sk, e) => {
-                  //清除之前已经选中的
-                  Paper.project.layers.forEach(layer => {
-                      layer.selected = false
-                  })
-                  //当二次点击的时候代表的取消选中，因此我们需要清楚这个
-                  if (sk.length == 0) {
-                      return
+              onCheck={(keys, e) => {
+              }} treeData={treeDataGlobal}
+              ref={(ref) => {
+                  treeRef = ref
+              }}
+              expandedKeys={nodeExpandGlobal}
+              checkedKeys={nodeCheckedGlobal}
+              onExpand={(keys, {expanded, node}) => {
+                  console.log(node)
+                  if (expanded) {
+                      node.expanded=true
+                      nodeExpandArray.push(node.key)
+                  } else {
+                      nodeExpandArray.splice(nodeExpandArray.indexOf(node.key), 1)
                   }
-                  //选中点击的对象
-                  Paper.project.getItems({id: parseInt(sk[0].toString())}).forEach(item => {
-                      item.selected = true
-                  })
-              }} treeData={treeDataGlobal}/>
+                  console.log(nodeExpandArray)
+                  console.log(nodeExpandGlobal)
+                  setNodeExpandGlobal(nodeExpandArray)
+                  console.log(treeRef)
+                  // treeRef.renderTree()
+              }}
+        />
         {CreateRightMenu()}
     </div>;
 };

@@ -188,6 +188,16 @@ const RemoveTool = () => {
         item.remove()
     })
 }
+/**
+ *
+ * @constructor
+ */
+const ClearSelected = () => {
+    paper.project.getItems({selected: true}).forEach(item => {
+        item.selected = false
+        item.bounds.selected = false
+    })
+}
 
 export {
     ToolMove,
@@ -201,11 +211,9 @@ export {
     ToolShrink,
     ToolZoomauto,
     ToolZoomin,
-    ToolZoomout
+    ToolZoomout,
+    ClearSelected
 }
-
-
-
 
 
 /**
@@ -217,93 +225,120 @@ const ToolEditPath = () => {
     let tool: paper.Tool = new paper.Tool();
     let project: paper.Project = paper.project;//这个是paper目前活跃的project，可以根据需求改成别的项目
     var selectedShape: any = [];
-    let myCanvas:HTMLElement=document.getElementById("myCanvas");
-    let editShape:any =null;
-    let moveShape:any =null;
-    let rotateShape:any=null;
-    let lockState:Boolean=false;
-    let isShiftDown:Boolean=false;
+    let myCanvas: HTMLElement = document.getElementById("myCanvas");
+    let editShape: any = null;
+    let moveShape: any = null;
+    let rotateShape: any = null;
+    let lockState: Boolean = false;
+    let isShiftDown: Boolean = false;
 
-    tool.onKeyDown=(event:paper.KeyEvent)=>{//判断shift是否按下
-        if(event.key=="shift"){
-            isShiftDown=true
+    tool.onKeyDown = (event: paper.KeyEvent) => {//判断shift是否按下
+        if (event.key == "shift") {
+            isShiftDown = true
         }
     }
-    tool.onKeyUp=(event:paper.KeyEvent)=>{//判断shift是否松开
-        if(event.key=="shift"){
-            isShiftDown=false
+    tool.onKeyUp = (event: paper.KeyEvent) => {//判断shift是否松开
+        if (event.key == "shift") {
+            isShiftDown = false
         }
     }
     //onMouseMove是为了检测目前鼠标的位置，进而改变当前可做的动作和鼠标样式
-    tool.onMouseMove=(event:paper.ToolEvent)=>{
-        if(!lockState){
-            editShape=project.hitTest(event.point,{
-                bounds:true,
-                selected:true
+    tool.onMouseMove = (event: paper.ToolEvent) => {
+        if (!lockState) {
+            editShape = project.hitTest(event.point, {
+                bounds: true,
+                selected: true
             })
-            rotateShape=project.hitTest(event.point,{
-                bounds:true,
-                selected:true,
-                tolerance:16
+            rotateShape = project.hitTest(event.point, {
+                bounds: true,
+                selected: true,
+                tolerance: 16
             })
             selectedShape.forEach(element => {
-                if(element.contains(event.point)){
-                    moveShape=element
+                if (element.contains(event.point)) {
+                    moveShape = element
                     return;
-                }else{
-                    moveShape=null
+                } else {
+                    moveShape = null
                 }
             });
-            if(editShape){
-                myCanvas.className="edit"
-            }else if(rotateShape){
-                myCanvas.className="rotate"
-            }else if(moveShape){
-                myCanvas.className="move"
-            }else{
-                myCanvas.className="none"
+            if (editShape) {
+                myCanvas.className = "edit"
+            } else if (rotateShape) {
+                myCanvas.className = "rotate"
+            } else if (moveShape) {
+                myCanvas.className = "move"
+            } else {
+                myCanvas.className = "none"
             }
         }
     }
     //以下三个事件函数触发动作
-    tool.onMouseDown=(event:paper.ToolEvent)=>{
-        lockState=true
-        switch(myCanvas.className){
-            case 'edit': edit1();break;
-            case 'rotate': rotate1();break;
-            case 'move': move1();break;
-            default: select1(selectedShape);break;
+    tool.onMouseDown = (event: paper.ToolEvent) => {
+        pageChange.pageChangeBefore()
+        lockState = true
+        switch (myCanvas.className) {
+            case 'edit':
+                edit1();
+                break;
+            case 'rotate':
+                rotate1();
+                break;
+            case 'move':
+                move1();
+                break;
+            default:
+                select1(selectedShape);
+                break;
         }
     }
-    tool.onMouseDrag=(event:paper.ToolEvent)=>{
-        switch(myCanvas.className){
-            case 'edit': edit2(event,editShape.item,isShiftDown);break;
-            case 'rotate': rotate2(event,rotateShape.item);break;
-            case 'move': move2(event,moveShape);break;
-            default: select2(event);break;
+    tool.onMouseDrag = (event: paper.ToolEvent) => {
+        switch (myCanvas.className) {
+            case 'edit':
+                edit2(event, editShape.item, isShiftDown);
+                break;
+            case 'rotate':
+                rotate2(event, rotateShape.item);
+                break;
+            case 'move':
+                move2(event, moveShape);
+                break;
+            default:
+                select2(event);
+                break;
         }
     }
-    tool.onMouseUp=(event:paper.ToolEvent)=>{
-        lockState=false
-        switch(myCanvas.className){
-            case 'edit': edit3();break;
-            case 'rotate': rotate3();break;
-            case 'move': move3();break;
-            default: selectedShape=select3(event,project);break;//我选择用返回值来修改selectedShape
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        lockState = false
+        switch (myCanvas.className) {
+            case 'edit':
+                edit3();
+                break;
+            case 'rotate':
+                rotate3();
+                break;
+            case 'move':
+                move3();
+                break;
+            default:
+                selectedShape = select3(event, project);
+                EventHub.emit('selectItems', null)
+                break;//我选择用返回值来修改selectedShape
         }
+        pageChange.pageChangeAfter()
     }
 }
 //选择的三个函数分别对应Down，Drag，Up
-const select1=(selectedShape)=>{
+const select1 = (selectedShape) => {
     //将上次选择的所有图形设置为不选择
-    if(selectedShape){
+    if (selectedShape) {
         selectedShape.forEach(element => {
-            element.selected=false
-            element.bounds.selected=false
+            element.selected = false
+            element.bounds.selected = false
         });
     }
 }
-const select2=(event:paper.ToolEvent)=>{
+const select2 = (event: paper.ToolEvent) => {
     //下面这个Rect是虚线样式的选择框
     let Rect: paper.Path.Rectangle = new paper.Path.Rectangle({
         from: event.downPoint,
@@ -312,64 +347,64 @@ const select2=(event:paper.ToolEvent)=>{
         dashArray: [2, 2]
     })
     Rect.removeOn({
-        drag:true,
-        up:true
+        drag: true,
+        up: true
     })
 }
-const select3=(event:paper.ToolEvent,project:paper.Project)=>{
-    let selectedShape=project.getItems({//获取与矩形框交叠的图形
-        inside:new paper.Rectangle({
-            from:event.downPoint,
-            to:event.point
+const select3 = (event: paper.ToolEvent, project: paper.Project) => {
+    let selectedShape = project.getItems({//获取与矩形框交叠的图形
+        inside: new paper.Rectangle({
+            from: event.downPoint,
+            to: event.point
         })
     })
-    if(selectedShape){
+    if (selectedShape) {
         selectedShape.forEach(element => {
             //必须判断是否是Layer，否则设置Layer的selected为true，其内的所有图形selected都变成true
-            if(element.className!="Layer"){
-                element.selected=true
-                element.bounds.selected=true
+            if (element.className != "Layer") {
+                element.selected = true
+                element.bounds.selected = true
             }
         });
     }
     return selectedShape
 }
 //选择的三个函数
-const edit1=()=>{
+const edit1 = () => {
 
 }
-const edit2=(event:paper.ToolEvent,editShape:paper.Path,isShiftDown:Boolean)=>{
-    let a:paper.Point = event.point.subtract(editShape.bounds.center)
-    let b:paper.Point = editShape.bounds.bottomLeft.subtract(editShape.bounds.center)
-    let factor:any=null
-    if(!isShiftDown){
-        factor=new paper.Point(1,1).multiply(a.x/b.x)
-    }else{
-        factor=a.divide(b).abs()
+const edit2 = (event: paper.ToolEvent, editShape: paper.Path, isShiftDown: Boolean) => {
+    let a: paper.Point = event.point.subtract(editShape.bounds.center)
+    let b: paper.Point = editShape.bounds.bottomLeft.subtract(editShape.bounds.center)
+    let factor: any = null
+    if (!isShiftDown) {
+        factor = new paper.Point(1, 1).multiply(a.x / b.x)
+    } else {
+        factor = a.divide(b).abs()
     }
     editShape.scale(factor)
 }
-const edit3=()=>{
+const edit3 = () => {
 
 }
 //旋转的三个函数
-const rotate1=()=>{
+const rotate1 = () => {
 
 }
-const rotate2=(event:paper.ToolEvent,rotateShape:paper.Path)=>{
-    let angle=-event.point.subtract(rotateShape.bounds.center).getDirectedAngle(event.lastPoint.subtract(rotateShape.bounds.center))
+const rotate2 = (event: paper.ToolEvent, rotateShape: paper.Path) => {
+    let angle = -event.point.subtract(rotateShape.bounds.center).getDirectedAngle(event.lastPoint.subtract(rotateShape.bounds.center))
     rotateShape.rotate(angle, rotateShape.bounds.center)
 }
-const rotate3=()=>{
+const rotate3 = () => {
 
 }
 //移动的三个函数
-const move1=()=>{
+const move1 = () => {
 
 }
-const move2=(event:paper.ToolEvent,moveShape:paper.Path)=>{
+const move2 = (event: paper.ToolEvent, moveShape: paper.Path) => {
     moveShape.translate(event.delta)
 }
-const move3=()=>{
+const move3 = () => {
 
 }

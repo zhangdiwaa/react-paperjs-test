@@ -4,6 +4,7 @@ import {Button, Layout, Tooltip} from 'antd';
 import {useEffect} from "react";
 import EventHub from "../Common/Observer";
 import {PageChangeBefore, PageChangeAfter} from "../Common/UndoAndRedo"
+import {ClearSelected} from './PaperTools'
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
 import {LoadLayer} from "../UI/Layers";
@@ -43,6 +44,7 @@ const MyCanvas = () => {
         localStorage.setItem("future", JSON.stringify([]))
         // 当观察者收到mouseDownBefore的操作之后，执行pageChangeBefore方法
         EventHub.on('pageChangeBefore', PageChangeBefore)
+        EventHub.on('pageChangeBefore', ClearSelected)
         // 当观察者收到pageChangeAfter的操作之后，执行PageChangeAfter方法
         EventHub.on('pageChangeAfter', PageChangeAfter)
         // 当观察者收到pageChangeAfter的操作之后，执行LoadLayer方法
