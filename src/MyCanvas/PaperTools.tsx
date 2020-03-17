@@ -339,6 +339,7 @@ const selectOnMouseUp=(event:paper.ToolEvent,project:paper.Project)=>{
         });
         group=new paper.Group(items)
         group.bounds.selected=true
+        group.selected=true
     }
     //返回    selectedShape：原本    group：副本
     return [selectedShape,group]
