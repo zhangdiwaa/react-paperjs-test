@@ -352,7 +352,7 @@ const editOnMouseDrag=(event:paper.ToolEvent,group:paper.Group,isShiftDown:Boole
     let b:paper.Point = group.bounds.bottomLeft.subtract(group.bounds.center)
     let factor:any=null
     if(!isShiftDown){
-        factor=new paper.Point(1,1).multiply(a.x/b.x)
+        factor=new paper.Point(1,1).multiply(a.x/b.x).abs()
     }else{
         factor=a.divide(b).abs()
     }
