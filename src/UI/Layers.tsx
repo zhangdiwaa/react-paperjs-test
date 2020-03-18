@@ -1,6 +1,6 @@
 import React, {ReactDOM, useState} from 'react';
 import {Tree, Button} from 'antd';
-import * as Paper from 'paper';
+import * as paper from 'paper';
 import EventHub from "../Common/Observer";
 
 let treeRef;
@@ -11,27 +11,27 @@ let canvasTree = [{
 }];
 //用于保存选择的节点、
 let nodeCheckedArray = []
-//展开的节点
-let nodeExpandArray = []
 
 //菜单的数据
 const menuOptions = {}
 
 let treeDataGlobal, setTreeDataGlobal;
-let nodeCheckedGlobal, setNodeCheckedGlobal;
-let nodeExpandGlobal, setNodeExpandGlobal;
 /**
  * 加载Layer的children对象
  * @param layerChild
  */
-const parseLeafJSON = (layerChild) => {
+const loadChildren = (layerChild) => {
     //将child保存为数组
     let leaf = [];
     //便利layer的child,生成node，并添加到数组中
     for (let i = 0; i < layerChild.length; i++) {
         const leafNode = {
             key: layerChild[i].id.toString(),
-            title: layerChild[i].name
+            title: layerChild[i].name,
+            children: []
+        }
+        if (layerChild[i].children != null) {
+            leafNode.children = loadChildren(layerChild[i].children)
         }
         leaf = [...leaf, leafNode]
     }
@@ -43,33 +43,45 @@ const parseLeafJSON = (layerChild) => {
  * 当页面改变之后，重新对Layer进行渲染，Layer调用对其Children的渲染
  * @constructor
  */
-const LoadLayer = () => {
+const Refresh = () => {
     //清空canvasTree
     canvasTree.splice(0)
     //获取所有layer
-    let layers = Paper.project.layers;
+    let layers = paper.project.layers;
     if (layers.length == 0) {
         setTreeDataGlobal([{
             key: '0',
             title: 'None',
+            checked: true
         }])
         return
     }
     //对layer进行遍历
     for (let i = 0; i < layers.length; i++) {
+        if (layers[i].className === 'Group') {
+            continue;
+        }
         const layerNode = {
             key: layers[i].id.toString(),
-            title: layers[i].className,
+            title: layers[i].name,
             children: []
         }
         //对layer的children进行解析，返回结果保存
-        let leaf = parseLeafJSON(layers[i].children);
+        let leaf = loadChildren(layers[i].children);
         layerNode.children = leaf
         //将layer保存
         canvasTree = [...canvasTree, layerNode]
     }
+    treeRef.tree.setState({
+        checkedKeys: paper.project.getItems({
+            visible: false
+        }).map(item => {
+            return item.id.toString()
+        })
+    })
     setTreeDataGlobal(canvasTree)
 }
+
 const RightMenu = () => {
 
 }
@@ -91,14 +103,9 @@ const Layer = () => {
         isSelected: false
     })
     const [checkedData, setCheckedData] = useState(nodeCheckedArray)
-    const [expandedData, setExpandData] = useState(nodeExpandArray)
     //保存为全局变量
     treeDataGlobal = treeData
     setTreeDataGlobal = setTreeData
-    nodeCheckedGlobal = checkedData
-    setNodeCheckedGlobal = setCheckedData
-    nodeExpandGlobal = expandedData
-    setNodeExpandGlobal = setExpandData
     /**
      * 用于清除右键菜单
      * @constructor
@@ -132,7 +139,7 @@ const Layer = () => {
             }}>
                 <Button onClick={(e) => {
                     EventHub.emit('pageChangeBefore', null)
-                    Paper.project.getItems({id: id}).forEach(item => {
+                    paper.project.getItems({id: id}).forEach(item => {
                         item.remove()
                     })
                     ClearRightData()
@@ -143,6 +150,44 @@ const Layer = () => {
                     padding: '0px'
                 }}/>
                 <Button type='link'>Edit</Button>
+                <hr style={{
+                    margin: '0px',
+                    padding: '0px'
+                }}/>
+                <Button onClick={(e) => {
+                    if (id === 0) {
+                        return;
+                    }
+                    EventHub.emit('pageChangeBefore', null)
+                    let item = paper.project.getItem({id: id});
+                    if (item.className === 'Layer') {
+                        let newLayer = new paper.Layer({
+                            name: 'Layer'
+                        })
+                        item.insertChild(item.children.length, newLayer)
+                    }
+                    ClearRightData()
+                    EventHub.emit('pageChangeAfter', null)
+                }} type='link'>Add Layer</Button>
+                <hr style={{
+                    margin: '0px',
+                    padding: '0px'
+                }}/>
+                <Button onClick={(e) => {
+                    EventHub.emit('pageChangeBefore', null)
+                    let item = paper.project.getItem({id: id});
+                    if (item.className === 'Layer') {
+                        paper.project.layers.forEach(layer => {
+                            if (layer.id == id) {
+                                layer.activate()
+                            } else {
+                                ActivateLayer(layer.children, id)
+                            }
+                        })
+                    }
+                    ClearRightData()
+                    EventHub.emit('pageChangeBefore', null)
+                }} type='link'>Activate Layer</Button>
             </div>
         )
         return rightData.isSelected ? menu : ''
@@ -162,6 +207,18 @@ const Layer = () => {
         })
     }
 
+    const ActivateLayer = (layerChildren: any[], id: number) => {
+        layerChildren.forEach(item => {
+            if (item.children != null) {
+                ActivateLayer(item.children, id)
+            }
+            if (item.id == id) {
+                item.activate();
+                return
+            }
+        })
+    }
+
     return <div style={{
         width: '300px',
         height: '300px',
@@ -169,35 +226,19 @@ const Layer = () => {
         position: 'relative'
     }}>
         <Tree checkable={true}
-              autoExpandParent={true}
-              defaultExpandAll={true}
               onRightClick={RightClick}
               onCheck={(keys, e) => {
               }} treeData={treeDataGlobal}
               ref={(ref) => {
                   treeRef = ref
               }}
-              expandedKeys={nodeExpandGlobal}
-              checkedKeys={nodeCheckedGlobal}
-              onExpand={(keys, {expanded, node}) => {
-                  console.log(node)
-                  if (expanded) {
-                      node.expanded=true
-                      nodeExpandArray.push(node.key)
-                  } else {
-                      nodeExpandArray.splice(nodeExpandArray.indexOf(node.key), 1)
-                  }
-                  console.log(nodeExpandArray)
-                  console.log(nodeExpandGlobal)
-                  setNodeExpandGlobal(nodeExpandArray)
-                  console.log(treeRef)
-                  // treeRef.renderTree()
-              }}
-        />
+              onSelect={(keys, e) => {
+                  console.log(keys)
+              }}/>
         {CreateRightMenu()}
     </div>;
 };
 export default Layer;
 export {
-    LoadLayer
+    Refresh
 }

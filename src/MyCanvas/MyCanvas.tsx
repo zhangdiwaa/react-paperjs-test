@@ -7,7 +7,7 @@ import {PageChangeBefore, PageChangeAfter} from "../Common/UndoAndRedo"
 import {ClearSelected} from './PaperTools'
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
-import {LoadLayer} from "../UI/Layers";
+import {Refresh} from "../UI/Layers";
 import {
     ToolZoomauto,
     ToolZoomin,
@@ -27,8 +27,9 @@ const MyCanvas = () => {
         Paper.install(window);
         Paper.setup(MyCanvas);
         Paper.activate();
-        Paper.settings.handleSize=8//设置选中时的四个点的大小
-        Paper.settings.hitTolerance=2//设置hitTest的容忍度
+        Paper.settings.handleSize = 8//设置选中时的四个点的大小
+        Paper.settings.hitTolerance = 4//设置hitTest的容忍度
+
         //使用React提供的onWheel会提示“渲染过多”
         //下面这段代码是实现缩放功能的初始化
         MyCanvas.onwheel = (event) => {
@@ -48,11 +49,17 @@ const MyCanvas = () => {
         // 当观察者收到pageChangeAfter的操作之后，执行PageChangeAfter方法
         EventHub.on('pageChangeAfter', PageChangeAfter)
         // 当观察者收到pageChangeAfter的操作之后，执行LoadLayer方法
-        EventHub.on('pageChangeAfter', LoadLayer)
+        EventHub.on('pageChangeAfter', Refresh)
         // 当观察者收到redo的操作之后,执行LoadLayer方法
-        EventHub.on('redo', LoadLayer)
+        EventHub.on('redo', Refresh)
         // 当观察者收到undo的操作之后,执行LoadLayer方法
-        EventHub.on('undo', LoadLayer)
+        EventHub.on('undo', Refresh)
+        //在此时便创建一个Layer,并触发事件
+        EventHub.emit('pageChangeBefore', null)
+        new Paper.Layer({
+            name: 'Layer'
+        })
+        EventHub.emit('pageChangeAfter', null)
     });
     return (
         <Content className="me-canvas under-bottonbox">

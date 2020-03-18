@@ -187,6 +187,18 @@ const RemoveTool = () => {
     paper.tools.forEach((item) => {
         item.remove()
     })
+    //清除所有的group，这个可以放在订阅发布者模式中
+    paper.project.getItems({
+        class:paper.Group,
+        match:function(item){
+            if(item.className=="Layer")
+            return false;
+            else
+            return true;
+        }
+    }).forEach(element=>{
+        element.remove()
+    })
 }
 /**
  *
@@ -225,12 +237,10 @@ const ToolEditPath = () => {
     let tool: paper.Tool = new paper.Tool();
     let project: paper.Project = paper.project;//这个是paper目前活跃的project，可以根据需求改成别的项目
     var selectedShape: any = [];
-    let myCanvas: HTMLElement = document.getElementById("myCanvas");
-    let editShape: any = null;
-    let moveShape: any = null;
-    let rotateShape: any = null;
-    let lockState: Boolean = false;
-    let isShiftDown: Boolean = false;
+    let group:paper.Group=null;
+    let myCanvas:HTMLElement=document.getElementById("myCanvas");
+    let lockState:Boolean=false;
+    let isShiftDown:Boolean=false;
 
     tool.onKeyDown = (event: paper.KeyEvent) => {//判断shift是否按下
         if (event.key == "shift") {
@@ -243,102 +253,69 @@ const ToolEditPath = () => {
         }
     }
     //onMouseMove是为了检测目前鼠标的位置，进而改变当前可做的动作和鼠标样式
-    tool.onMouseMove = (event: paper.ToolEvent) => {
-        if (!lockState) {
-            editShape = project.hitTest(event.point, {
-                bounds: true,
-                selected: true
-            })
-            rotateShape = project.hitTest(event.point, {
-                bounds: true,
-                selected: true,
-                tolerance: 16
-            })
-            selectedShape.forEach(element => {
-                if (element.contains(event.point)) {
-                    moveShape = element
-                    return;
-                } else {
-                    moveShape = null
-                }
-            });
-            if (editShape) {
-                myCanvas.className = "edit"
-            } else if (rotateShape) {
-                myCanvas.className = "rotate"
-            } else if (moveShape) {
-                myCanvas.className = "move"
-            } else {
-                myCanvas.className = "none"
+    tool.onMouseMove=(event:paper.ToolEvent)=>{
+        if(!lockState && group){
+            let isEdit,isRotate,isMove;//判断当前的状态
+            isEdit=group.hitTest(event.point,{//如果在边角就是可以编辑
+                bounds:true
+            })?true:false
+            isRotate=group.hitTest(event.point,{//如果在范围较大的边角就是可以旋转
+                bounds:true,
+                tolerance:16
+            })?true:false
+            isMove=group.bounds.contains(event.point)?true:false
+            if(isEdit){//编辑的优先级最高
+                myCanvas.className="edit"
+            }else if(isMove){//然后移动
+                myCanvas.className="move"
+            }else if(isRotate){
+                myCanvas.className="rotate"
+            }else{
+                myCanvas.className="none"
             }
         }
     }
     //以下三个事件函数触发动作
-    tool.onMouseDown = (event: paper.ToolEvent) => {
+    tool.onMouseDown=(event:paper.ToolEvent)=>{
         pageChange.pageChangeBefore()
-        lockState = true
-        switch (myCanvas.className) {
-            case 'edit':
-                edit1();
-                break;
-            case 'rotate':
-                rotate1();
-                break;
-            case 'move':
-                move1();
-                break;
-            default:
-                select1(selectedShape);
-                break;
+        lockState=true
+        switch(myCanvas.className){
+            case 'edit': editOnMouseDown();break;
+            case 'rotate': rotateOnMouseDown();break;
+            case 'move': moveOnMouseDown();break;
+            default: selectOnMouseDown(group,selectedShape);break;
         }
     }
-    tool.onMouseDrag = (event: paper.ToolEvent) => {
-        switch (myCanvas.className) {
-            case 'edit':
-                edit2(event, editShape.item, isShiftDown);
-                break;
-            case 'rotate':
-                rotate2(event, rotateShape.item);
-                break;
-            case 'move':
-                move2(event, moveShape);
-                break;
-            default:
-                select2(event);
-                break;
+    tool.onMouseDrag=(event:paper.ToolEvent)=>{
+        switch(myCanvas.className){
+            case 'edit': editOnMouseDrag(event,group,isShiftDown);break;
+            case 'rotate': rotateOnMouseDrag(event,group);break;
+            case 'move': moveOnMouseDrag(event,group);break;
+            default: selectOnMouseDrag(event);break;
         }
     }
-    tool.onMouseUp = (event: paper.ToolEvent) => {
-        lockState = false
-        switch (myCanvas.className) {
-            case 'edit':
-                edit3();
-                break;
-            case 'rotate':
-                rotate3();
-                break;
-            case 'move':
-                move3();
-                break;
-            default:
-                selectedShape = select3(event, project);
-                EventHub.emit('selectItems', null)
-                break;//我选择用返回值来修改selectedShape
+    tool.onMouseUp=(event:paper.ToolEvent)=>{
+        lockState=false
+        switch(myCanvas.className){
+            case 'edit': editOnMouseUp(group,selectedShape);break;
+            case 'rotate': rotateOnMouseUp(group,selectedShape);break;
+            case 'move': moveOnMouseUp(group,selectedShape);break;
+            default: [selectedShape,group]=selectOnMouseUp(event,project);break;//我选择用返回值来修改selectedShape
         }
         pageChange.pageChangeAfter()
     }
 }
 //选择的三个函数分别对应Down，Drag，Up
-const select1 = (selectedShape) => {
-    //将上次选择的所有图形设置为不选择
-    if (selectedShape) {
-        selectedShape.forEach(element => {
-            element.selected = false
-            element.bounds.selected = false
+
+const selectOnMouseDown=(group:paper.Group,selectedShape:any)=>{
+    if(group){//在每个选择开始阶段，都将上一个选择框创建的group删除
+        group.remove()
+        selectedShape.forEach(element => {//并将selectedShape的每个图元设置为可见
+            element.visible=true
         });
     }
 }
-const select2 = (event: paper.ToolEvent) => {
+const selectOnMouseDrag=(event:paper.ToolEvent)=>{
     //下面这个Rect是虚线样式的选择框
     let Rect: paper.Path.Rectangle = new paper.Path.Rectangle({
         from: event.downPoint,
@@ -351,60 +328,77 @@ const select2 = (event: paper.ToolEvent) => {
         up: true
     })
 }
-const select3 = (event: paper.ToolEvent, project: paper.Project) => {
-    let selectedShape = project.getItems({//获取与矩形框交叠的图形
-        inside: new paper.Rectangle({
-            from: event.downPoint,
-            to: event.point
+const selectOnMouseUp=(event:paper.ToolEvent,project:paper.Project)=>{
+    let items=[]
+    let group=null
+    let selectedShape=null
+    if(event.downPoint.equals(event.point)){
+        selectedShape=project.getItems({//获取与点交叠的图形
+            overlapping:new paper.Point(event.point),
+            class:paper.Path
         })
-    })
-    if (selectedShape) {
-        selectedShape.forEach(element => {
-            //必须判断是否是Layer，否则设置Layer的selected为true，其内的所有图形selected都变成true
-            if (element.className != "Layer") {
-                element.selected = true
-                element.bounds.selected = true
-            }
-        });
+    }else{
+        selectedShape=project.getItems({//获取与矩形框交叠的图形
+            inside:new paper.Rectangle({
+                from:event.downPoint,
+                to:event.point,
+            }),
+            class:paper.Path
+        })
     }
-    return selectedShape
+    if(selectedShape){//将每个选中的图元复制一份，组成一个group，然后设置成只显示group的图元
+        selectedShape.forEach(element => {
+            items.push(element.clone())
+            element.visible=false
+        });
+        group=new paper.Group(items)
+        group.bounds.selected=true
+    }
+    //返回    selectedShape：原本    group：副本
+    return [selectedShape,group]
 }
 //选择的三个函数
-const edit1 = () => {
+const editOnMouseDown=()=>{
 
 }
-const edit2 = (event: paper.ToolEvent, editShape: paper.Path, isShiftDown: Boolean) => {
-    let a: paper.Point = event.point.subtract(editShape.bounds.center)
-    let b: paper.Point = editShape.bounds.bottomLeft.subtract(editShape.bounds.center)
-    let factor: any = null
-    if (!isShiftDown) {
-        factor = new paper.Point(1, 1).multiply(a.x / b.x)
-    } else {
-        factor = a.divide(b).abs()
+const editOnMouseDrag=(event:paper.ToolEvent,group:paper.Group,isShiftDown:Boolean)=>{
+    let a:paper.Point = event.point.subtract(group.bounds.center)
+    let b:paper.Point = group.bounds.bottomLeft.subtract(group.bounds.center)
+    let factor:any=null
+    if(!isShiftDown){
+        factor=new paper.Point(1,1).multiply(a.x/b.x).abs()
+    }else{
+        factor=a.divide(b).abs()
     }
-    editShape.scale(factor)
+    group.scale(factor)
 }
-const edit3 = () => {
-
+const editOnMouseUp=(group:paper.Group,selectedShape:paper.Item[])=>{
+    for(let i=0;i<selectedShape.length;i++){//将group中的更改应用到selectedShape中
+        selectedShape[i].copyContent(group.children[i])
+    }
 }
 //旋转的三个函数
-const rotate1 = () => {
+const rotateOnMouseDown=()=>{
 
 }
-const rotate2 = (event: paper.ToolEvent, rotateShape: paper.Path) => {
-    let angle = -event.point.subtract(rotateShape.bounds.center).getDirectedAngle(event.lastPoint.subtract(rotateShape.bounds.center))
-    rotateShape.rotate(angle, rotateShape.bounds.center)
+const rotateOnMouseDrag=(event:paper.ToolEvent,group:paper.Group)=>{
+    let angle=-event.point.subtract(group.bounds.center).getDirectedAngle(event.lastPoint.subtract(group.bounds.center))
+    group.rotate(angle, group.bounds.center)
 }
-const rotate3 = () => {
-
+const rotateOnMouseUp=(group:paper.Group,selectedShape:paper.Item[])=>{
+    for(let i=0;i<selectedShape.length;i++){//将group中的更改应用到selectedShape中
+        selectedShape[i].copyContent(group.children[i])
+    }
 }
 //移动的三个函数
-const move1 = () => {
+const moveOnMouseDown=()=>{
 
 }
-const move2 = (event: paper.ToolEvent, moveShape: paper.Path) => {
-    moveShape.translate(event.delta)
+const moveOnMouseDrag=(event:paper.ToolEvent,group:paper.Group)=>{
+    group.translate(event.delta)
 }
-const move3 = () => {
-
+const moveOnMouseUp=(group:paper.Group,selectedShape:paper.Item[])=>{
+    for(let i=0;i<selectedShape.length;i++){//将group中的更改应用到selectedShape中
+        selectedShape[i].copyContent(group.children[i])
+    }
 }
