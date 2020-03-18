@@ -25,6 +25,9 @@ const loadChildren = (layerChild) => {
     let leaf = [];
     //便利layer的child,生成node，并添加到数组中
     for (let i = 0; i < layerChild.length; i++) {
+        if (layerChild[i].className == 'Group') {
+            continue
+        }
         const leafNode = {
             key: layerChild[i].id.toString(),
             title: layerChild[i].name,
