@@ -37,4 +37,3 @@ This project is based on:
 2. 更新了antDesign插件到4.0.1版本
 - yarn upgrade-interactive --latest // 使用此命令更新依赖包。注意此命令输入后还需要手动选择升级的依赖包，按空格键选择，a 键切换所有，i 键反选选择，回车确定升级
 
-目前已经可以做到选中，拖动，旋转图元的操作
