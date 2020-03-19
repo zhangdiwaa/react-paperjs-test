@@ -168,6 +168,7 @@ const Layer = () => {
                             name: 'Layer'
                         })
                         item.insertChild(item.children.length, newLayer)
+                        newLayer.activate()
                     }
                     ClearRightData()
                     EventHub.emit('pageChangeAfter', null)
@@ -231,6 +232,10 @@ const Layer = () => {
         <Tree checkable={true}
               onRightClick={RightClick}
               onCheck={(keys, e) => {
+                  let items: paper.Item[] = []
+                  for (let key in keys) {
+                      items.push(paper.project.getItem({id: parseInt(key)}))
+                  }
               }} treeData={treeDataGlobal}
               ref={(ref) => {
                   treeRef = ref

@@ -10,11 +10,13 @@ const EventHub = {
             callback.call(null, data);
         })
     },
-    on(eventName, callback) {
+    on(eventName, callbacks) {
         if (!events[eventName]) {
             events[eventName] = []
         }
-        events[eventName].push(callback);
+        callbacks.forEach(callback=>{
+            events[eventName].push(callback);
+        })
     }
 }
 export default EventHub;

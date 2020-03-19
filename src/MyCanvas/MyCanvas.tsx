@@ -8,6 +8,7 @@ import {ClearSelected} from './PaperTools'
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
 import {Refresh} from "../UI/Layers";
+import {RefreshOverview} from "../UI/Overview";
 import {
     ToolZoomauto,
     ToolZoomin,
@@ -40,26 +41,6 @@ const MyCanvas = () => {
                 v.scale(0.95, new Paper.Point(event.offsetX, event.offsetY))
             }
         }
-        //清空localStorage
-        localStorage.setItem("history", JSON.stringify([]))
-        localStorage.setItem("future", JSON.stringify([]))
-        // 当观察者收到mouseDownBefore的操作之后，执行pageChangeBefore方法
-        EventHub.on('pageChangeBefore', PageChangeBefore)
-        EventHub.on('pageChangeBefore', ClearSelected)
-        // 当观察者收到pageChangeAfter的操作之后，执行PageChangeAfter方法
-        EventHub.on('pageChangeAfter', PageChangeAfter)
-        // 当观察者收到pageChangeAfter的操作之后，执行LoadLayer方法
-        EventHub.on('pageChangeAfter', Refresh)
-        // 当观察者收到redo的操作之后,执行LoadLayer方法
-        EventHub.on('redo', Refresh)
-        // 当观察者收到undo的操作之后,执行LoadLayer方法
-        EventHub.on('undo', Refresh)
-        //在此时便创建一个Layer,并触发事件
-        EventHub.emit('pageChangeBefore', null)
-        new Paper.Layer({
-            name: 'Layer'
-        })
-        EventHub.emit('pageChangeAfter', null)
     });
     return (
         <Content className="me-canvas under-bottonbox">

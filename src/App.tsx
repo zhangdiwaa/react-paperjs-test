@@ -7,6 +7,7 @@ import MyCanvas from "./MyCanvas/MyCanvas";
 import SiderBar from "./UI/SiderBar"
 import HeaderBar from "./UI/HeaderBar"
 import Layer from "./UI/Layers"
+import Overview from "./UI/Overview";
 import './App.css';
 
 const { Content } = Layout;
@@ -26,7 +27,9 @@ const App=()=>{
               paneStyle={{ background: '#eee' }}
               pane2Style={{ background: '#aaa4ba' }}
             >
-              <div >wawawawa</div>
+              <div>
+                  <Overview></Overview>
+              </div>
               <div>
                 <Layer></Layer>
               </div>
