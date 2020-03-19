@@ -7,7 +7,6 @@ import {
     ToolDrawSegment,
     ToolPointText,
     ToolEditPath,
-    ToolRotate,
     ToolEnlarge,
     ToolShrink,
     ToolZoomauto
@@ -36,7 +35,6 @@ const SiderBar = () => {
             case 'enlarge': return ToolEnlarge;
             case'shrink': return ToolShrink;
             case'zoomauto': return ToolZoomauto;
-            case 'rotate': return ToolRotate;
         }
     }
 
@@ -63,9 +61,6 @@ const SiderBar = () => {
                 </Tooltip>
                 <Tooltip placement="right" title={"edit"}>
                     <Button onClick={FunctionMap("edit")}><IconFont type="icon-Link-Select" /></Button>
-                </Tooltip>
-                <Tooltip placement="right" title={"rotate"}>
-                    <Button onClick={FunctionMap("rotate")}><IconFont type="icon-Link-Select" /></Button>
                 </Tooltip>
             </div>
         </Sider>
