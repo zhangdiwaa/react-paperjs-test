@@ -202,6 +202,16 @@ const RemoveTool = () => {
         element.remove()
     })
 }
+/**
+ *
+ * @constructor
+ */
+const ClearSelected = () => {
+    paper.project.getItems({selected: true}).forEach(item => {
+        item.selected = false
+        item.bounds.selected = false
+    })
+}
 
 export {
     ToolMove,
@@ -215,7 +225,8 @@ export {
     ToolShrink,
     ToolZoomauto,
     ToolZoomin,
-    ToolZoomout
+    ToolZoomout,
+    ClearSelected
 }
 
 
@@ -225,6 +236,7 @@ export {
  */
 //工具类的辅助函数
 
+<<<<<<< HEAD
 //将group中的更改应用到selectedShape中
 const applyChange=(group:paper.Group,selectedShape:paper.Item[])=>{
     for(let i=0;i<selectedShape.length;i++){
@@ -243,11 +255,75 @@ const groupItem=(selectedShape:paper.Item[])=>{
         group=new paper.Group(items)
         group.bounds.selected=true
         group.selected=true
+=======
+    tool.onKeyDown = (event: paper.KeyEvent) => {//判断shift是否按下
+        if (event.key == "shift") {
+            isShiftDown = true
+        }
+    }
+    tool.onKeyUp = (event: paper.KeyEvent) => {//判断shift是否松开
+        if (event.key == "shift") {
+            isShiftDown = false
+        }
+    }
+    //onMouseMove是为了检测目前鼠标的位置，进而改变当前可做的动作和鼠标样式
+    tool.onMouseMove=(event:paper.ToolEvent)=>{
+        if(!lockState && group){
+            let isEdit,isRotate,isMove;//判断当前的状态
+            isEdit=group.hitTest(event.point,{//如果在边角就是可以编辑
+                bounds:true
+            })?true:false
+            isRotate=group.hitTest(event.point,{//如果在范围较大的边角就是可以旋转
+                bounds:true,
+                tolerance:16
+            })?true:false
+            isMove=group.bounds.contains(event.point)?true:false
+            if(isEdit){//编辑的优先级最高
+                myCanvas.className="edit"
+            }else if(isMove){//然后移动
+                myCanvas.className="move"
+            }else if(isRotate){
+                myCanvas.className="rotate"
+            }else{
+                myCanvas.className="none"
+            }
+        }
+    }
+    //以下三个事件函数触发动作
+    tool.onMouseDown=(event:paper.ToolEvent)=>{
+        pageChange.pageChangeBefore()
+        lockState=true
+        switch(myCanvas.className){
+            case 'edit': editOnMouseDown();break;
+            case 'rotate': rotateOnMouseDown();break;
+            case 'move': moveOnMouseDown();break;
+            default: selectOnMouseDown(group,selectedShape);break;
+        }
+    }
+    tool.onMouseDrag=(event:paper.ToolEvent)=>{
+        switch(myCanvas.className){
+            case 'edit': editOnMouseDrag(event,group,isShiftDown);break;
+            case 'rotate': rotateOnMouseDrag(event,group);break;
+            case 'move': moveOnMouseDrag(event,group);break;
+            default: selectOnMouseDrag(event);break;
+        }
+    }
+    tool.onMouseUp=(event:paper.ToolEvent)=>{
+        lockState=false
+        switch(myCanvas.className){
+            case 'edit': editOnMouseUp(group,selectedShape);break;
+            case 'rotate': rotateOnMouseUp(group,selectedShape);break;
+            case 'move': moveOnMouseUp(group,selectedShape);break;
+            default: [selectedShape,group]=selectOnMouseUp(event,project);break;//我选择用返回值来修改selectedShape
+        }
+        pageChange.pageChangeAfter()
+>>>>>>> 90d280331c9e50c1b319a6a58f8b0b69ad7cf4e0
     }
     return group
 }
 
 //选择的三个函数分别对应Down，Drag，Up
+
 const selectOnMouseDown=(group:paper.Group,selectedShape:any)=>{
     if(group){//在每个选择开始阶段，都将上一个选择框创建的group删除
         group.remove()
@@ -265,8 +341,8 @@ const selectOnMouseDrag=(event:paper.ToolEvent)=>{
         dashArray: [2, 2]
     })
     Rect.removeOn({
-        drag:true,
-        up:true
+        drag: true,
+        up: true
     })
 }
 const selectOnMouseUp=(event:paper.ToolEvent,project:paper.Project)=>{

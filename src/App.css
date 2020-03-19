@@ -150,3 +150,29 @@
     cursor:ne-resize
 }
 
+.layer-controls{
+    background: #eee;
+    line-height: calc(3vh);
+    height: calc(3vh);
+    font-size: 12px;
+    display: flex;
+}
+
+.layer-controls-left{
+    flex: 1 1;
+}
+
+.layer-controls-right{
+    flex-shrink: 0;
+}
+
+.layer-controls-box{
+    display: inline-block;
+    height: calc(3vh);
+    border-radius: 2px;
+}
+
+.layer-controls-icon{
+    margin: 3px;
+}
+
