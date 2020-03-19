@@ -1,13 +1,18 @@
 //ts中引入的写法
 import * as React from "react";
 //react中引入的写法
-import { Layout } from 'antd';
+import { Button, Layout, Tooltip } from 'antd';
 import SplitPane from 'react-split-pane';
 import MyCanvas from "./MyCanvas/MyCanvas";
 import SiderBar from "./UI/SiderBar"
 import HeaderBar from "./UI/HeaderBar"
 import Layer from "./UI/Layers"
 import './App.css';
+import {createFromIconfontCN} from '@ant-design/icons';
+import Config from "./Common/Config";
+const IconFont = createFromIconfontCN({
+    scriptUrl: Config.IconUrl,
+});
 
 const { Content } = Layout;
 const App=()=>{
@@ -28,9 +33,19 @@ const App=()=>{
             >
               <div >wawawawa</div>
               <div>
+                  <div className='layer-controls'>
+                      <div className='layer-controls-left'>
+                          <div className='layer-controls-box'>
+                              <IconFont className='layer-controls-icon' type="icon-add"/>
+                          </div>
+                          <div className='layer-controls-box'>
+                              <IconFont className='layer-controls-icon' type="icon-delete"/>
+                          </div>
+                      </div>
+                      <div className='layer-controls-right'></div>
+                  </div>
                 <Layer></Layer>
               </div>
-              <div />
             </SplitPane>
           </Content>
       </Layout>

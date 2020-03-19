@@ -2,6 +2,7 @@ import React, {ReactDOM, useState} from 'react';
 import {Tree, Button} from 'antd';
 import * as Paper from 'paper';
 import EventHub from "../Common/Observer";
+import HeaderBar from "./HeaderBar";
 
 //用于保存layer的数组
 let canvasTree = [];
@@ -103,7 +104,7 @@ const Layer = () => {
             <div style={{
                 position: 'absolute',
                 textAlign: 'center',
-                left: `${pageX + 20}px`,
+                left: `${pageX +35}px`,
                 top: `${pageY}px`,
                 border: '1px solid #ccc',
                 backgroundColor: '#fff'
@@ -134,18 +135,18 @@ const Layer = () => {
      * @constructor
      */
     const RightClick = ({event, node}) => {
-        setRightData({
-            pageX: event.currentTarget.offsetLeft,
-            pageY: event.currentTarget.offsetTop,
-            id: parseInt(node.key),
-            isSelected: true
-        })
+            setRightData({
+                pageX: event.currentTarget.offsetLeft,
+                pageY: event.currentTarget.offsetTop,
+                id: parseInt(node.key),
+                isSelected: true
+            })
     }
 
     return <div style={{
-        width: '300px',
-        height: '300px',
-        overflow: 'scroll',
+        width: '100%',
+        height: 'calc(33.5vh)',
+        overflow: 'auto',
         position: 'relative'
     }}>
         <Tree defaultExpandAll={true}
