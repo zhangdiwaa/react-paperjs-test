@@ -135,12 +135,24 @@ const Layer = () => {
      * @constructor
      */
     const RightClick = ({event, node}) => {
+        if(event.currentTarget.offsetTop + event.currentTarget.offsetHeight <= event.currentTarget.offsetParent.offsetHeight &&
+            event.currentTarget.offsetLeft + event.currentTarget.offsetWidth <= event.currentTarget.offsetParent.offsetWidth){
             setRightData({
                 pageX: event.currentTarget.offsetLeft,
                 pageY: event.currentTarget.offsetTop,
                 id: parseInt(node.key),
                 isSelected: true
             })
+        }
+        if(event.currentTarget.offsetTop + event.currentTarget.offsetHeight > event.currentTarget.offsetParent.offsetHeight ||
+            event.currentTarget.offsetLeft + event.currentTarget.offsetWidth > event.currentTarget.offsetParent.offsetWidth){
+            setRightData({
+                pageX: event.currentTarget.offsetLeft -10,
+                pageY: event.currentTarget.offsetTop - 35,
+                id: parseInt(node.key),
+                isSelected: true
+            })
+        }
     }
 
     return <div style={{
