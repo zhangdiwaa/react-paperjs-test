@@ -7,6 +7,7 @@ import MyCanvas from "./MyCanvas/MyCanvas";
 import SiderBar from "./UI/SiderBar"
 import HeaderBar from "./UI/HeaderBar"
 import Layer from "./UI/Layers"
+import Overview from "./UI/Overview";
 import './App.css';
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "./Common/Config";
@@ -31,7 +32,9 @@ const App=()=>{
               paneStyle={{ background: '#eee' }}
               pane2Style={{ background: '#aaa4ba' }}
             >
-              <div >wawawawa</div>
+              <div>
+                  <Overview></Overview>
+              </div>
               <div>
                   <div className='layer-controls'>
                       <div className='layer-controls-left'>

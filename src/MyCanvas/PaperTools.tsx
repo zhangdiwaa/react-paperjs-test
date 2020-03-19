@@ -200,6 +200,16 @@ const RemoveTool = () => {
         element.remove()
     })
 }
+/**
+ *
+ * @constructor
+ */
+const ClearSelected = () => {
+    paper.project.getItems({selected: true}).forEach(item => {
+        item.selected = false
+        item.bounds.selected = false
+    })
+}
 
 export {
     ToolMove,
@@ -213,7 +223,8 @@ export {
     ToolShrink,
     ToolZoomauto,
     ToolZoomin,
-    ToolZoomout
+    ToolZoomout,
+    ClearSelected
 }
 
 
@@ -231,14 +242,14 @@ const ToolEditPath = () => {
     let lockState:Boolean=false;
     let isShiftDown:Boolean=false;
 
-    tool.onKeyDown=(event:paper.KeyEvent)=>{//判断shift是否按下
-        if(event.key=="shift"){
-            isShiftDown=true
+    tool.onKeyDown = (event: paper.KeyEvent) => {//判断shift是否按下
+        if (event.key == "shift") {
+            isShiftDown = true
         }
     }
-    tool.onKeyUp=(event:paper.KeyEvent)=>{//判断shift是否松开
-        if(event.key=="shift"){
-            isShiftDown=false
+    tool.onKeyUp = (event: paper.KeyEvent) => {//判断shift是否松开
+        if (event.key == "shift") {
+            isShiftDown = false
         }
     }
     //onMouseMove是为了检测目前鼠标的位置，进而改变当前可做的动作和鼠标样式
@@ -266,6 +277,7 @@ const ToolEditPath = () => {
     }
     //以下三个事件函数触发动作
     tool.onMouseDown=(event:paper.ToolEvent)=>{
+        pageChange.pageChangeBefore()
         lockState=true
         switch(myCanvas.className){
             case 'edit': editOnMouseDown();break;
@@ -290,9 +302,11 @@ const ToolEditPath = () => {
             case 'move': moveOnMouseUp(group,selectedShape);break;
             default: [selectedShape,group]=selectOnMouseUp(event,project);break;//我选择用返回值来修改selectedShape
         }
+        pageChange.pageChangeAfter()
     }
 }
 //选择的三个函数分别对应Down，Drag，Up
+
 const selectOnMouseDown=(group:paper.Group,selectedShape:any)=>{
     if(group){//在每个选择开始阶段，都将上一个选择框创建的group删除
         group.remove()
@@ -310,8 +324,8 @@ const selectOnMouseDrag=(event:paper.ToolEvent)=>{
         dashArray: [2, 2]
     })
     Rect.removeOn({
-        drag:true,
-        up:true
+        drag: true,
+        up: true
     })
 }
 const selectOnMouseUp=(event:paper.ToolEvent,project:paper.Project)=>{
