@@ -9,6 +9,7 @@ import {
     ToolZoomin,
     ToolZoomout
 } from "./PaperTools";
+import {onClick} from "./keyboard";
 
 const { Content } = Layout;
 const { Header } = Layout;
@@ -21,6 +22,7 @@ const MyCanvas=()=>{
     let MyCanvas:HTMLCanvasElement = null;
     useEffect(() => {
         Paper.install(window);
+        window.addEventListener('keydown', onClick);
         Paper.setup(MyCanvas);
         Paper.activate();
         //使用React提供的onWheel会提示“渲染过多”
