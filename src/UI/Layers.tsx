@@ -2,6 +2,7 @@ import React, {EventHandler, ReactDOM, useState} from 'react';
 import {Tree, Button} from 'antd';
 import * as paper from 'paper';
 import EventHub from "../Common/Observer";
+import HeaderBar from "./HeaderBar";
 
 let treeRef;
 //用于保存layer的数组
@@ -133,7 +134,7 @@ const Layer = () => {
             <div style={{
                 position: 'absolute',
                 textAlign: 'center',
-                left: `${pageX + 20}px`,
+                left: `${pageX +35}px`,
                 top: `${pageY}px`,
                 border: '1px solid #ccc',
                 backgroundColor: '#fff'
@@ -203,12 +204,24 @@ const Layer = () => {
      * @constructor
      */
     const RightClick = ({event, node}) => {
-        setRightData({
-            pageX: event.currentTarget.offsetLeft,
-            pageY: event.currentTarget.offsetTop,
-            id: parseInt(node.key),
-            isSelected: true
-        })
+        if(event.currentTarget.offsetTop + event.currentTarget.offsetHeight <= event.currentTarget.offsetParent.offsetHeight &&
+            event.currentTarget.offsetLeft + event.currentTarget.offsetWidth <= event.currentTarget.offsetParent.offsetWidth){
+            setRightData({
+                pageX: event.currentTarget.offsetLeft,
+                pageY: event.currentTarget.offsetTop,
+                id: parseInt(node.key),
+                isSelected: true
+            })
+        }
+        if(event.currentTarget.offsetTop + event.currentTarget.offsetHeight > event.currentTarget.offsetParent.offsetHeight ||
+            event.currentTarget.offsetLeft + event.currentTarget.offsetWidth > event.currentTarget.offsetParent.offsetWidth){
+            setRightData({
+                pageX: event.currentTarget.offsetLeft -10,
+                pageY: event.currentTarget.offsetTop - 35,
+                id: parseInt(node.key),
+                isSelected: true
+            })
+        }
     }
 
     const ActivateLayer = (layerChildren: any[], id: number) => {
@@ -224,9 +237,9 @@ const Layer = () => {
     }
 
     return <div style={{
-        width: '300px',
-        height: '300px',
-        overflow: 'scroll',
+        width: '100%',
+        height: 'calc(33.5vh)',
+        overflow: 'auto',
         position: 'relative'
     }}>
         <Tree checkable={true}
