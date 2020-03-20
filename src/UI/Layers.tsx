@@ -1,4 +1,4 @@
-import React, {ReactDOM, useState} from 'react';
+import React, {EventHandler, ReactDOM, useState} from 'react';
 import {Tree, Button} from 'antd';
 import * as paper from 'paper';
 import EventHub from "../Common/Observer";
@@ -231,11 +231,14 @@ const Layer = () => {
     }}>
         <Tree checkable={true}
               onRightClick={RightClick}
-              onCheck={(keys, e) => {
+              onCheck={(keys: string[], e: any) => {
+                  console.log('11')
                   let items: paper.Item[] = []
-                  for (let key in keys) {
-                      items.push(paper.project.getItem({id: parseInt(key)}))
-                  }
+                  keys.forEach(key => {
+                      let item = paper.project.getItem({id: parseInt(key)})
+                      if (item.className !== 'Layer') items.push(item)
+                  })
+                  console.log(items)
               }} treeData={treeDataGlobal}
               ref={(ref) => {
                   treeRef = ref
