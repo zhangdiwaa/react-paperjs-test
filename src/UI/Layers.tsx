@@ -3,6 +3,13 @@ import {Tree, Button} from 'antd';
 import * as paper from 'paper';
 import EventHub from "../Common/Observer";
 import HeaderBar from "./HeaderBar";
+import {ToolEditPath} from "../MyCanvas/PaperTools";
+import {createFromIconfontCN} from '@ant-design/icons';
+import Config from "../Common/Config";
+
+const IconFont = createFromIconfontCN({
+    scriptUrl: Config.IconUrl,
+});
 
 let treeRef;
 //用于保存layer的数组
@@ -12,7 +19,8 @@ let canvasTree = [{
 }];
 //用于保存选择的节点、
 let nodeCheckedArray = []
-
+//当前选中的节点
+let selectedKey = '-1'
 //菜单的数据
 const menuOptions = {}
 
@@ -73,6 +81,7 @@ const Refresh = () => {
         //对layer的children进行解析，返回结果保存
         let leaf = loadChildren(layers[i].children);
         layerNode.children = leaf
+
         //将layer保存
         canvasTree = [...canvasTree, layerNode]
     }
@@ -83,16 +92,39 @@ const Refresh = () => {
             return item.id.toString()
         })
     })
+    SelectedItem()
     setTreeDataGlobal(canvasTree)
 }
-
-const RightMenu = () => {
+/**
+ *
+ * @constructor
+ */
+const ActivateLayer = () => {
 
 }
 
-const treeSelect = () => {
-
+/**
+ * 选择当前选中的item，如果之前选中的item已经不存再，则选中其根节点
+ * @param id
+ */
+const SelectedItem = () => {
+    let item = paper.project.getItem({
+        match: (item) => {
+            return item.id == parseInt(selectedKey)
+        }
+    });
+    if (item == null) {
+        selectedKey = canvasTree[0].key.toString()
+        treeRef.tree.setState({
+            selectedKeys: [canvasTree[0].key.toString()]
+        })
+    } else {
+        treeRef.tree.setState({
+            selectedKeys: [selectedKey]
+        })
+    }
 }
+
 /**
  * 生成LayerList
  * @constructor
@@ -123,6 +155,44 @@ const Layer = () => {
         })
     }
     /**
+     *
+     * @constructor
+     */
+    const DeleteItem = () => {
+        let item = paper.project.getItem({
+            match: (item) => {
+                return item.id == parseInt(selectedKey)
+            }
+        });
+        if (item != null) {
+            EventHub.emit('pageChangeBefore', null)
+            item.remove()
+            EventHub.emit('pageChangeAfter', null)
+        }
+    }
+    const AddLayer = () => {
+        let item = paper.project.getItem({
+            match: (item) => {
+                return item.id == parseInt(selectedKey)
+            }
+        })
+        if (item != null) {
+            EventHub.emit('pageChangeBefore', null)
+            let newLayer = new paper.Layer({
+                name: 'Layer'
+            })
+            if (item.className == 'Layer') {
+                item.insertChild(item.children.length, newLayer)
+            } else {
+                item.parent.addChild(newLayer)
+            }
+            selectedKey = newLayer.id.toString()
+            newLayer.activate()
+            SelectedItem()
+            EventHub.emit('pageChangeAfter', null)
+        }
+    }
+    /**
      * 生成右键菜单
      * @constructor
      */
@@ -134,7 +204,7 @@ const Layer = () => {
             <div style={{
                 position: 'absolute',
                 textAlign: 'center',
-                left: `${pageX +35}px`,
+                left: `${pageX + 35}px`,
                 top: `${pageY}px`,
                 border: '1px solid #ccc',
                 backgroundColor: '#fff'
@@ -204,8 +274,8 @@ const Layer = () => {
      * @constructor
      */
     const RightClick = ({event, node}) => {
-        if(event.currentTarget.offsetTop + event.currentTarget.offsetHeight <= event.currentTarget.offsetParent.offsetHeight &&
-            event.currentTarget.offsetLeft + event.currentTarget.offsetWidth <= event.currentTarget.offsetParent.offsetWidth){
+        if (event.currentTarget.offsetTop + event.currentTarget.offsetHeight <= event.currentTarget.offsetParent.offsetHeight &&
+            event.currentTarget.offsetLeft + event.currentTarget.offsetWidth <= event.currentTarget.offsetParent.offsetWidth) {
             setRightData({
                 pageX: event.currentTarget.offsetLeft,
                 pageY: event.currentTarget.offsetTop,
@@ -213,10 +283,10 @@ const Layer = () => {
                 isSelected: true
             })
         }
-        if(event.currentTarget.offsetTop + event.currentTarget.offsetHeight > event.currentTarget.offsetParent.offsetHeight ||
-            event.currentTarget.offsetLeft + event.currentTarget.offsetWidth > event.currentTarget.offsetParent.offsetWidth){
+        if (event.currentTarget.offsetTop + event.currentTarget.offsetHeight > event.currentTarget.offsetParent.offsetHeight ||
+            event.currentTarget.offsetLeft + event.currentTarget.offsetWidth > event.currentTarget.offsetParent.offsetWidth) {
             setRightData({
-                pageX: event.currentTarget.offsetLeft -10,
+                pageX: event.currentTarget.offsetLeft - 10,
                 pageY: event.currentTarget.offsetTop - 35,
                 id: parseInt(node.key),
                 isSelected: true
@@ -224,6 +294,13 @@ const Layer = () => {
         }
     }
 
+
+    /**
+     * 递归激活图层
+     * @param layerChildren
+     * @param id
+     * @constructor
+     */
     const ActivateLayer = (layerChildren: any[], id: number) => {
         layerChildren.forEach(item => {
             if (item.children != null) {
@@ -242,22 +319,41 @@ const Layer = () => {
         overflow: 'auto',
         position: 'relative'
     }}>
+        <div className='layer-controls'>
+            <div className='layer-controls-left'>
+                <div className='layer-controls-box'>
+                    <IconFont onClick={AddLayer} className='layer-controls-icon' type="icon-add"/>
+                </div>
+                <div className='layer-controls-box'>
+                    <IconFont onClick={DeleteItem} className='layer-controls-icon' type="icon-delete"/>
+                </div>
+            </div>
+        </div>
         <Tree checkable={true}
               onRightClick={RightClick}
               onCheck={(keys: string[], e: any) => {
-                  console.log('11')
-                  let items: paper.Item[] = []
-                  keys.forEach(key => {
-                      let item = paper.project.getItem({id: parseInt(key)})
-                      if (item.className !== 'Layer') items.push(item)
+                  console.log(treeRef)
+                  let items: paper.Item[] = paper.project.getItems({
+                      match: (item) => {
+                          return keys.toString().indexOf(item.id.toString()) != -1 ? true : false;
+                      },
+                      class: paper.Path
                   })
-                  console.log(items)
+                  ToolEditPath(items)
               }} treeData={treeDataGlobal}
               ref={(ref) => {
                   treeRef = ref
               }}
-              onSelect={(keys, e) => {
-                  console.log(keys)
+              onSelect={(keys: string[], e) => {
+                  if (keys != null && keys.length != 0) {
+                      selectedKey = keys[0]
+                  } else {
+                      console.log(selectedKey)
+                      console.log(treeRef)
+                      treeRef.tree.setState({
+                          selectedKeys: [selectedKey]
+                      })
+                  }
               }}/>
         {CreateRightMenu()}
     </div>;

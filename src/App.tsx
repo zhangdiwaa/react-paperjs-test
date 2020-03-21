@@ -32,21 +32,12 @@ const App=()=>{
               paneStyle={{ background: '#eee' }}
               pane2Style={{ background: '#aaa4ba' }}
             >
-              <div>
+              <div style={{
+                  flex: '1 1 1%'
+              }}>
                   <Overview></Overview>
               </div>
               <div>
-                  <div className='layer-controls'>
-                      <div className='layer-controls-left'>
-                          <div className='layer-controls-box'>
-                              <IconFont className='layer-controls-icon' type="icon-add"/>
-                          </div>
-                          <div className='layer-controls-box'>
-                              <IconFont className='layer-controls-icon' type="icon-delete"/>
-                          </div>
-                      </div>
-                      <div className='layer-controls-right'></div>
-                  </div>
                 <Layer></Layer>
               </div>
             </SplitPane>
