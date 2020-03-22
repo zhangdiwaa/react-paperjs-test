@@ -256,7 +256,7 @@ const ToolEditPath = () => {
             });
             pageChange.pageChangeAfter()
         }
-        if(event.)
+        
     }
     tool.onKeyUp=(event:paper.KeyEvent)=>{
         //判断shift是否松开
