@@ -191,7 +191,7 @@ const RemoveTool = () => {
     paper.project.getItems({
         class:paper.Group,
         match:function(item){
-            if(item.className=="Layer")
+            if(item.className==="Layer")
             return false;
             else
             return true;
@@ -231,29 +231,37 @@ const ToolEditPath = () => {
     let lockState:Boolean=false;
     let isShiftDown:Boolean=false;
 
-    tool.onKeyDown=(event:paper.KeyEvent)=>{//判断shift是否按下
-        if(event.key=="shift"){
+    tool.onKeyDown=(event:paper.KeyEvent)=>{
+        //判断shift是否按下
+        if(event.key==="shift"){
             isShiftDown=true
         }
-    }
-    tool.onKeyUp=(event:paper.KeyEvent)=>{//判断shift是否松开
-        if(event.key=="shift"){
-            isShiftDown=false
-        }
-        if(event.key=="delete"){
+        //判断delete是否按下
+        if(event.key==="delete"){
             pageChange.pageChangeBefore()
             paper.project.getItems({
                 class:paper.Group,
                 match:function(item){
-                    if(item.className=="Layer")
-                    return false;
-                    else
-                    return true;
+                    //console.log("item: ")
+                    //console.log(item)
+                    if(item.className==="Group")
+                        return true
                 }
             }).forEach(element=>{
+                //console.log("element； "+element)
                 element.remove()
             })
+            selectedShape.forEach(element => {
+                element.remove()
+            });
             pageChange.pageChangeAfter()
+        }
+        if(event.)
+    }
+    tool.onKeyUp=(event:paper.KeyEvent)=>{
+        //判断shift是否松开
+        if(event.key==="shift"){
+            isShiftDown=false
         }
     }
     //onMouseMove是为了检测目前鼠标的位置，进而改变当前可做的动作和鼠标样式

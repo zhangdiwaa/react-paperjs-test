@@ -38,7 +38,7 @@ const LoadLayer = () => {
     canvasTree.splice(0)
     //获取所有layer
     let layers = Paper.project.layers;
-    if (layers.length == 0) {
+    if (layers.length === 0) {
         setTreeDataGlobal([{
             key: '0',
             title: 'None'
@@ -113,6 +113,7 @@ const Layer = () => {
                 <Button onClick={(e) => {
                     EventHub.emit('pageChangeBefore', null)
                     Paper.project.getItems({id: id}).forEach(item => {
+                        console.log(item)
                         item.remove()
                     })
                     ClearRightData()
@@ -156,7 +157,7 @@ const Layer = () => {
                       layer.selected = false
                   })
                   //当二次点击的时候代表的取消选中，因此我们需要清楚这个
-                  if (sk.length == 0) {
+                  if (sk.length === 0) {
                       return
                   }
                   //选中点击的对象
