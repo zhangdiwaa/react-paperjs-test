@@ -1,8 +1,7 @@
-import React, {EventHandler, ReactDOM, useState} from 'react';
+import React, {useState} from 'react';
 import {Tree, Button} from 'antd';
 import * as paper from 'paper';
 import EventHub from "../Common/Observer";
-import HeaderBar from "./HeaderBar";
 import {ToolEditPath} from "../MyCanvas/PaperTools";
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
@@ -85,22 +84,19 @@ const Refresh = () => {
         //将layer保存
         canvasTree = [...canvasTree, layerNode]
     }
+    nodeCheckedArray = paper.project.getItems({
+        match: item => {
+            return item.visible == false
+        },
+        class: paper.Path
+    }).map(item => {
+        return item.id.toString()
+    })
     treeRef.tree.setState({
-        checkedKeys: paper.project.getItems({
-            visible: false
-        }).map(item => {
-            return item.id.toString()
-        })
+        checkedKeys: nodeCheckedArray
     })
     SelectedItem()
     setTreeDataGlobal(canvasTree)
-}
-/**
- *
- * @constructor
- */
-const ActivateLayer = () => {
-
 }
 
 /**
@@ -138,7 +134,6 @@ const Layer = () => {
         pageY: 0,
         isSelected: false
     })
-    const [checkedData, setCheckedData] = useState(nodeCheckedArray)
     //保存为全局变量
     treeDataGlobal = treeData
     setTreeDataGlobal = setTreeData
@@ -332,7 +327,24 @@ const Layer = () => {
         <Tree checkable={true}
               onRightClick={RightClick}
               onCheck={(keys: string[], e: any) => {
-                  console.log(treeRef)
+                  // if (e.checked) {
+                  //     if (nodeCheckedArray.indexOf(e.node.key) == -1) {
+                  //         nodeCheckedArray.push(e.node.key)
+                  //     }
+                  //     treeRef.tree.setState({
+                  //         checkedKeys: nodeCheckedArray
+                  //     })
+                  // } else {
+                  //     let position = nodeCheckedArray.indexOf(e.node.key)
+                  //     if (position != -1) {
+                  //         nodeCheckedArray.splice(position, 1)
+                  //         console.log(nodeCheckedArray)
+                  //         treeRef.tree.setState({
+                  //             checkedKeys: nodeCheckedArray
+                  //         })
+                  //     }
+                  // }
+                  console.log(e)
                   let items: paper.Item[] = paper.project.getItems({
                       match: (item) => {
                           return keys.toString().indexOf(item.id.toString()) != -1 ? true : false;

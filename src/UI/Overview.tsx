@@ -15,6 +15,7 @@ const RefreshOverview = () => {
     let paperJSON = paper.project.exportJSON()
     paper.projects[1].clear()
     paper.projects[1].importJSON(paperJSON)
+    paper.projects[1].deselectAll();
     //组件保持再激活状态，（目前看来是对某个project做出更改之后，就会激活对应的project，因此需要重新激活）
     paper.projects[0].activate()
 }
@@ -28,7 +29,6 @@ const Overview = () => {
     useEffect(() => {
         paper.install(window);
         paper.setup(canvas);
-        console.log(paper.projects)
         //清空localStorage
         localStorage.setItem("history", JSON.stringify([]))
         localStorage.setItem("future", JSON.stringify([]))
@@ -47,7 +47,6 @@ const Overview = () => {
         new Paper.Layer({
             name: 'Layer'
         })
-
         EventHub.emit('pageChangeAfter', null)
     })
 
