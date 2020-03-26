@@ -15,26 +15,31 @@ This project is based on:
 3. ant design
 4. paper.js
 
-### 2020年3月7日重大修改
-1. 修改了工程目录结构。现在的目录结构是:
+### 目录结构
 ```javascript
 -  src
 -  |---- MyCanvas               //与paper.js相关的功能组件
--  |---- |---- MyCanvas.tsx     //paper.js画布生成与初始化组件
+-  |---- |---- MyCanvas.tsx     //主画布生成与初始化组件
 -  |---- |---- PaperTool.tsx    //paper.js交互工具组件
 -  |
 -  |---- UI                     //界面相关的组件
 -  |---- |---- HeaderBar.tsx    //界面首部及其按钮组
 -  |---- |---- siderBar.tsx     //界面侧边栏及其按钮组
+-  |---- |---- Layers.tsx       //界面右下角图层列表
+-  |---- |---- Overview.tsx     //界面右上角概览视图
 -  |
 -  |---- Common                 //通用组件
--  |---- |---- config.tsx       //配置数组
+-  |---- |---- Config.tsx       //配置相关json
+-  |---- |---- Observer.tsx     //发布订阅模式功能
+-  |---- |---- UndoAndRedo.tsx  //撤销和重做功能  
 -  |
 -  |---- App.tsx                //入口组件
 -  |---- App.css                //全局样式文件
 -  剩余文件都是create-react-app 默认的文件
 ```
-2. 更新了antDesign插件到4.0.1版本
-- yarn upgrade-interactive --latest // 使用此命令更新依赖包。注意此命令输入后还需要手动选择升级的依赖包，按空格键选择，a 键切换所有，i 键反选选择，回车确定升级
 
-目前已经可以做到选中，拖动，旋转图元的操作
+### 注意依赖类库的更新
+
+更新了antDesign插件到4.0.2版本
+- yarn upgrade-interactive --latest // 使用此命令更新依赖包。注意此命令输入后还需要手动选择升级的依赖包，按空格键选择，a 键切换所有，i 键反选选择，回车确定升级
+经测试，可以使用如上更新函数更新全部依赖，不会出现冲突。
