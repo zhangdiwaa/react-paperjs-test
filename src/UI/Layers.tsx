@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Tree, Button} from 'antd';
+import {Tree, Button, Popover} from 'antd';
 import * as paper from 'paper';
 import EventHub from "../Common/Observer";
 import {ToolEditPath} from "../MyCanvas/PaperTools";
@@ -128,6 +128,7 @@ const SelectedItem = () => {
 const Layer = () => {
     //useState 是允许你在 React 函数组件中添加 state 的 Hook
     const [treeData, setTreeData] = useState(canvasTree);
+    const [visible, setVisible] = useState(false);
     const [rightData, setRightData] = useState({
         id: 0,
         pageX: 0,
@@ -320,31 +321,32 @@ const Layer = () => {
                     <IconFont onClick={AddLayer} className='layer-controls-icon' type="icon-add"/>
                 </div>
                 <div className='layer-controls-box'>
-                    <IconFont onClick={DeleteItem} className='layer-controls-icon' type="icon-delete"/>
+                    <Popover content={<div>
+                        <p>Are you sure to delete this node?</p>
+                        <div style={{
+                            textAlign: "center"
+                        }}>
+                            <Button onClick={() => {
+                                DeleteItem()
+                                setVisible(false)
+                            }} type='primary'>Yes</Button>
+                            <Button onClick={() => {
+                                setVisible(false)
+                            }} type='danger' style={{
+                                marginLeft: '5px'
+                            }}>No</Button>
+                        </div>
+                    </div>} title={'Delete'} trigger="click" visible={visible}>
+                        <IconFont onClick={() => {
+                            setVisible(true)
+                        }} className='layer-controls-icon' type="icon-delete"/>
+                    </Popover>
                 </div>
             </div>
         </div>
-        <Tree checkable={true}
+        <Tree checkable
               onRightClick={RightClick}
               onCheck={(keys: string[], e: any) => {
-                  // if (e.checked) {
-                  //     if (nodeCheckedArray.indexOf(e.node.key) == -1) {
-                  //         nodeCheckedArray.push(e.node.key)
-                  //     }
-                  //     treeRef.tree.setState({
-                  //         checkedKeys: nodeCheckedArray
-                  //     })
-                  // } else {
-                  //     let position = nodeCheckedArray.indexOf(e.node.key)
-                  //     if (position != -1) {
-                  //         nodeCheckedArray.splice(position, 1)
-                  //         console.log(nodeCheckedArray)
-                  //         treeRef.tree.setState({
-                  //             checkedKeys: nodeCheckedArray
-                  //         })
-                  //     }
-                  // }
-                  console.log(e)
                   let items: paper.Item[] = paper.project.getItems({
                       match: (item) => {
                           return keys.toString().indexOf(item.id.toString()) != -1 ? true : false;

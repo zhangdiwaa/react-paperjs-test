@@ -11,12 +11,6 @@ const pageChange = {
     }
 }
 
-let myCanvas;
-
-const SetCanvas = (canvas) => {
-    myCanvas = canvas
-}
-
 /**
  * name ToolMove
  * desc 拖拽画布
@@ -37,10 +31,9 @@ const ToolDrawCircle = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDrag = (event: any) => {
-        let left = 0;
-        if (event.event.clientX < 0||event.event.clientX>myCanvas.offsetWidth||event.event.clientY<0||event.event.clientY>myCanvas.offsetHeight){
-            console.log(event.event.clientX)
-            return
+        if (event.event.target.id == 'canvasOverview') {
+            console.log(event)
+            return;
         }
         let path: paper.Path.Circle = new paper.Path.Circle({
             center: event.downPoint,
@@ -227,7 +220,6 @@ export {
     ToolZoomauto,
     ToolZoomin,
     ToolZoomout,
-    SetCanvas
 }
 
 

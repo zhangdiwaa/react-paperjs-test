@@ -9,7 +9,6 @@ import Config from "../Common/Config";
 import {Refresh} from "../UI/Layers";
 import {RefreshOverview} from "../UI/Overview";
 import {
-    SetCanvas,
     ToolZoomauto,
     ToolZoomin,
     ToolZoomout
@@ -41,7 +40,6 @@ const MyCanvas = () => {
                 v.scale(0.95, new Paper.Point(event.offsetX, event.offsetY))
             }
         }
-        SetCanvas(MyCanvas)
     });
     return (
         <Content className="me-canvas under-bottonbox">
