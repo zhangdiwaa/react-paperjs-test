@@ -138,6 +138,7 @@ const Layer = () => {
     //保存为全局变量
     treeDataGlobal = treeData
     setTreeDataGlobal = setTreeData
+
     /**
      * 用于清除右键菜单
      * @constructor
@@ -151,7 +152,7 @@ const Layer = () => {
         })
     }
     /**
-     *
+     * 删除某一项
      * @constructor
      */
     const DeleteItem = () => {
@@ -166,6 +167,10 @@ const Layer = () => {
             EventHub.emit('pageChangeAfter', null)
         }
     }
+    /**
+     * 添加图层
+     * @constructor
+     */
     const AddLayer = () => {
         let item = paper.project.getItem({
             match: (item) => {
@@ -220,45 +225,6 @@ const Layer = () => {
                     padding: '0px'
                 }}/>
                 <Button type='link'>Edit</Button>
-                <hr style={{
-                    margin: '0px',
-                    padding: '0px'
-                }}/>
-                <Button onClick={(e) => {
-                    if (id === 0) {
-                        return;
-                    }
-                    EventHub.emit('pageChangeBefore', null)
-                    let item = paper.project.getItem({id: id});
-                    if (item.className === 'Layer') {
-                        let newLayer = new paper.Layer({
-                            name: 'Layer'
-                        })
-                        item.insertChild(item.children.length, newLayer)
-                        newLayer.activate()
-                    }
-                    ClearRightData()
-                    EventHub.emit('pageChangeAfter', null)
-                }} type='link'>Add Layer</Button>
-                <hr style={{
-                    margin: '0px',
-                    padding: '0px'
-                }}/>
-                <Button onClick={(e) => {
-                    EventHub.emit('pageChangeBefore', null)
-                    let item = paper.project.getItem({id: id});
-                    if (item.className === 'Layer') {
-                        paper.project.layers.forEach(layer => {
-                            if (layer.id == id) {
-                                layer.activate()
-                            } else {
-                                ActivateLayer(layer.children, id)
-                            }
-                        })
-                    }
-                    ClearRightData()
-                    EventHub.emit('pageChangeBefore', null)
-                }} type='link'>Activate Layer</Button>
             </div>
         )
         return rightData.isSelected ? menu : ''

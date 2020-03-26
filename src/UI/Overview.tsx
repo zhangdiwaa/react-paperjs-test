@@ -15,6 +15,7 @@ const RefreshOverview = () => {
     let paperJSON = paper.project.exportJSON()
     paper.projects[1].clear()
     paper.projects[1].importJSON(paperJSON)
+    paper.projects[1].layers[0].fitBounds(paper.projects[1].view.bounds)
     paper.projects[1].deselectAll();
     //组件保持再激活状态，（目前看来是对某个project做出更改之后，就会激活对应的project，因此需要重新激活）
     paper.projects[0].activate()
