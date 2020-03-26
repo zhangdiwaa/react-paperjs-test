@@ -66,6 +66,7 @@ const MyCanvas = () => {
                     data-paper-keepalive="true"
                 />
                 **/
+                id="myCanvas"
                 data-paper-resize="true"
                 data-paper-keepalive="true"
                 style={{ width: '100%', height: '100%' }}

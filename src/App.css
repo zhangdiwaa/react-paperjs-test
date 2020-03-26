@@ -74,7 +74,7 @@ canvas[resize] {
     height: 100%;
 }
 .me-layout .ant-layout-content{
-    overflow-x:visible;
+    overflow-x:visible !important;
 }
 
 /*react-split-pane*/
