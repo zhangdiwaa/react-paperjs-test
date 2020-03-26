@@ -1,13 +1,10 @@
 import React from "react"
 import * as Paper from "paper";
+
 import {Button, Layout, Tooltip} from 'antd';
-import {useEffect} from "react";
-import EventHub from "../Common/Observer";
-import {PageChangeBefore, PageChangeAfter} from "../Common/UndoAndRedo"
+import {useEffect, useState} from "react";
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
-import {Refresh} from "../UI/Layers";
-import {RefreshOverview} from "../UI/Overview";
 import {
     ToolZoomauto,
     ToolZoomin,
@@ -15,7 +12,6 @@ import {
 } from "./PaperTools";
 
 const {Content} = Layout;
-const {Header} = Layout;
 const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
@@ -58,7 +54,24 @@ const MyCanvas = () => {
                 ref={ref => {
                     MyCanvas = ref
                 }}
-                id="myCanvas"></canvas>
+                /** 解决paper.js canvas缩放的办法
+                 * CSS
+                canvas[resize] {
+                    width: 100%;
+                    height: 100%;
+                }
+                * react jsx
+                <canvas
+                    ref={(el) => { this.canvas = el; }}
+                    data-paper-resize="true"
+                    data-paper-keepalive="true"
+                />
+                **/
+                id="myCanvas"
+                data-paper-resize="true"
+                data-paper-keepalive="true"
+                style={{width: '100%', height: '100%'}}
+            ></canvas>
 
         </Content>
 

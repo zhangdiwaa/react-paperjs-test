@@ -45,7 +45,7 @@ const Overview = () => {
         //在此时便创建一个Layer,并触发事件
         paper.projects[0].activate()
         EventHub.emit('pageChangeBefore', null)
-        new Paper.Layer({
+        new paper.Layer({
             name: 'Layer'
         })
         EventHub.emit('pageChangeAfter', null)
