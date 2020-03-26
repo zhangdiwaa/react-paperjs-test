@@ -9,7 +9,7 @@ import {
     ToolZoomin,
     ToolZoomout
 } from "./PaperTools";
-import { onClick } from "./KeyBoard";
+import { onClick } from "./keyboard";
 
 const { Content } = Layout;
 const IconFont = createFromIconfontCN({
