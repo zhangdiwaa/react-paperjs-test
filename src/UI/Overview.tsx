@@ -2,7 +2,6 @@ import React, {useEffect} from "react";
 import * as paper from 'paper';
 import EventHub from "../Common/Observer";
 import {PageChangeAfter, PageChangeBefore} from "../Common/UndoAndRedo";
-import {ClearSelected} from "../MyCanvas/PaperTools";
 import {Refresh} from "./Layers";
 import * as Paper from "paper";
 
@@ -27,9 +26,7 @@ const Overview = () => {
         //清空localStorage
         localStorage.setItem("history", JSON.stringify([]))
         localStorage.setItem("future", JSON.stringify([]))
-        // 当观察者收到mouseDownBefore的操作之后，执行pageChangeBefore方法
-        EventHub.on('pageChangeBefore', [PageChangeBefore,
-            ClearSelected])
+
         EventHub.on('pageChangeAfter', [PageChangeAfter,
             RefreshOverview,
             Refresh])

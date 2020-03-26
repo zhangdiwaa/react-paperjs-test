@@ -3,6 +3,7 @@ import {Tree, Button} from 'antd';
 import * as paper from 'paper';
 import EventHub from "../Common/Observer";
 import HeaderBar from "./HeaderBar";
+import { ToolEditPath } from '../MyCanvas/PaperTools';
 
 let treeRef;
 //用于保存layer的数组
@@ -245,10 +246,13 @@ const Layer = () => {
         <Tree checkable={true}
               onRightClick={RightClick}
               onCheck={(keys, e) => {
-                  let items: paper.Item[] = []
-                  for (let key in keys) {
-                      items.push(paper.project.getItem({id: parseInt(key)}))
-                  }
+                  let items: paper.Item[]=paper.project.getItems({
+                      match:(item)=>{
+                        return keys.toString().indexOf(item.id.toString())!=-1?(item.className=='Path'||item.className=='PointText')?true:false:false;
+                      }
+                  })
+                  console.log(items)
+                  ToolEditPath(items)
               }} treeData={treeDataGlobal}
               ref={(ref) => {
                   treeRef = ref

@@ -4,7 +4,6 @@ import {Button, Layout, Tooltip} from 'antd';
 import {useEffect} from "react";
 import EventHub from "../Common/Observer";
 import {PageChangeBefore, PageChangeAfter} from "../Common/UndoAndRedo"
-import {ClearSelected} from './PaperTools'
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
 import {Refresh} from "../UI/Layers";
