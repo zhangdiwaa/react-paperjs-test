@@ -345,9 +345,30 @@ function ToolEditPath(scope:any){//这个scope相当于this
     let lockState:Boolean=false;
     let isShiftDown:Boolean=false;
     //判断shift是否按下
-    tool.onKeyDown=(event:paper.KeyEvent)=>{//判断shift是否按下
+    tool.onKeyDown=(event:paper.KeyEvent)=>{
+        //判断shift是否按下
         if(event.key=="shift"){
             isShiftDown=true
+        }
+        //判断delete是否按下
+        if(event.key==="delete"){
+            pageChange.pageChangeBefore()
+            paper.project.getItems({
+                class:paper.Group,
+                match:function(item){
+                    //console.log("item: ")
+                    //console.log(item)
+                    if(item.className==="Group")
+                        return true
+                }
+            }).forEach(element=>{
+                //console.log("element； "+element)
+                element.remove()
+            })
+            selectedShape.forEach(element => {
+                element.remove()
+            });
+            pageChange.pageChangeAfter()
         }
     }
     tool.onKeyUp=(event:paper.KeyEvent)=>{//判断shift是否松开
