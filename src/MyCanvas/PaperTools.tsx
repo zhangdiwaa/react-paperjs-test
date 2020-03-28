@@ -32,10 +32,11 @@ const ToolDrawCircle = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDrag = (event: any) => {
-        if (event.event.target.id == 'canvasOverview') {
-            console.log(event)
-            return;
-        }
+        console.log(event)
+        // if (event.event.target.id == 'canvasOverview') {
+        //     console.log(event)
+        //     return;
+        // }
         let path: paper.Path.Circle = new paper.Path.Circle({
             center: event.downPoint,
             radius: event.downPoint.subtract(event.point).length,
