@@ -137,10 +137,15 @@ const ToolPointText = () => {
             fontSize: 25,
             name: 'Text'
         });
+        text.onDoubleClick = () =>{
+            text.content = 'add' 
+        }
     }
+    
     tool.onMouseUp = (event: paper.ToolEvent) => {
         pageChange.pageChangeAfter()
     }
+    
 
 }
 

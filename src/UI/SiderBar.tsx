@@ -11,6 +11,7 @@ import {
     ToolShrink,
     ToolZoomauto
 } from "../MyCanvas/PaperTools"
+import PointText from "../MyCanvas/PointText"
 import { Button, Layout, Tooltip } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
 import Config from "../Common/Config";
@@ -18,7 +19,6 @@ const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
 const { Sider } = Layout;
-
 const SiderBar = () => {
 
     //工具映射函数
@@ -57,7 +57,7 @@ const SiderBar = () => {
                     <Button onClick={FunctionMap("translate")}><IconFont type="icon-hand" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"text"}>
-                    <Button onClick={FunctionMap("text")}><IconFont type="icon-text" /></Button>
+                    <PointText ><IconFont type="icon-text" /></PointText>
                 </Tooltip>
                 <Tooltip placement="right" title={"edit"}>
                     <Button onClick={FunctionMap("edit")}><IconFont type="icon-Link-Select" /></Button>
