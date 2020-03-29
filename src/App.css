@@ -177,3 +177,25 @@ canvas[resize] {
     margin: 3px;
 }
 
+.rightclick{
+    display: none;
+    width: 100px;
+    height: 160px;
+    border-width: 1px 1px 0 1px;
+    background-color: rgba(242,242,242,0.6);
+    border-radius: 4px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+.rightclick ul{
+    list-style: none;
+    cursor: pointer;
+
+}
+.rightclick ul li{
+    text-align: center;
+    height: 31px;
+    line-height: 31px;
+    border-bottom: 1px solid #666;
+}

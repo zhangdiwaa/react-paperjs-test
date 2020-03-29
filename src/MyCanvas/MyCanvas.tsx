@@ -1,4 +1,4 @@
-import React from "react"
+import React, {ReactDOM, useState} from 'react';
 import * as Paper from "paper";
 import { Button, Layout, Tooltip } from 'antd';
 import { useEffect } from "react";
@@ -15,7 +15,6 @@ const { Content } = Layout;
 const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
-
 
 const MyCanvas = () => {
     let MyCanvas: HTMLCanvasElement = null;
@@ -38,6 +37,7 @@ const MyCanvas = () => {
             }
         }
     });
+
     return (
         <Content className="me-canvas under-bottonbox">
             <div className="under-botton">
@@ -72,8 +72,8 @@ const MyCanvas = () => {
                 data-paper-resize="true"
                 data-paper-keepalive="true"
                 style={{ width: '100%', height: '100%' }}
-                ></canvas>
-
+                >
+            </canvas>
         </Content>
 
     )
