@@ -3,7 +3,6 @@ import * as paper from 'paper';
 import EventHub from "../Common/Observer";
 import {PageChangeAfter, PageChangeBefore} from "../Common/UndoAndRedo";
 import {Refresh} from "./Layers";
-import * as Paper from "paper";
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
 

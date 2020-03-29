@@ -20,9 +20,7 @@ let canvasTree = [{
 let nodeCheckedArray = []
 //当前选中的节点
 let selectedKey = '-1'
-//菜单的数据
-const menuOptions = {}
-
+// 更新数据树节点的数据
 let treeDataGlobal, setTreeDataGlobal;
 /**
  * 加载Layer的children对象
