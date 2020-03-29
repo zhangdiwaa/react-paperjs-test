@@ -344,7 +344,17 @@ function ToolEditPath(scope:any){//这个scope相当于this
     let myCanvas:HTMLElement=document.getElementById("myCanvas");
     let lockState:Boolean=false;
     let isShiftDown:Boolean=false;
-    //判断shift是否按下
+    document.addEventListener("keydown",(e:KeyboardEvent)=>{
+        if(e.ctrlKey){
+            if(e.code=="KeyA"){
+                selectedShape=null
+                selectedShape=project.getItems({
+                    class:paper.Path
+                })
+                group=groupItem(selectedShape)
+            }
+        }
+    })
     tool.onKeyDown=(event:paper.KeyEvent)=>{
         //判断shift是否按下
         if(event.key=="shift"){

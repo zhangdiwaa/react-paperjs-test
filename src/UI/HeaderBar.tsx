@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Layout, Tooltip, Menu} from 'antd';
+import {Button, Layout, Tooltip, Menu, Modal} from 'antd';
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
 import {Redo, Undo} from '../Common/UndoAndRedo';
@@ -11,7 +11,17 @@ const IconFont = createFromIconfontCN({
 });
 
 const About=()=>{
-    window.alert("开发人员：\n张迪\n贾志亮 罗远明 朱迪琪 金豪南 吴祥敏");
+    //window.alert("开发人员：\n张迪\n贾志亮 罗远明 朱迪琪 金豪南 吴祥敏");
+    Modal.info({
+        title: '开发人员',
+        content: (
+          <div>
+            <p>张迪</p>
+            <p>贾志亮 罗远明 朱迪琪 金豪南 吴祥敏</p>
+          </div>
+        ),
+        onOk() {},
+      });
 }
 const HeaderBar = () => {
 
