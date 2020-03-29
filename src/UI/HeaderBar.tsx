@@ -10,6 +10,9 @@ const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
 
+const About=()=>{
+    window.alert("开发人员：\n张迪\n贾志亮 罗远明 朱迪琪 金豪南 吴祥敏");
+}
 const HeaderBar = () => {
 
     // //工具映射函数
@@ -46,6 +49,7 @@ const HeaderBar = () => {
                 <Menu.Item key="6">Edit</Menu.Item>
                 <Menu.Item key="7">Group</Menu.Item>
                 <Menu.Item key="8">scafford</Menu.Item>
+                <Menu.Item key="9" onClick={About}>About</Menu.Item>
             </Menu>
             <div className="buttons">
                 <Tooltip placement="bottom" title={"undo"}>

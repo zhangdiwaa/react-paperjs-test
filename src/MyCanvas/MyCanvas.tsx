@@ -1,8 +1,7 @@
 import React from "react"
 import * as Paper from "paper";
-
 import {Button, Layout, Tooltip} from 'antd';
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
 import {
@@ -10,6 +9,7 @@ import {
     ToolZoomin,
     ToolZoomout
 } from "./PaperTools";
+import {onClick} from "./keyboard";
 
 const {Content} = Layout;
 const IconFont = createFromIconfontCN({
@@ -21,6 +21,7 @@ const MyCanvas = () => {
     let MyCanvas: HTMLCanvasElement = null;
     useEffect(() => {
         Paper.install(window);
+        window.addEventListener("keydown", onClick)
         Paper.setup(MyCanvas);
         Paper.activate();
         Paper.settings.handleSize = 8//设置选中时的四个点的大小
