@@ -1,7 +1,7 @@
 import * as paper from "paper"
 import EventHub from "../Common/Observer";
-
-import {useEffect} from "react";
+import React, {useEffect, useState} from "react";
+import {Button, Layout} from "antd";
 
 const pageChange = {
     pageChangeBefore: () => {
@@ -257,8 +257,8 @@ const groupItem = (selectedShape: paper.Item[]) => {
 
 //选择的三个函数分别对应Down，Drag，Up
 
-const selectOnMouseDown = (group: paper.Group, selectedShape: any) => {
-    if (group) {//在每个选择开始阶段，都将上一个选择框创建的group删除
+const selectOnMouseDown=(group:paper.Group,selectedShape:any)=>{
+    if(group){//在每个选择开始阶段，都将上一个选择框创建的group删除
         group.remove()
         selectedShape.forEach(element => {//并将selectedShape的每个图元设置为可见
             element.visible = true
@@ -460,3 +460,12 @@ function ToolEditPath(scope: any) {//这个scope相当于this
         pageChange.pageChangeAfter()
     }
 }
+
+
+
+
+
+
+
+
+
