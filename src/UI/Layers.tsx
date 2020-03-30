@@ -234,7 +234,7 @@ const Layer = () => {
      * @constructor
      */
     const RightClick = ({event, node}) => {
-        if(event.clientY * 0.21 <= 68){
+        if(event.clientY * 0.10 <= 68){
             setRightData({
                 pageX: event.currentTarget.offsetLeft,
                 pageY: event.currentTarget.offsetTop,
@@ -243,10 +243,10 @@ const Layer = () => {
             })
         }
 
-        if(event.clientY * 0.21 > 68){
+        if(event.clientY * 0.10 > 68){
             setRightData({
                 pageX: event.currentTarget.offsetLeft,
-                pageY: event.currentTarget.offsetTop - 108,
+                pageY: event.currentTarget.offsetTop - 40,
                 id: parseInt(node.key),
                 isSelected: true
             })
