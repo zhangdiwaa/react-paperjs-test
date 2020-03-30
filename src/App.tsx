@@ -53,7 +53,6 @@ const App=()=>{
           </Content>
       </Layout>
     </Layout>
-
   );
 }
 

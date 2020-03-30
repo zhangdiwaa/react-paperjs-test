@@ -10,6 +10,7 @@ import {
     ToolZoomout
 } from "./PaperTools";
 import { onClick } from "./keyboard";
+import {ContextMenu, MenuItem, ContextMenuTrigger}from "react-contextmenu";
 
 const { Content } = Layout;
 const IconFont = createFromIconfontCN({

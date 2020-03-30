@@ -1,6 +1,6 @@
 import * as paper from "paper"
 import EventHub from "../Common/Observer";
-import React, {useEffect, useState} from "react";
+import React, {Component} from 'react'
 import {Button, Layout} from "antd";
 
 
@@ -247,6 +247,8 @@ const groupItem=(selectedShape:paper.Item[])=>{
         group.bounds.selected=true
         group.selected=true
     }
+
+
     return group
 }
 
