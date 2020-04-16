@@ -138,15 +138,13 @@ const ToolPointText = () => {
             name: 'Text'
         });
         text.onDoubleClick = () =>{
-            text.content = 'add' 
+            text.content = 'add'
         }
     }
-    
+
     tool.onMouseUp = (event: paper.ToolEvent) => {
         pageChange.pageChangeAfter()
     }
-    
-
 }
 
 /**
@@ -220,7 +218,8 @@ export {
     ToolShrink,
     ToolZoomauto,
     ToolZoomin,
-    ToolZoomout
+    ToolZoomout,
+    RemoveTool
 }
 
 
@@ -250,7 +249,7 @@ const groupItem=(selectedShape:paper.Item[])=>{
         group.bounds.selected=true
         group.selected=true
     }
-    
+
     return group
 }
 
