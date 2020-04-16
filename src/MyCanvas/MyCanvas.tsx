@@ -1,27 +1,26 @@
-import React from "react"
+import React, {ReactDOM, useState} from 'react';
 import * as Paper from "paper";
-import { Button, Layout, Tooltip } from 'antd';
-import { useEffect } from "react";
-import { createFromIconfontCN } from '@ant-design/icons';
+import {Button, Layout, Tooltip} from 'antd';
+import {useEffect} from "react";
+import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
 import {
     ToolZoomauto,
     ToolZoomin,
     ToolZoomout
 } from "./PaperTools";
-import { onClick } from "./keyboard";
+import {onClick} from "./keyboard";
 
-const { Content } = Layout;
+const {Content} = Layout;
 const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
-
 
 const MyCanvas = () => {
     let MyCanvas: HTMLCanvasElement = null;
     useEffect(() => {
         Paper.install(window);
-        window.addEventListener("keydown",onClick)
+        window.addEventListener("keydown", onClick)
         Paper.setup(MyCanvas);
         Paper.activate();
         Paper.settings.handleSize = 8//设置选中时的四个点的大小
@@ -38,17 +37,18 @@ const MyCanvas = () => {
             }
         }
     });
+
     return (
         <Content className="me-canvas under-bottonbox">
             <div className="under-botton">
                 <Tooltip placement="bottom" title={"zoomin"}>
-                    <Button onClick={ToolZoomin}><IconFont type="icon-zoomin" /></Button>
+                    <Button onClick={ToolZoomin}><IconFont type="icon-zoomin"/></Button>
                 </Tooltip>
                 <Tooltip placement="bottom" title={"zoomout"}>
-                    <Button onClick={ToolZoomout}><IconFont type="icon-zoomout" /></Button>
+                    <Button onClick={ToolZoomout}><IconFont type="icon-zoomout"/></Button>
                 </Tooltip>
                 <Tooltip placement="bottom" title={"zoomauto"}>
-                    <Button onClick={ToolZoomauto}><IconFont type="icon-zoom1" /></Button>
+                    <Button onClick={ToolZoomauto}><IconFont type="icon-zoom1"/></Button>
                 </Tooltip>
             </div>
             <canvas
@@ -72,8 +72,8 @@ const MyCanvas = () => {
                 data-paper-resize="true"
                 data-paper-keepalive="true"
                 style={{ width: '100%', height: '100%' }}
-                ></canvas>
-
+                >
+            </canvas>
         </Content>
 
     )
