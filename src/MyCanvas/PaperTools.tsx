@@ -240,6 +240,8 @@ export {
 const applyChange = (group: paper.Group, selectedShape: paper.Item[]) => {
     for (let i = 0; i < selectedShape.length; i++) {
         selectedShape[i].copyContent(group.children[i])
+        selectedShape[i].copyAttributes(group.children[i], false)
+        selectedShape[i].selected = false
     }
 }
 //将传进来的item[]复制一份，组成一个group;并将 原本 设置成不可见
@@ -288,7 +290,12 @@ const selectOnMouseUp = (event: paper.ToolEvent, project: paper.Project) => {
     if (event.downPoint.equals(event.point)) {
         selectedShape = project.getItems({//获取与点交叠的图形
             overlapping: new paper.Point(event.point),
-            class: paper.Path
+            match : function (item) {
+                if (item.className == 'PointText' || item.className == 'Path')
+                    return true
+                else
+                    return false
+            }
         })
         selectedShape = selectedShape.length != 0 ? [selectedShape[0]] : selectedShape;//只选择一个
     } else {
@@ -297,7 +304,12 @@ const selectOnMouseUp = (event: paper.ToolEvent, project: paper.Project) => {
                 from: event.downPoint,
                 to: event.point,
             }),
-            class: paper.Path
+            match : function (item) {
+                if (item.className == 'PointText' || item.className == 'Path')
+                    return true
+                else
+                    return false
+            }
         })
     }
     group = groupItem(selectedShape)

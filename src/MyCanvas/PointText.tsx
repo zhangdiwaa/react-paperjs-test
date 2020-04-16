@@ -66,7 +66,7 @@ class App extends Component {
                 fontFamily: 'Courier New',
                 fontWeight: 'bold',
                 fontSize: 25,
-                name:'Text'
+                name:'Text',
             });
         }
           tool.onMouseUp = (event: paper.ToolEvent) => {

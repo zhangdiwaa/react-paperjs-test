@@ -274,7 +274,7 @@ const Layer = () => {
 
     return <div style={{
         width: '100%',
-        height: 'calc(33.5vh)',
+        height: 'calc(35.5vh)',
         overflow: 'auto',
         position: 'relative'
     }}>
