@@ -2,13 +2,13 @@ import React, { useState,Component } from 'react';
 import { Modal, Button,Input} from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
 import Config from "../Common/Config";
-import {RemoveTool} from "./PaperTools";
 import EventHub from "../Common/Observer";
+import {RemoveTool} from "./PaperTools";
 import * as paper from "paper";
+
 const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
-const { TextArea } = Input;
 const pageChange = {
     pageChangeBefore: () => {
         EventHub.emit('pageChangeBefore', null)
@@ -22,36 +22,43 @@ class App extends Component {
         visible: false,
         confirmLoading: false,
         InputText: '',
-      };
+
+    };
     /**
      * 设置Modal弹出属性
      */
-      showModal = () => {
+    showModal = () => {
         this.setState({
-          visible: true,
+            visible: true,
         });
-      };
-     /**
-       * 读取input中的值，传给InputText
-       */
+    };
+    /**
+     * 读取input中的值，传给InputText
+     */
     handelChange = (e) =>{
-      this.setState({
-        InputText:e.target.value
-      })
-  }
-  /**
-   * OK按钮鼠标事件
-   */
-      handleOk = () => {
         this.setState({
-          confirmLoading: true,
+            InputText:e.target.value
+        })
+    }
+    /**
+     * OK按钮鼠标事件
+     */
+    handleOk = () => {
+        this.setState({
+            confirmLoading: true,
         });
         setTimeout(() => {
-          this.setState({
-            visible: false,
-            confirmLoading: false,
-          });
+            this.setState({
+                visible: false,
+                confirmLoading: false,
+            });
         });
+        this.PointText();
+    };
+    /**
+     * 取消按钮鼠标事件
+     */
+    PointText = () =>{
         /**
          * 嵌入实现打字效果的函数
          */
@@ -66,44 +73,55 @@ class App extends Component {
                 fontFamily: 'Courier New',
                 fontWeight: 'bold',
                 fontSize: 25,
-                name:'Text',
+                name: 'Text'
             });
+            text.onDoubleClick = () =>{
+                this.setState({
+                    visible: true,
+                })
+                text.onClick = () =>{
+                    text.content = this.state.InputText
+                }
+            }
         }
-          tool.onMouseUp = (event: paper.ToolEvent) => {
-              pageChange.pageChangeAfter()
-          }
-      };
-      /**
-       * 取消按钮鼠标事件
-       */
-      handleCancel = () => {
+        tool.onMouseUp = (event: paper.ToolEvent) => {
+            pageChange.pageChangeAfter()
+        }
+    }
+    handleCancel = () => {
         console.log('Clicked cancel button');
         this.setState({
-          visible: false,
+            visible: false,
         });
-      };
-      render() {
+    };
+    onKeyup = (e) =>{
+        if(e.keyCode === 13) {
+            this.handleOk()
+        }
+    }
+    render() {
         const { visible, confirmLoading} = this.state;
         return (
-          <div>
-            <Button  onClick={this.showModal}><IconFont type="icon-text" />
-            </Button>
-            <Modal
-              title="Input You Text"
-              visible={visible}
-              onOk={this.handleOk}
-              confirmLoading={confirmLoading}
-              onCancel={this.handleCancel}
-            >
-              <div>
-                <Input value={this.state.InputText}
-                onChange ={this.handelChange.bind(this)}>
-                  </Input>
-                  </div>
-            </Modal>
-          </div>
+            <div>
+                <Button  onClick={this. showModal}><IconFont type="icon-text" />
+                </Button>
+                <Modal
+                    title="Input You Text"
+                    visible={visible}
+                    onOk={this.handleOk}
+                    confirmLoading={confirmLoading}
+                    onCancel={this.handleCancel}
+                >
+                    <Input
+                        size="small"
+                        value={this.state.InputText}
+                        onChange ={this.handelChange.bind(this)}
+                        onKeyUp={this.onKeyup}
+                    >
+                    </Input>
+                </Modal>
+            </div>
         );
-      }
-
+    }
 }
 export default App;
