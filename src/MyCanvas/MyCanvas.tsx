@@ -17,15 +17,17 @@ const IconFont = createFromIconfontCN({
 });
 
 window.oncontextmenu=function(e){
-
-//取消默认的浏览器自带右键
+//取消默认右键
     e.preventDefault();
-
-//获取我们自定义的右键菜单
+//获取自定义的右键菜单
     var menu=document.querySelector("#menu") as HTMLBaseElement;
     menu.style.width='125px';
     menu.style.left=e.clientX-50+'px';
     menu.style.top=e.clientY-50+'px';
+}
+window.onclick=function(e){
+    var menu = document.querySelector('#menu') as HTMLBaseElement;
+    menu.style.width='0px';
 }
 
 const MyCanvas = () => {
