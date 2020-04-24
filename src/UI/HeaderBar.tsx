@@ -10,21 +10,21 @@ const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
 
-const About=()=>{
+const About = () => {
     //window.alert("开发人员：\n张迪\n贾志亮 罗远明 朱迪琪 金豪南 吴祥敏");
     Modal.info({
         title: '开发人员',
         content: (
-          <div>
-            <p>张迪</p>
-            <p>贾志亮 罗远明 朱迪琪 金豪南 吴祥敏</p>
-          </div>
+            <div>
+                <p>张迪</p>
+                <p>贾志亮 罗远明 朱迪琪 金豪南 吴祥敏 薛雨萌</p>
+            </div>
         ),
-        onOk() {},
-      });
+        onOk() {
+        },
+    });
 }
 const HeaderBar = () => {
-
     // //工具映射函数
     // const FunctionMap = (ToolType: string) => {
     //     //根据类型选择对应的函数
@@ -32,7 +32,6 @@ const HeaderBar = () => {
     //         case 'circle': return ToolDrawCircle;
     //     }
     // }
-
     return (
         <Header className="me-header">
             <div className="logo">

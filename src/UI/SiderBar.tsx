@@ -3,22 +3,27 @@ import {
     ToolMove,
     ToolDrawCircle,
     ToolDrawRect,
-    ToolFreePen,
     ToolDrawSegment,
-    ToolPointText,
     ToolEditPath,
     ToolEnlarge,
     ToolShrink,
+    BezierTool,
     ToolZoomauto
 } from "../MyCanvas/PaperTools"
+import PointText from "../MyCanvas/PointText"
+import Shape from "../MyCanvas/shape"
+import Brush from "../MyCanvas/Brush"
+import Color from "../MyCanvas/Color"
 import { Button, Layout, Tooltip } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
 import Config from "../Common/Config";
 const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
+const IconFont2 = createFromIconfontCN({
+    scriptUrl: '//at.alicdn.com/t/font_1764899_r5j3hzvw73.js',
+});
 const { Sider } = Layout;
-
 const SiderBar = () => {
 
     //工具映射函数
@@ -28,39 +33,38 @@ const SiderBar = () => {
             case 'circle': return ToolDrawCircle;
             case 'translate': return ToolMove;
             case 'rect': return ToolDrawRect;
-            case 'pen': return ToolFreePen;
             case 'segment': return ToolDrawSegment;
-            case 'text': return ToolPointText;
             case 'edit': return ToolEditPath;
             case 'enlarge': return ToolEnlarge;
-            case'shrink': return ToolShrink;
-            case'zoomauto': return ToolZoomauto;
+            case 'shrink': return ToolShrink;
+            case 'zoomauto': return ToolZoomauto;
+            case 'pen':return BezierTool;
         }
     }
 
     return (
         <Sider width={48} className="me-left-bar">
             <div>
+                <Tooltip placement="right" title={"brush"}>
+                    <Brush/>
+                </Tooltip>
                 <Tooltip placement="right" title={"pen"}>
-                    <Button onClick={FunctionMap("pen")} ><IconFont type="icon-pen" /></Button>
+                    <Button onClick={FunctionMap("pen")}><IconFont2 type="icon-gangbi" /></Button>
                 </Tooltip>
-                <Tooltip placement="right" title={"segment"}>
-                    <Button onClick={FunctionMap("segment")}><IconFont type="icon-Line" /></Button>
-                </Tooltip>
-                <Tooltip placement="right" title={"circle"}>
-                    <Button onClick={FunctionMap("circle")}><IconFont type="icon-Select-1" /></Button>
-                </Tooltip>
-                <Tooltip placement="right" title={"rect"}>
-                    <Button onClick={FunctionMap("rect")}><IconFont type="icon-Select-" /></Button>
+                <Tooltip placement="right" title={"shape"}>
+                    <Shape/>
                 </Tooltip>
                 <Tooltip placement="right" title={"translate"}>
                     <Button onClick={FunctionMap("translate")}><IconFont type="icon-hand" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"text"}>
-                    <Button onClick={FunctionMap("text")}><IconFont type="icon-text" /></Button>
+                    <PointText />
                 </Tooltip>
                 <Tooltip placement="right" title={"edit"}>
                     <Button onClick={FunctionMap("edit")}><IconFont type="icon-Link-Select" /></Button>
+                </Tooltip>
+                <Tooltip placement="right" title={"color"}>
+                    <Color/>
                 </Tooltip>
             </div>
         </Sider>

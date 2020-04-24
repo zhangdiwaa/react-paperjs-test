@@ -5,7 +5,6 @@ const onClick = (e: KeyboardEvent) =>{
         switch(e.code){
             case "KeyZ":Undo();break;
             case "KeyY":Redo();break;
-            case "KeyA":break;
         }
     }
     //console.log(e.code)

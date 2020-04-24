@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import Paper, {PaperScope} from "paper";
+import Paper from "paper";
 
 const MimiMap = () => {
 
@@ -13,21 +13,21 @@ const MimiMap = () => {
             strokeColor: 'black'
         });
         let path2: paper.Path.Circle = new paper.Path.Circle({
-            center: [80,50],
+            center: [80, 50],
             radius: 30,
             strokeColor: "black"
         })
-        
+
     });
 
     return (
-        
-        <canvas style={{ height: "100%", width: "100%"}}
-         ref={ref => {
-         MiniCanvas = ref
-         }} id='MiniCanvas'/>
+
+        <canvas style={{height: "100%", width: "100%"}}
+                ref={ref => {
+                    MiniCanvas = ref
+                }} id='MiniCanvas'/>
     )
-    
+
 }
 
 export default MimiMap
