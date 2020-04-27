@@ -13,7 +13,7 @@ import {
 import PointText from "../MyCanvas/PointText"
 import Shape from "../MyCanvas/shape"
 import Brush from "../MyCanvas/Brush"
-import Color from "../MyCanvas/Color"
+import ColorPicker from "../MyCanvas/ColorPicker"
 import { Button, Layout, Tooltip } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
 import Config from "../Common/Config";
@@ -64,7 +64,7 @@ const SiderBar = () => {
                     <Button onClick={FunctionMap("edit")}><IconFont type="icon-Link-Select" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"color"}>
-                    <Color/>
+                    <ColorPicker/>
                 </Tooltip>
             </div>
         </Sider>
