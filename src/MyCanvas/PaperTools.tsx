@@ -9,6 +9,11 @@ const pageChange = {
         EventHub.emit('pageChangeAfter', null)
     }
 }
+const getColor=()=>{
+    let t=document.getElementById('buttonColor')
+    //console.log(t)
+    return t.style.background
+}
 
 /**
  * name ToolMove
@@ -26,7 +31,7 @@ const ToolMove = () => {
  * name ToolDrawCircle
  * desc 画圆
  */
-const ToolDrawCircle = (color) => {
+const ToolDrawCircle = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
     //记录鼠标按下时的canvas
@@ -38,7 +43,7 @@ const ToolDrawCircle = (color) => {
         let path: paper.Path.Circle = new paper.Path.Circle({
             center: event.downPoint,
             radius: event.downPoint.subtract(event.point).length,
-            strokeColor: color,
+            strokeColor: getColor(),
             name: 'Circle'
         })
         path.removeOnDrag()
@@ -57,14 +62,14 @@ const ToolDrawCircle = (color) => {
  * name ToolDrawRect
  * desc 画方
  */
-const ToolDrawRect = (color) => {
+const ToolDrawRect = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDrag = (event: paper.ToolEvent) => {
         let path: paper.Path.Rectangle = new paper.Path.Rectangle({
             from: event.downPoint,
             to: event.point,
-            strokeColor: color,
+            strokeColor: getColor(),
             name: 'Rectangle'
         })
         path.removeOnDrag()
@@ -165,35 +170,35 @@ const BezierTool = () => {
 }
 /**
  * 画云
- * @param color
  */
-const Clouds = (color) => {
+const Clouds = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool();
     // Any newly created item will inherit the following styles:
-    let path = new paper.Path({
-        strokeColor: color,
-        strokeWidth: 5,
-        strokeJoin: 'round',
-        strokeCap: 'round'
-    })
+    let path;
     // The user has to drag the mouse at least 30pt before the mouse drag
     // event is fired:
     paper.tool.minDistance = 30;
     tool.onMouseDown = (event) => {
+        path = new paper.Path({
+            strokeColor: getColor(),
+            strokeWidth: 5,
+            strokeJoin: 'round',
+            strokeCap: 'round'
+        })
         path.add(event.point);
     }
     tool.onMouseDrag = (event) => {
         path.arcTo(event.point, true);
     }
 }
-const Fancy_brush = (color) => {
+const Fancy_brush = () => {
     RemoveTool()
     let tool = new paper.Tool();
     tool.fixedDistance = 80;
 
     let path = new paper.Path({
-        fillColor: color
+        fillColor: getColor()
     });
     let strokeEnds = 6;
     let lastPoint;
@@ -201,7 +206,7 @@ const Fancy_brush = (color) => {
         // If this is the first drag event,
         // add the strokes at the start:
         if (event.count === 0) {
-            addStrokes(event.middlePoint, event.delta * -1);
+            addStrokes(event.middlePoint, event.delta.multiply(-1));
         } else {
             let step = event.delta.divide(2);
             step.angle += 90;
@@ -228,8 +233,8 @@ const Fancy_brush = (color) => {
     }
 
     const addStrokes = (point, delta) => {
-        //let step = delta.rotate(90);
-        let step = delta.rotate;
+        let step = delta.rotate(90);
+        //let step = delta.rotate;
         let strokePoints = strokeEnds * 2 + 1;
         point = point.subtract(step.divide(2));
         step = step.subtract(strokePoints - 1);
@@ -244,7 +249,7 @@ const Fancy_brush = (color) => {
         }
     }
 }
-const DrippingBrush = (color) => {
+const DrippingBrush = () => {
     RemoveTool()
     let path: paper.Path;
     let minSize = 5;
@@ -256,7 +261,7 @@ const DrippingBrush = (color) => {
             // If there is no path, make one:
             if (!path) {
                 path = new paper.Path({
-                    fillColor: color
+                    fillColor: getColor()
                 });
                 path.add(event.lastPoint);
             }
@@ -298,7 +303,7 @@ const DrippingBrush = (color) => {
  * name ToolFreePen
  * desc 画笔
  */
-const ToolFreePen = (color) => {
+const ToolFreePen = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
     tool.minDistance = 10;
@@ -308,7 +313,7 @@ const ToolFreePen = (color) => {
     tool.onMouseDown = () => {
         pageChange.pageChangeBefore()
         path = new paper.Path({
-            strokeColor: color,
+            strokeColor: getColor(),
             name: 'Path'
         })
     }
@@ -316,6 +321,7 @@ const ToolFreePen = (color) => {
         path.add(event.point)
     }
     tool.onMouseUp = () => {
+        path.smooth()
         pageChange.pageChangeAfter()
     }
 }
@@ -325,12 +331,12 @@ const ToolFreePen = (color) => {
  * name ToolDrawSegment
  * desc 画线段
  */
-const ToolDrawSegment = (color) => {
+const ToolDrawSegment = () => {
     RemoveTool()
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDrag = (event: paper.ToolEvent) => {
         let path: paper.Path = new paper.Path({
-            strokeColor: color,
+            strokeColor: getColor(),
             name: 'Segment'
         })
         path.add(event.downPoint, event.point);
@@ -510,7 +516,7 @@ const editOnMouseDown = () => {
 const editOnMouseDrag = (event: paper.ToolEvent, group: paper.Group, isShiftDown: Boolean) => {
     let a: paper.Point = event.point.subtract(group.bounds.center)//变化的长度
     let b: paper.Point = group.bounds.bottomLeft.subtract(group.bounds.center)//原来图形的长度
-    let factor: any = null//比例因子
+    let factor: any //比例因子
     if (!isShiftDown) {
         factor = new paper.Point(1, 1).multiply(a.x / b.x).abs()//没有按下shift，则按原来比例缩放
     } else {
@@ -620,7 +626,7 @@ function ToolEditPath(scope: any) {//这个scope相当于this
         }
     }
     //以下三个事件函数触发动作
-    tool.onMouseDown = (event: paper.ToolEvent) => {
+    tool.onMouseDown = () => {
         pageChange.pageChangeBefore()
         lockState = true
         switch (myCanvas.className) {

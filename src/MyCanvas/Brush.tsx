@@ -7,7 +7,6 @@ import {Clouds, DrippingBrush, Fancy_brush, ToolFreePen} from './PaperTools';
 const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
-let color = 'black';
 const radioStyle = {
     display: 'block',
     height: '30px',
@@ -24,7 +23,7 @@ class App extends Component {
      */
     handelChange = (e) => {
         console.log('radio checked ', e.target.value);
-        this.Shape(e.target.value);
+        this.Brush(e.target.value);
         this.setState({
             choose_type: e.target.value
         });
@@ -34,15 +33,15 @@ class App extends Component {
     /**
      *
      */
-    Shape = (n) => {
+    Brush = (n) => {
         if (n === 1) {
-            ToolFreePen(color);
+            ToolFreePen();
         } else if (n === 2) {
-            Clouds(color);
+            Clouds();
         } else if (n === 3) {
-            Fancy_brush(color);
+            Fancy_brush();
         } else if (n === 4) {
-            DrippingBrush(color);
+            DrippingBrush();
         }
     };
 
@@ -52,7 +51,7 @@ class App extends Component {
                 <Radio.Group onChange={this.handelChange} value={this.state.choose_type}>
                     <Radio style={radioStyle} value={1}>Solid Line</Radio>
                     <Radio style={radioStyle} value={2}>Clouds</Radio>
-                    <Radio style={radioStyle} value={3}>Fancy Brush</Radio>
+                    {/*<Radio style={radioStyle} value={3}>Fancy Brush</Radio>*/}
                     <Radio style={radioStyle} value={4}>Dripping Brush</Radio>
                 </Radio.Group>
             } trigger="hover">

@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Button, Popover} from 'antd';
 import {ChromePicker} from 'react-color'
 
+
+
 class App extends Component {
     state = {
         visible: false,
@@ -18,7 +20,9 @@ class App extends Component {
             color: color.rgb
         });
     };
-
+    public Color=()=>{
+        return `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`
+    }
     render() {
         return (
             <Popover placement="rightTop" title={"Brush"} content={
@@ -27,9 +31,9 @@ class App extends Component {
                     onChangeComplete={this.handleChangeComplete}
                 />
             } trigger="hover">
-                <Button style={{
+                <Button id={'buttonColor'} style={{
                     width: 32,
-                    background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`
+                    background: this.Color()
                 }}/>
             </Popover>
         );

@@ -10,7 +10,6 @@ import {
 const IconFont = createFromIconfontCN({
     scriptUrl: '//at.alicdn.com/t/font_1764899_r5j3hzvw73.js',
 });
-let color = 'black'
 
 class App extends Component {
     state = {
@@ -25,11 +24,11 @@ class App extends Component {
             choose_type: e.target.value
         })
         if (e.target.value === 1) {
-            ToolDrawSegment(color);
+            ToolDrawSegment();
         } else if (e.target.value === 2) {
-            ToolDrawCircle(color);
+            ToolDrawCircle();
         } else {
-            ToolDrawRect(color);
+            ToolDrawRect();
         }
     }
 
