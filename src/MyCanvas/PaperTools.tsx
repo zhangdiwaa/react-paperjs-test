@@ -44,11 +44,12 @@ const ToolDrawCircle = () => {
             name: 'Circle'
         })
         path.removeOnDrag()
+        console.log(path.segments)
     }
     tool.onMouseDown = (event: any) => {
         //页面发生改变之前
         pageChange.pageChangeBefore()
-        nowCanvas=event.event.target.id
+        nowCanvas = event.event.target.id
     }
     tool.onMouseUp = (event: paper.ToolEvent) => {
         //页面发生改变之后
@@ -257,8 +258,8 @@ const groupItem = (selectedShape: paper.Item[]) => {
 
 //选择的三个函数分别对应Down，Drag，Up
 
-const selectOnMouseDown=(group:paper.Group,selectedShape:any)=>{
-    if(group){//在每个选择开始阶段，都将上一个选择框创建的group删除
+const selectOnMouseDown = (group: paper.Group, selectedShape: any) => {
+    if (group) {//在每个选择开始阶段，都将上一个选择框创建的group删除
         group.remove()
         selectedShape.forEach(element => {//并将selectedShape的每个图元设置为可见
             element.visible = true
@@ -352,23 +353,23 @@ function ToolEditPath(scope: any) {//这个scope相当于this
     let isShiftDown: Boolean = false;
     //判断shift是否按下
 
-    tool.onKeyDown=(event:paper.KeyEvent)=>{
+    tool.onKeyDown = (event: paper.KeyEvent) => {
         //判断shift是否按下
-        if(event.key=="shift"){
-            isShiftDown=true
+        if (event.key == "shift") {
+            isShiftDown = true
         }
         //判断delete是否按下
-        if(event.key==="delete"){
+        if (event.key === "delete") {
             pageChange.pageChangeBefore()
             paper.project.getItems({
-                class:paper.Group,
-                match:function(item){
+                class: paper.Group,
+                match: function (item) {
                     //console.log("item: ")
                     //console.log(item)
-                    if(item.className==="Group")
+                    if (item.className === "Group")
                         return true
                 }
-            }).forEach(element=>{
+            }).forEach(element => {
                 //console.log("element； "+element)
                 element.remove()
             })
