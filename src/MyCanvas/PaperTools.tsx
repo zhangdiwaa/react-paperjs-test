@@ -192,60 +192,42 @@ const Clouds = () => {
         path.arcTo(event.point, true);
     }
 }
-const Fancy_brush = () => {
+/**
+ * 五条线的画笔
+ * @constructor
+ */
+const MultiLines=()=>{
     RemoveTool()
-    let tool = new paper.Tool();
-    tool.fixedDistance = 80;
+    let tool=new paper.Tool()
+    tool.fixedDistance = 30;
 
-    let path = new paper.Path({
-        fillColor: getColor()
-    });
-    let strokeEnds = 6;
-    let lastPoint;
-    tool.onMouseDrag = (event) => {
-        // If this is the first drag event,
-        // add the strokes at the start:
-        if (event.count === 0) {
-            addStrokes(event.middlePoint, event.delta.multiply(-1));
-        } else {
-            let step = event.delta.divide(2);
-            step.angle += 90;
+    let values = {
+        lines: 5,
+        size: 40,
+        smooth: true
+    };
 
-            // The top point: the middle point + the step rotated by 90 degrees:
-            let top = event.middlePoint.add(step);
+    let paths;
 
-            // The bottom point: the middle point - the step rotated by 90 degrees:
-            let bottom = event.middlePoint.subtract(step);
-            path.add(top);
-            path.insert(0, bottom);
+    tool.onMouseDown=(event)=> {
+        paths = [];
+        for (let i = 0; i < values.lines; i++) {
+            let path = new paper.Path({
+                strokeColor:getColor()
+            })
+            paths.push(path);
         }
-        path.smooth();
-
-        lastPoint = event.middlePoint;
     }
 
-    tool.onMouseUp = (event) => {
-        let delta = event.point.subtract(lastPoint);
-        delta.length = tool.maxDistance;
-        addStrokes(event.point, delta);
-        path.closed = true;
-        path.smooth();
-    }
-
-    const addStrokes = (point, delta) => {
-        let step = delta.rotate(90);
-        //let step = delta.rotate;
-        let strokePoints = strokeEnds * 2 + 1;
-        point = point.subtract(step.divide(2));
-        step = step.subtract(strokePoints - 1);
-        for (let i = 0; i < strokePoints; i++) {
-            let strokePoint = point.add(step.multiply(i));
-            let offset = delta.multiply(Math.random() * 0.3 + 0.1);
-            if (i % 2) {
-                offset = offset.multiply(-1);
-            }
-            strokePoint = strokePoint.add(offset);
-            path.insert(0, strokePoint);
+    tool.onMouseDrag=(event)=> {
+        let offset = event.delta;
+        offset.angle = offset.angle + 90;
+        let lineSize = values.size / values.lines;
+        for (let i = 0; i < values.lines; i++) {
+            let path = paths[values.lines - 1 - i];
+            offset.length = lineSize * i + lineSize / 2;
+            path.add(event.middlePoint.add(offset));
+            path.smooth();
         }
     }
 }
@@ -420,7 +402,7 @@ export {
     BezierTool,
     ToolShrink,
     Clouds,
-    Fancy_brush,
+    MultiLines,
     DrippingBrush,
     ToolZoomauto,
     ToolZoomin,

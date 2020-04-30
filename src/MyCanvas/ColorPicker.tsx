@@ -20,7 +20,7 @@ class App extends Component {
             color: color.rgb
         });
     };
-    public Color=()=>{
+    Color=()=>{
         return `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`
     }
     render() {

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Button, Radio, Popover} from 'antd';
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
-import {Clouds, DrippingBrush, Fancy_brush, ToolFreePen} from './PaperTools';
+import {Clouds, DrippingBrush, MultiLines, ToolFreePen} from './PaperTools';
 
 const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
@@ -39,7 +39,7 @@ class App extends Component {
         } else if (n === 2) {
             Clouds();
         } else if (n === 3) {
-            Fancy_brush();
+            MultiLines();
         } else if (n === 4) {
             DrippingBrush();
         }
@@ -51,7 +51,7 @@ class App extends Component {
                 <Radio.Group onChange={this.handelChange} value={this.state.choose_type}>
                     <Radio style={radioStyle} value={1}>Solid Line</Radio>
                     <Radio style={radioStyle} value={2}>Clouds</Radio>
-                    {/*<Radio style={radioStyle} value={3}>Fancy Brush</Radio>*/}
+                    <Radio style={radioStyle} value={3}>MultiLines</Radio>
                     <Radio style={radioStyle} value={4}>Dripping Brush</Radio>
                 </Radio.Group>
             } trigger="hover">

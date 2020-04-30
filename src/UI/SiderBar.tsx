@@ -31,7 +31,7 @@ const SiderBar = () => {
         //根据类型选择对应的函数
         switch (ToolType) {
             case 'circle': return ToolDrawCircle;
-            case 'translate': return ToolMove;
+            case 'hand': return ToolMove;
             case 'rect': return ToolDrawRect;
             case 'segment': return ToolDrawSegment;
             case 'edit': return ToolEditPath;
@@ -54,8 +54,8 @@ const SiderBar = () => {
                 <Tooltip placement="right" title={"shape"}>
                     <Shape/>
                 </Tooltip>
-                <Tooltip placement="right" title={"translate"}>
-                    <Button onClick={FunctionMap("translate")}><IconFont type="icon-hand" /></Button>
+                <Tooltip placement="right" title={"hand"}>
+                    <Button onClick={FunctionMap("hand")}><IconFont type="icon-hand" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"text"}>
                     <PointText />
