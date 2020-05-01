@@ -19,7 +19,7 @@ let inner = 0.3;
 //外径占多少
 let outer = 0.8;
 //glyph的数量
-let glyphNum = 3;
+let glyphNum = 20;
 //每个glyph之间相隔的角度之和
 let gap = 0.05;
 //开始的角度
@@ -73,7 +73,7 @@ const RefreshOverview = () => {
         topPointX = single.bounds.x;
         topPointY = single.bounds.y;
         //对glyph进行缩放
-        single.scale(topEdge / single.bounds.width, (outerEdge - innerEdge) / single.bounds.height)
+        single.scale(bottomEdge / single.bounds.width, (outerEdge - innerEdge) / single.bounds.height)
         // let scaleV = Math.min((outerEdge - innerEdge) / single.bounds.height, topEdge / single.bounds.width)
         // single.scale(scaleV, scaleV)
         //对glyph进行形变
@@ -125,14 +125,14 @@ function Reshape(item) {
             // let numbers = new paper.Matrix().transform([1, 1, 101, 1, 1, 101, 101, 101], [1, 1, 101, 1, 21, 101, 81, 101], 4);
             // console.log(numbers)
             // item.transform(new paper.Matrix(1, 0, 0, 1, -topPointX, -topPointY))
-            let segments = item.segments;
+            // let segments = item.segments;
             // console.log(segments[0].point)
             // segments[0].point.x = (segments[0].point.x + 0 * segments[0].point.y + 0) / (-0.2 + 0 + 1)
             // segments[3].point.x = (segments[3].point.x + 0 * segments[3].point.y + 0) / (0.12 + 0 + 1)
-            segments[0].point.x = Math.abs(topPointY - segments[0].point.y) * tan + segments[0].point.x;
-            segments[1].point.x = Math.abs(topPointY - segments[1].point.y) * tan + segments[1].point.x;
-            segments[2].point.x = -Math.abs(topPointY - segments[2].point.y) * tan + segments[2].point.x;
-            segments[3].point.x = -Math.abs(topPointY - segments[3].point.y) * tan + segments[3].point.x;
+            // segments[0].point.x = Math.abs(topPointY - segments[0].point.y) * tan + segments[0].point.x;
+            // segments[1].point.x = Math.abs(topPointY - segments[1].point.y) * tan + segments[1].point.x;
+            // segments[2].point.x = -Math.abs(topPointY - segments[2].point.y) * tan + segments[2].point.x;
+            // segments[3].point.x = -Math.abs(topPointY - segments[3].point.y) * tan + segments[3].point.x;
         } else if (item.name.indexOf('Circle') != -1) {
             let segments = item.segments;
             item.transform(new paper.Matrix(1, 0, tan, 1, -topPointX, -topPointY))
