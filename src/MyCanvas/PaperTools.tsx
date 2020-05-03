@@ -231,6 +231,10 @@ const MultiLines=()=>{
         }
     }
 }
+/**
+ * 滴水刷
+ * @constructor
+ */
 const DrippingBrush = () => {
     RemoveTool()
     let path: paper.Path;
@@ -283,7 +287,7 @@ const DrippingBrush = () => {
 }
 /**
  * name ToolFreePen
- * desc 画笔
+ * desc 自由画笔
  */
 const ToolFreePen = () => {
     RemoveTool()

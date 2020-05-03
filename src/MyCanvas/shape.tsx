@@ -13,8 +13,7 @@ const IconFont = createFromIconfontCN({
 
 class App extends Component {
     state = {
-        choose_type: 0,
-
+        choose_type: 0
     };
     /**
      * 读取Radio中的值，传给choose_type
@@ -23,15 +22,23 @@ class App extends Component {
         this.setState({
             choose_type: e.target.value
         })
-        if (e.target.value === 1) {
+        this.shape(e.target.value)
+    }
+
+    shape=(n)=>{
+        if (n === 1) {
             ToolDrawSegment();
-        } else if (e.target.value === 2) {
+        } else if (n === 2) {
             ToolDrawCircle();
-        } else {
+        } else if(n===3){
             ToolDrawRect();
         }
     }
-
+    click=()=>{
+        if(this.state.choose_type){
+            this.shape(this.state.choose_type)
+        }
+    }
     render() {
         return (
             <Popover placement="rightTop" title={"Shape"} content={
@@ -40,8 +47,8 @@ class App extends Component {
                     <Radio value={2}>circle</Radio>
                     <Radio value={3}>rectangle</Radio>
                 </Radio.Group>
-            } trigger="hover">
-                <Button><IconFont type="icon-duobianxing"/>
+            } trigger="click">
+                <Button onClick={this.click}><IconFont type="icon-duobianxing"/>
                 </Button>
             </Popover>
         );

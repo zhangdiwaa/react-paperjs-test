@@ -15,8 +15,7 @@ const radioStyle = {
 
 class App extends Component {
     state = {
-        choose_type: 0,
-        gap: 5
+        choose_type: 0
     };
     /**
      * 读取Radio中的值，传给choose_type
@@ -45,6 +44,11 @@ class App extends Component {
         }
     };
 
+    onclick=()=>{
+        if(this.state.choose_type){
+            this.Brush(this.state.choose_type)
+        }
+    }
     render() {
         return (
             <Popover placement="rightTop" title={"Brush"} content={
@@ -54,8 +58,8 @@ class App extends Component {
                     <Radio style={radioStyle} value={3}>MultiLines</Radio>
                     <Radio style={radioStyle} value={4}>Dripping Brush</Radio>
                 </Radio.Group>
-            } trigger="hover">
-                <Button><IconFont type="icon-pen"/>
+            } trigger="click">
+                <Button onClick={this.onclick}><IconFont type="icon-pen"/>
                 </Button>
             </Popover>
         );

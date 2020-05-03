@@ -3,11 +3,8 @@ import {Button, Popover} from 'antd';
 import {ChromePicker} from 'react-color'
 
 
-
 class App extends Component {
     state = {
-        visible: false,
-        confirmLoading: false,
         color: {
             r: '241',
             g: '112',
@@ -20,14 +17,15 @@ class App extends Component {
             color: color.rgb
         });
     };
-    Color=()=>{
+    Color = () => {
         return `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`
     }
+
     render() {
         return (
             <Popover placement="rightTop" title={"Brush"} content={
                 <ChromePicker
-                    color={`rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`}
+                    color={this.Color()}
                     onChangeComplete={this.handleChangeComplete}
                 />
             } trigger="hover">

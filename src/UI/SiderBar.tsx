@@ -58,7 +58,7 @@ const SiderBar = () => {
                     <Button onClick={FunctionMap("hand")}><IconFont type="icon-hand" /></Button>
                 </Tooltip>
                 <Tooltip placement="right" title={"text"}>
-                    <PointText />
+                    <PointText/>
                 </Tooltip>
                 <Tooltip placement="right" title={"edit"}>
                     <Button onClick={FunctionMap("edit")}><IconFont type="icon-Link-Select" /></Button>
