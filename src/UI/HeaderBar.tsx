@@ -3,7 +3,11 @@ import {Button, Layout, Tooltip, Menu, Modal} from 'antd';
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
 import {Redo, Undo} from '../Common/UndoAndRedo';
-
+import {GridLayout,
+    XaxisLayout,
+    YaxisLayout,
+    XYaxisLayout
+} from '../MyCanvas/Layout'
 const {Header} = Layout;
 const {SubMenu} = Menu;
 const IconFont = createFromIconfontCN({
@@ -59,6 +63,21 @@ const HeaderBar = () => {
                 <Menu.Item key="7">Group</Menu.Item>
                 <Menu.Item key="8">scafford</Menu.Item>
                 <Menu.Item key="9" onClick={About}>About</Menu.Item>
+                <SubMenu
+                    title={
+                        <span className="submenu-title-wrapper">
+                           Layout
+                         </span>
+                    }>
+                    <Menu.ItemGroup>
+                        <Menu.Item key="10" onClick={XaxisLayout}>x-axis</Menu.Item>
+                        <Menu.Item key="11" onClick={YaxisLayout}>y-axis</Menu.Item>
+                    </Menu.ItemGroup>
+                    <Menu.ItemGroup>
+                        <Menu.Item key="12" onClick={XYaxisLayout}>xy-axis</Menu.Item>
+                        <Menu.Item key="13" onClick={GridLayout}>GridLayout</Menu.Item>
+                    </Menu.ItemGroup>
+                </SubMenu>
             </Menu>
             <div className="buttons">
                 <Tooltip placement="bottom" title={"undo"}>

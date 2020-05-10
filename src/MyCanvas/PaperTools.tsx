@@ -307,11 +307,10 @@ const ToolFreePen = () => {
         path.add(event.point)
     }
     tool.onMouseUp = () => {
-        path.smooth()
+        //path.smooth()
         pageChange.pageChangeAfter()
     }
 }
-
 
 /**
  * name ToolDrawSegment
