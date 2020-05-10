@@ -24,6 +24,7 @@ const IconFont2 = createFromIconfontCN({
     scriptUrl: '//at.alicdn.com/t/font_1764899_r5j3hzvw73.js',
 });
 const { Sider } = Layout;
+
 const SiderBar = () => {
 
     //工具映射函数
