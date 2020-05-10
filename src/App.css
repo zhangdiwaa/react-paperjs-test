@@ -68,8 +68,16 @@
     width: 30%;
 }
 
-/*react-split-pane*/
+/*for paper.js canvas*/
+canvas[resize] {
+    width: 100%;
+    height: 100%;
+}
+.me-layout .ant-layout-content{
+    overflow-x:visible !important;
+}
 
+/*react-split-pane*/
 .Resizer {
     background: #000;
     opacity: 0.2;
@@ -122,13 +130,6 @@
     border-color: transparent;
 }
 
-#myCanvas {
-    width: 97%;
-    height: 99%;
-    padding: 0px;
-    margin-left: 0px;
-}
-
 .under-bottonbox{
     position: relative;
 }
@@ -176,3 +177,39 @@
     margin: 3px;
 }
 
+.rightclick{
+    display: none;
+    width: 100px;
+    height: 160px;
+    border-width: 1px 1px 0 1px;
+    background-color: rgba(242,242,242,0.6);
+    border-radius: 4px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+.rightclick ul{
+    list-style: none;
+    cursor: pointer;
+
+}
+.rightclick ul li{
+    text-align: center;
+    height: 31px;
+    line-height: 31px;
+    border-bottom: 1px solid #666;
+}
+
+#menu{
+    width: 0; /*设置为0 隐藏自定义菜单*/
+    height: 125px;
+    overflow: hidden; /*隐藏溢出的元素*/
+    box-shadow: 0 1px 1px #888,1px 0 1px #ccc;
+    position: absolute; /*自定义菜单相对与body元素进行定位*/
+}
+.menu{
+    width: 130px;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 10px;
+}

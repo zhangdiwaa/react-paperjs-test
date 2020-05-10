@@ -1,9 +1,14 @@
-import React, {ReactDOM, useState} from 'react';
-import {Tree, Button} from 'antd';
+import React, {useState} from 'react';
+import {Tree, Button, Popover} from 'antd';
 import * as paper from 'paper';
 import EventHub from "../Common/Observer";
-import HeaderBar from "./HeaderBar";
-import { ToolEditPath } from '../MyCanvas/PaperTools';
+import {ToolEditPath} from "../MyCanvas/PaperTools";
+import {createFromIconfontCN} from '@ant-design/icons';
+import Config from "../Common/Config";
+
+const IconFont = createFromIconfontCN({
+    scriptUrl: Config.IconUrl,
+});
 
 let treeRef;
 //用于保存layer的数组
@@ -13,10 +18,9 @@ let canvasTree = [{
 }];
 //用于保存选择的节点、
 let nodeCheckedArray = []
-
-//菜单的数据
-const menuOptions = {}
-
+//当前选中的节点
+let selectedKey = '-1'
+// 更新数据树节点的数据
 let treeDataGlobal, setTreeDataGlobal;
 /**
  * 加载Layer的children对象
@@ -74,26 +78,47 @@ const Refresh = () => {
         //对layer的children进行解析，返回结果保存
         let leaf = loadChildren(layers[i].children);
         layerNode.children = leaf
+
         //将layer保存
         canvasTree = [...canvasTree, layerNode]
     }
-    treeRef.tree.setState({
-        checkedKeys: paper.project.getItems({
-            visible: false
-        }).map(item => {
-            return item.id.toString()
-        })
+    nodeCheckedArray = paper.project.getItems({
+        match: item => {
+            return item.visible == false
+        },
+        class: paper.Path
+    }).map(item => {
+        return item.id.toString()
     })
+    treeRef.tree.setState({
+        checkedKeys: nodeCheckedArray
+    })
+    SelectedItem()
     setTreeDataGlobal(canvasTree)
 }
 
-const RightMenu = () => {
-
+/**
+ * 选择当前选中的item，如果之前选中的item已经不存再，则选中其根节点
+ * @param id
+ */
+const SelectedItem = () => {
+    let item = paper.project.getItem({
+        match: (item) => {
+            return item.id == parseInt(selectedKey)
+        }
+    });
+    if (item == null) {
+        selectedKey = canvasTree[0].key.toString()
+        treeRef.tree.setState({
+            selectedKeys: [canvasTree[0].key.toString()]
+        })
+    } else {
+        treeRef.tree.setState({
+            selectedKeys: [selectedKey]
+        })
+    }
 }
 
-const treeSelect = () => {
-
-}
 /**
  * 生成LayerList
  * @constructor
@@ -101,16 +126,17 @@ const treeSelect = () => {
 const Layer = () => {
     //useState 是允许你在 React 函数组件中添加 state 的 Hook
     const [treeData, setTreeData] = useState(canvasTree);
+    const [visible, setVisible] = useState(false);
     const [rightData, setRightData] = useState({
         id: 0,
         pageX: 0,
         pageY: 0,
         isSelected: false
     })
-    const [checkedData, setCheckedData] = useState(nodeCheckedArray)
     //保存为全局变量
     treeDataGlobal = treeData
     setTreeDataGlobal = setTreeData
+
     /**
      * 用于清除右键菜单
      * @constructor
@@ -124,6 +150,48 @@ const Layer = () => {
         })
     }
     /**
+     * 删除某一项
+     * @constructor
+     */
+    const DeleteItem = () => {
+        let item = paper.project.getItem({
+            match: (item) => {
+                return item.id == parseInt(selectedKey)
+            }
+        });
+        if (item != null) {
+            EventHub.emit('pageChangeBefore', null)
+            item.remove()
+            EventHub.emit('pageChangeAfter', null)
+        }
+    }
+    /**
+     * 添加图层
+     * @constructor
+     */
+    const AddLayer = () => {
+        let item = paper.project.getItem({
+            match: (item) => {
+                return item.id == parseInt(selectedKey)
+            }
+        })
+        if (item != null) {
+            EventHub.emit('pageChangeBefore', null)
+            let newLayer = new paper.Layer({
+                name: 'Layer'
+            })
+            if (item.className == 'Layer') {
+                item.insertChild(item.children.length, newLayer)
+            } else {
+                item.parent.addChild(newLayer)
+            }
+            selectedKey = newLayer.id.toString()
+            newLayer.activate()
+            SelectedItem()
+            EventHub.emit('pageChangeAfter', null)
+        }
+    }
+    /**
      * 生成右键菜单
      * @constructor
      */
@@ -135,7 +203,7 @@ const Layer = () => {
             <div style={{
                 position: 'absolute',
                 textAlign: 'center',
-                left: `${pageX +35}px`,
+                left: `${pageX + 35}px`,
                 top: `${pageY}px`,
                 border: '1px solid #ccc',
                 backgroundColor: '#fff'
@@ -155,45 +223,6 @@ const Layer = () => {
                     padding: '0px'
                 }}/>
                 <Button type='link'>Edit</Button>
-                <hr style={{
-                    margin: '0px',
-                    padding: '0px'
-                }}/>
-                <Button onClick={(e) => {
-                    if (id === 0) {
-                        return;
-                    }
-                    EventHub.emit('pageChangeBefore', null)
-                    let item = paper.project.getItem({id: id});
-                    if (item.className === 'Layer') {
-                        let newLayer = new paper.Layer({
-                            name: 'Layer'
-                        })
-                        item.insertChild(item.children.length, newLayer)
-                        newLayer.activate()
-                    }
-                    ClearRightData()
-                    EventHub.emit('pageChangeAfter', null)
-                }} type='link'>Add Layer</Button>
-                <hr style={{
-                    margin: '0px',
-                    padding: '0px'
-                }}/>
-                <Button onClick={(e) => {
-                    EventHub.emit('pageChangeBefore', null)
-                    let item = paper.project.getItem({id: id});
-                    if (item.className === 'Layer') {
-                        paper.project.layers.forEach(layer => {
-                            if (layer.id == id) {
-                                layer.activate()
-                            } else {
-                                ActivateLayer(layer.children, id)
-                            }
-                        })
-                    }
-                    ClearRightData()
-                    EventHub.emit('pageChangeBefore', null)
-                }} type='link'>Activate Layer</Button>
             </div>
         )
         return rightData.isSelected ? menu : ''
@@ -205,8 +234,7 @@ const Layer = () => {
      * @constructor
      */
     const RightClick = ({event, node}) => {
-        if(event.currentTarget.offsetTop + event.currentTarget.offsetHeight <= event.currentTarget.offsetParent.offsetHeight &&
-            event.currentTarget.offsetLeft + event.currentTarget.offsetWidth <= event.currentTarget.offsetParent.offsetWidth){
+        if(event.clientY * 0.10 <= 68){
             setRightData({
                 pageX: event.currentTarget.offsetLeft,
                 pageY: event.currentTarget.offsetTop,
@@ -214,17 +242,24 @@ const Layer = () => {
                 isSelected: true
             })
         }
-        if(event.currentTarget.offsetTop + event.currentTarget.offsetHeight > event.currentTarget.offsetParent.offsetHeight ||
-            event.currentTarget.offsetLeft + event.currentTarget.offsetWidth > event.currentTarget.offsetParent.offsetWidth){
+
+        if(event.clientY * 0.10 > 68){
             setRightData({
-                pageX: event.currentTarget.offsetLeft -10,
-                pageY: event.currentTarget.offsetTop - 35,
+                pageX: event.currentTarget.offsetLeft,
+                pageY: event.currentTarget.offsetTop - 40,
                 id: parseInt(node.key),
                 isSelected: true
             })
         }
     }
 
+
+    /**
+     * 递归激活图层
+     * @param layerChildren
+     * @param id
+     * @constructor
+     */
     const ActivateLayer = (layerChildren: any[], id: number) => {
         layerChildren.forEach(item => {
             if (item.children != null) {
@@ -239,26 +274,63 @@ const Layer = () => {
 
     return <div style={{
         width: '100%',
-        height: 'calc(33.5vh)',
+        height: 'calc(35vh)',
         overflow: 'auto',
         position: 'relative'
     }}>
-        <Tree checkable={true}
+        <div className='layer-controls'>
+            <div className='layer-controls-left'>
+                <div className='layer-controls-box'>
+                    <IconFont onClick={AddLayer} className='layer-controls-icon' type="icon-add"/>
+                </div>
+                <div className='layer-controls-box'>
+                    <Popover content={<div>
+                        <p>Are you sure to delete this node?</p>
+                        <div style={{
+                            textAlign: "center"
+                        }}>
+                            <Button onClick={() => {
+                                DeleteItem()
+                                setVisible(false)
+                            }} type='primary'>Yes</Button>
+                            <Button onClick={() => {
+                                setVisible(false)
+                            }} type='danger' style={{
+                                marginLeft: '5px'
+                            }}>No</Button>
+                        </div>
+                    </div>} title={'Delete'} trigger="click" visible={visible}>
+                        <IconFont onClick={() => {
+                            setVisible(true)
+                        }} className='layer-controls-icon' type="icon-delete"/>
+                    </Popover>
+                </div>
+            </div>
+        </div>
+        <Tree checkable
               onRightClick={RightClick}
-              onCheck={(keys, e) => {
-                  let items: paper.Item[]=paper.project.getItems({
-                      match:(item)=>{
-                        return keys.toString().indexOf(item.id.toString())!=-1?(item.className=='Path'||item.className=='PointText')?true:false:false;
-                      }
+              onCheck={(keys: string[], e: any) => {
+                  let items: paper.Item[] = paper.project.getItems({
+                      match: (item) => {
+                          return keys.toString().indexOf(item.id.toString()) != -1 ? true : false;
+                      },
+                      class: paper.Path
                   })
-                  console.log(items)
                   ToolEditPath(items)
               }} treeData={treeDataGlobal}
               ref={(ref) => {
                   treeRef = ref
               }}
-              onSelect={(keys, e) => {
-                  console.log(keys)
+              onSelect={(keys: string[], e) => {
+                  if (keys != null && keys.length != 0) {
+                      selectedKey = keys[0]
+                  } else {
+                      console.log(selectedKey)
+                      console.log(treeRef)
+                      treeRef.tree.setState({
+                          selectedKeys: [selectedKey]
+                      })
+                  }
               }}/>
         {CreateRightMenu()}
     </div>;
