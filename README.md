@@ -20,7 +20,13 @@ This project is based on:
 -  src
 -  |---- MyCanvas               //与paper.js相关的功能组件
 -  |---- |---- MyCanvas.tsx     //主画布生成与初始化组件
--  |---- |---- PaperTool.tsx    //paper.js交互工具组件
+-  |---- |---- PaperTools.tsx   //paper.js交互工具组件
+-  |---- |---- Brush.tsx        //笔刷交互工具组件
+-  |---- |---- ColorPicker.tsx  //调色板工具组件
+-  |---- |---- keyboard.tsx     //快捷键组件
+-  |---- |---- Layout.tsx       //布局组件
+-  |---- |---- PointText.tsx    //文字交互组件
+-  |---- |---- shape.tsx        //插入不同形状的线条
 -  |
 -  |---- UI                     //界面相关的组件
 -  |---- |---- HeaderBar.tsx    //界面首部及其按钮组
