@@ -11,18 +11,17 @@ import Overview from "./UI/Overview";
 import './App.css';
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "./Common/Config";
-const IconFont = createFromIconfontCN({
+createFromIconfontCN({
     scriptUrl: Config.IconUrl,
 });
-
 const { Content } = Layout;
 const App=()=>{
   return (
     <Layout className="me-layout">
-        <HeaderBar></HeaderBar>
+        <HeaderBar/>
       <Layout>
-        <SiderBar></SiderBar>
-        <MyCanvas></MyCanvas>
+        <SiderBar/>
+        <MyCanvas/>
         <Content className="me-right-bar">
             <SplitPane
               defaultSize="60%"
@@ -35,10 +34,10 @@ const App=()=>{
               <div style={{
                   flex: '1 1 1%'
               }}>
-                  <Overview></Overview>
+                  <Overview/>
               </div>
               <div>
-                <Layer></Layer>
+                <Layer/>
               </div>
             </SplitPane>
           </Content>

@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import {Button, Popover} from 'antd';
 import {ChromePicker} from 'react-color'
 
-
+/**
+ * 调色板
+ */
 class App extends Component {
     state = {
         color: {
