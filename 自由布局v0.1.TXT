@@ -1,0 +1,145 @@
+/**
+ * name ToolFreePen
+ * desc 画笔
+ */
+const ToolFreePen = () => {
+    RemoveTool()
+    let tool: paper.Tool = new paper.Tool()
+    tool.minDistance = 1;
+    tool.maxDistance = 1;
+    let Group:paper.Group=new paper.Group()
+    let children=[]
+    for(let i=0;i<10;i++){
+        children.push(new paper.Path.Circle({
+            center: new paper.Point(100,100),
+            radius: Math.random()*10+20,
+            strokeColor: "black",
+            name: 'Circle'
+        }))
+    }
+    Group.addChildren(children)
+    console.log(Group.children)
+    let path: paper.Path;
+    //每当鼠标按下就新建一条路径
+    tool.onMouseDown = (event: paper.ToolEvent) => {
+        pageChange.pageChangeBefore()
+        path = new paper.Path({
+            strokeColor: "black",
+            name: 'Path'
+        })
+    }
+    tool.onMouseDrag = (event: paper.ToolEvent) => {
+        path.add(event.point)
+    }
+    tool.onMouseUp = (event: paper.ToolEvent) => {
+        pageChange.pageChangeAfter()
+        getProperPath(path,Group)
+    }
+}
+
+const getProperPath=function(path:paper.Path,group:any)
+{
+    //获取合适的自由布局
+    //定义常量：LARGE为1，表示放大倍数大
+    //PROPER为2
+    //SMALL为3
+    let maxFactor=0
+    let minFactor=0
+    group.children.forEach((item)=>{
+        maxFactor+=item.bounds.height
+    })
+    minFactor=maxFactor/path.length*0.7
+    maxFactor=maxFactor/path.length*1.3
+    let middle=maxFactor
+    let flag=1
+    let lastFlag=1
+    let lastMiddle=maxFactor
+    while(true){
+        flag=freeLayoutCalculation(path.clone().scale(middle),group,false)
+        if(lastFlag!=flag)
+        break
+        console.log(flag,middle)
+        maxFactor=middle
+        lastMiddle=middle
+        middle=(maxFactor+minFactor)/2
+    }
+    if(flag==2){
+        path.scale(middle)
+    }else{
+        path.scale(lastMiddle)
+    }
+    freeLayoutCalculation(path,group,true)
+}
+
+const freeLayoutCalculation=function(path:any,group:any,apply:boolean){
+    //自由布局计算，假设该算法必定会求出一个布局
+    let index=0
+    let i
+    let lastCircleCenter:paper.Point=getCircleCenter(path.curves[0].point1,path.curves[1].point1,path.curves[1].point2,group.children[0].bounds.width/2)
+    group.children[index++].position=lastCircleCenter
+    for(i=1;i<path.curves.length-1;i++){
+        let circleCenter:paper.Point=getCircleCenter(path.curves[i].point1,path.curves[i+1].point1,path.curves[i+1].point2,group.children[index].bounds.width/2)
+        if(lastCircleCenter.getDistance(circleCenter)>=(group.children[index].bounds.width+group.children[index-1].bounds.width)/2){
+            apply?group.children[index++].position=circleCenter:index++ //判断是否要应用到path中而做对应动作
+            lastCircleCenter=circleCenter
+
+        }
+        if(index>=group.children.length)
+        break
+    }
+    if(!apply){
+        if(index<group.children.length){
+            path.remove()
+            return 3
+        }
+        else if(path.curves.length-i>=5){
+            path.remove()
+            return 1
+        }
+        else{
+            path.remove()
+            return 2
+        }
+    }
+}
+
+const getCircleCenter=function(point1:paper.Point,point2:paper.Point,point3:paper.Point,radius:number){
+    /*求法线点及法线长度*/
+    let factor:paper.Point=new paper.Point(point1.y-point3.y,point3.x-point1.x)
+    let r=point1.clone().getDistance(point3.clone())
+    let circleCenter:paper.Point
+    /*factor.y>0 是判断法线点是否在布局线上侧*/
+    if(factor.y>0)
+    circleCenter=point2.clone().subtract(factor.clone().multiply(radius).divide(r))
+    else
+    circleCenter=point2.clone().add(factor.clone().multiply(radius).divide(r))
+    return circleCenter
+}
+
+const getAuxiliaryPoint=function(point1:paper.Point,point2:paper.Point,point3:paper.Point){
+    /**求三点的圆心和半径 */
+    let A=point1.x*(point2.y-point3.y)
+    -point1.y*(point2.x-point3.x)
+    +point2.x*point3.y
+    -point3.x*point2.y;
+    let B=(point1.x*point1.x+point1.y*point1.y)*(point3.y-point2.y)
+    +(point2.x*point2.x+point2.y*point2.y)*(point1.y-point3.y)
+    +(point3.x*point3.x+point3.y*point3.y)*(point2.y-point1.y);
+    let C=(point1.x*point1.x+point1.y*point1.y)*(point2.x-point3.x)
+    +(point2.x*point2.x+point2.y*point2.y)*(point3.x-point1.x)
+    +(point3.x*point3.x+point3.y*point3.y)*(point1.x-point2.x);
+    let D=(point1.x*point1.x+point1.y*point1.y)*(point3.x*point2.y-point3.y*point2.x)
+    +(point2.x*point2.x+point2.y*point2.y)*(point1.x*point3.y-point1.y*point3.x)
+    +(point3.x*point3.x+point3.y*point3.y)*(point2.x*point1.y-point2.y*point1.x);
+    let x=-B/(2*A);
+    let y=-C/(2*A);
+    let temp=(B*B+C*C-4*A*D)/(4*A*A);
+    let r=Math.sqrt(temp);
+    // new paper.Path.Circle({
+    //     center: new paper.Point(x,y),
+    //     radius: r,
+    //     strokeColor: "red",
+    //     name: 'Circle'
+    // })
+    return [new paper.Point(x,y),r]
+}
