@@ -199,3 +199,17 @@ canvas[resize] {
     line-height: 31px;
     border-bottom: 1px solid #666;
 }
+
+#menu{
+    width: 0; /*设置为0 隐藏自定义菜单*/
+    height: 125px;
+    overflow: hidden; /*隐藏溢出的元素*/
+    box-shadow: 0 1px 1px #888,1px 0 1px #ccc;
+    position: absolute; /*自定义菜单相对与body元素进行定位*/
+}
+.menu{
+    width: 130px;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 10px;
+}

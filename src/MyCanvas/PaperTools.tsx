@@ -1,7 +1,5 @@
 import * as paper from "paper"
 import EventHub from "../Common/Observer";
-import React, {useEffect, useState} from "react";
-import {Button, Layout} from "antd";
 
 const pageChange = {
     pageChangeBefore: () => {
@@ -10,6 +8,11 @@ const pageChange = {
     pageChangeAfter: () => {
         EventHub.emit('pageChangeAfter', null)
     }
+}
+const getColor=()=>{
+    let t=document.getElementById('buttonColor')
+    //console.log(t)
+    return t.style.background
 }
 
 /**
@@ -34,24 +37,23 @@ const ToolDrawCircle = () => {
     //记录鼠标按下时的canvas
     let nowCanvas: string;
     tool.onMouseDrag = (event: any) => {
-        if (nowCanvas == 'canvasOverview') {
+        if (nowCanvas === 'canvasOverview') {
             return;
         }
         let path: paper.Path.Circle = new paper.Path.Circle({
             center: event.downPoint,
             radius: event.downPoint.subtract(event.point).length,
-            strokeColor: "black",
+            strokeColor: getColor(),
             name: 'Circle'
         })
         path.removeOnDrag()
-        console.log(path.segments)
     }
     tool.onMouseDown = (event: any) => {
         //页面发生改变之前
         pageChange.pageChangeBefore()
         nowCanvas = event.event.target.id
     }
-    tool.onMouseUp = (event: paper.ToolEvent) => {
+    tool.onMouseUp = () => {
         //页面发生改变之后
         pageChange.pageChangeAfter()
     }
@@ -67,21 +69,225 @@ const ToolDrawRect = () => {
         let path: paper.Path.Rectangle = new paper.Path.Rectangle({
             from: event.downPoint,
             to: event.point,
-            strokeColor: "black",
+            strokeColor: getColor(),
             name: 'Rectangle'
         })
         path.removeOnDrag()
     }
-    tool.onMouseDown = (event: paper.ToolEvent) => {
+    tool.onMouseDown = () => {
         pageChange.pageChangeBefore()
     }
-    tool.onMouseUp = (event: paper.ToolEvent) => {
+    tool.onMouseUp = () => {
         pageChange.pageChangeAfter()
     }
 }
 /**
+ * 贝塞尔曲线
+ */
+const BezierTool = () => {
+    RemoveTool()
+    let path: paper.Path;
+    let tool: paper.Tool = new paper.Tool()
+    let types = ['point', 'handleIn', 'handleOut'];
+
+    function findHandle(point) {
+        let i = 0, l = path.segments.length;
+        //console.log("l:", l);
+        for (; i < l; i++) {
+            for (let j = 0; j < 3; j++) {
+                let type = types[j];
+                let segment = path.segments[i];
+                let segmentPoint = type === 'point'
+                    ? segment.point
+                    : segment.point + segment[type];
+                //console.log(segmentPoint)
+                let distance = point.subtract(segmentPoint).length;
+                //console.log(distance)
+                if (distance < 5) {
+                    return {
+                        type: type,
+                        segment: segment
+                    };
+                }
+            }
+        }
+        return null;
+    }
+
+    let currentSegment, mode, type;
+    tool.onMouseDown = (event) => {
+        if (currentSegment)
+            currentSegment.selected = false;
+        mode = type = currentSegment = null;
+
+        if (!path) {
+            path = new paper.Path({
+                fillColor: {
+                    hue: 360 * Math.random(),
+                    saturation: 1,
+                    brightness: 1,
+                    alpha: 0.5
+                }
+            });
+        }
+
+        const result = findHandle(event.point);
+        //console.log("result:",result)
+        if (result) {
+            currentSegment = result.segment;
+            type = result.type;
+            if (path.segments.length > 1 && result.type === 'point'
+                && result.segment.index === 0) {
+                mode = 'close';
+                path.closed = true;
+                path.selected = false;
+                path = null;
+            }
+        }
+
+        if (mode !== 'close') {
+            mode = currentSegment ? 'move' : 'add';
+            if (!currentSegment)
+                currentSegment = path.add(event.point);
+            currentSegment.selected = true;
+        }
+    }
+
+    tool.onMouseDrag = (event) => {
+        //console.log(currentSegment)
+        if (mode === 'move' && type === 'point') {
+            currentSegment.point = event.point;
+        } else if (mode !== 'close') {
+            let delta = event.delta.clone();
+            let delta2 = delta.clone();
+            if (type === 'handleOut' || mode === 'add')
+                delta = delta.subtract(delta2).subtract(delta2);
+            currentSegment.handleIn = currentSegment.handleIn.add(delta);
+            currentSegment.handleOut = currentSegment.handleOut.subtract(delta);
+            //console.log("delta2:",delta);
+        }
+    }
+}
+/**
+ * 画云
+ */
+const Clouds = () => {
+    RemoveTool()
+    let tool: paper.Tool = new paper.Tool();
+    // Any newly created item will inherit the following styles:
+    let path;
+    // The user has to drag the mouse at least 30pt before the mouse drag
+    // event is fired:
+    paper.tool.minDistance = 30;
+    tool.onMouseDown = (event) => {
+        path = new paper.Path({
+            strokeColor: getColor(),
+            strokeWidth: 5,
+            strokeJoin: 'round',
+            strokeCap: 'round'
+        })
+        path.add(event.point);
+    }
+    tool.onMouseDrag = (event) => {
+        path.arcTo(event.point, true);
+    }
+}
+/**
+ * 五条线的画笔
+ * @constructor
+ */
+const MultiLines=()=>{
+    RemoveTool()
+    let tool=new paper.Tool()
+    tool.fixedDistance = 30;
+
+    let values = {
+        lines: 5,
+        size: 40,
+        smooth: true
+    };
+
+    let paths;
+
+    tool.onMouseDown=(event)=> {
+        paths = [];
+        for (let i = 0; i < values.lines; i++) {
+            let path = new paper.Path({
+                strokeColor:getColor()
+            })
+            paths.push(path);
+        }
+    }
+
+    tool.onMouseDrag=(event)=> {
+        let offset = event.delta;
+        offset.angle = offset.angle + 90;
+        let lineSize = values.size / values.lines;
+        for (let i = 0; i < values.lines; i++) {
+            let path = paths[values.lines - 1 - i];
+            offset.length = lineSize * i + lineSize / 2;
+            path.add(event.middlePoint.add(offset));
+            path.smooth();
+        }
+    }
+}
+/**
+ * 滴水刷
+ * @constructor
+ */
+const DrippingBrush = () => {
+    RemoveTool()
+    let path: paper.Path;
+    let minSize = 5;
+    let tool = new paper.Tool();
+    tool.maxDistance = 20;
+    tool.onMouseDrag = (event) => {
+        // If the user dragged more then minSize:
+        if (event.delta.length > minSize) {
+            // If there is no path, make one:
+            if (!path) {
+                path = new paper.Path({
+                    fillColor: getColor()
+                });
+                path.add(event.lastPoint);
+            }
+            let step = event.delta.divide(2);
+            step.angle = step.angle + 90;
+            // The top point: the middle point + the step rotated by 90 degrees
+            let top = event.middlePoint.add(step);
+            // The bottom point: the middle point - the step rotated by 90 degrees:
+            let bottom = event.middlePoint.subtract(step);
+            path.add(top);
+            path.insert(0, bottom);
+            path.smooth();
+        } else {
+            // If the user dragged too slowly:
+            // If there is currently a path, close it
+            if (path) {
+                path.add(event.point);
+                path.closed = true;
+                path.smooth();
+                // Set path to null (nothing) so the path check above
+                // will force a new path next time the user drags fast enough:
+                path = null;
+            }
+        }
+    }
+
+    tool.onMouseUp = (event) => {
+        if (path) {
+            path.add(event.point);
+            path.closed = true;
+            path.smooth();
+            // Set path to null (nothing) so the path check above
+            // will force a new path next time the user drags fast enough:
+            path = null;
+        }
+    }
+}
+/**
  * name ToolFreePen
- * desc 画笔
+ * desc 自由画笔
  */
 const ToolFreePen = () => {
     RemoveTool()
@@ -90,17 +296,18 @@ const ToolFreePen = () => {
 
     let path: paper.Path;
     //每当鼠标按下就新建一条路径
-    tool.onMouseDown = (event: paper.ToolEvent) => {
+    tool.onMouseDown = () => {
         pageChange.pageChangeBefore()
         path = new paper.Path({
-            strokeColor: "black",
+            strokeColor: getColor(),
             name: 'Path'
         })
     }
     tool.onMouseDrag = (event: paper.ToolEvent) => {
         path.add(event.point)
     }
-    tool.onMouseUp = (event: paper.ToolEvent) => {
+    tool.onMouseUp = () => {
+        //path.smooth()
         pageChange.pageChangeAfter()
     }
 }
@@ -114,42 +321,18 @@ const ToolDrawSegment = () => {
     let tool: paper.Tool = new paper.Tool()
     tool.onMouseDrag = (event: paper.ToolEvent) => {
         let path: paper.Path = new paper.Path({
-            strokeColor: "black",
+            strokeColor: getColor(),
             name: 'Segment'
         })
         path.add(event.downPoint, event.point);
         path.removeOnDrag()
     }
-    tool.onMouseDown = (event: paper.ToolEvent) => {
+    tool.onMouseDown = () => {
         pageChange.pageChangeBefore()
     }
-    tool.onMouseUp = (event: paper.ToolEvent) => {
+    tool.onMouseUp = () => {
         pageChange.pageChangeAfter()
     }
-}
-/**
- * name ToolPointText
- * desc 写字
- */
-const ToolPointText = () => {
-    RemoveTool()
-    let tool: paper.Tool = new paper.Tool()
-    tool.onMouseDown = (event: paper.ToolEvent) => {
-        pageChange.pageChangeBefore()
-        let text: paper.PointText = new paper.PointText({
-            point: event.downPoint,
-            content: 'wawa',
-            fillColor: 'black',
-            fontFamily: 'Courier New',
-            fontWeight: 'bold',
-            fontSize: 25,
-            name: 'Text'
-        });
-    }
-    tool.onMouseUp = (event: paper.ToolEvent) => {
-        pageChange.pageChangeAfter()
-    }
-
 }
 
 /**
@@ -199,9 +382,9 @@ const RemoveTool = () => {
     //清除暂时的group，并将不可见的图形设置为可见
     paper.project.getItems({
         match: function (item) {
-            if (item.className == "Group")
+            if (item.className === "Group")
                 return true;
-            else if (item.className == "Path") {
+            else if (item.className === "Path") {
                 item.visible = true
             }
             return false;
@@ -217,13 +400,17 @@ export {
     ToolDrawRect,
     ToolFreePen,
     ToolDrawSegment,
-    ToolPointText,
     ToolEditPath,
     ToolEnlarge,
+    BezierTool,
     ToolShrink,
+    Clouds,
+    MultiLines,
+    DrippingBrush,
     ToolZoomauto,
     ToolZoomin,
-    ToolZoomout
+    ToolZoomout,
+    RemoveTool
 }
 
 
@@ -237,6 +424,8 @@ export {
 const applyChange = (group: paper.Group, selectedShape: paper.Item[]) => {
     for (let i = 0; i < selectedShape.length; i++) {
         selectedShape[i].copyContent(group.children[i])
+        selectedShape[i].copyAttributes(group.children[i], false)
+        selectedShape[i].selected = false
     }
 }
 //将传进来的item[]复制一份，组成一个group;并将 原本 设置成不可见
@@ -280,21 +469,25 @@ const selectOnMouseDrag = (event: paper.ToolEvent) => {
     })
 }
 const selectOnMouseUp = (event: paper.ToolEvent, project: paper.Project) => {
-    let group: paper.Group = null
-    let selectedShape = null
+    let group: paper.Group
+    let selectedShape
     if (event.downPoint.equals(event.point)) {
         selectedShape = project.getItems({//获取与点交叠的图形
             overlapping: new paper.Point(event.point),
-            class: paper.Path
+            match: function (item) {
+                return item.className === 'PointText' || item.className === 'Path';
+            }
         })
-        selectedShape = selectedShape.length != 0 ? [selectedShape[0]] : selectedShape;//只选择一个
+        selectedShape = selectedShape.length !== 0 ? [selectedShape[0]] : selectedShape;//只选择一个
     } else {
         selectedShape = project.getItems({//获取与矩形框交叠的图形
             inside: new paper.Rectangle({
                 from: event.downPoint,
                 to: event.point,
             }),
-            class: paper.Path
+            match: function (item) {
+                return item.className === 'PointText' || item.className === 'Path';
+            }
         })
     }
     group = groupItem(selectedShape)
@@ -308,7 +501,7 @@ const editOnMouseDown = () => {
 const editOnMouseDrag = (event: paper.ToolEvent, group: paper.Group, isShiftDown: Boolean) => {
     let a: paper.Point = event.point.subtract(group.bounds.center)//变化的长度
     let b: paper.Point = group.bounds.bottomLeft.subtract(group.bounds.center)//原来图形的长度
-    let factor: any = null//比例因子
+    let factor: any //比例因子
     if (!isShiftDown) {
         factor = new paper.Point(1, 1).multiply(a.x / b.x).abs()//没有按下shift，则按原来比例缩放
     } else {
@@ -351,11 +544,21 @@ function ToolEditPath(scope: any) {//这个scope相当于this
     let myCanvas: HTMLElement = document.getElementById("myCanvas");
     let lockState: Boolean = false;
     let isShiftDown: Boolean = false;
-    //判断shift是否按下
-
+    //全选
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
+        if (e.ctrlKey) {
+            if (e.code === "KeyA") {
+                selectedShape = null
+                selectedShape = project.getItems({
+                    class: paper.Path
+                })
+                group = groupItem(selectedShape)
+            }
+        }
+    })
     tool.onKeyDown = (event: paper.KeyEvent) => {
         //判断shift是否按下
-        if (event.key == "shift") {
+        if (event.key === "shift") {
             isShiftDown = true
         }
         //判断delete是否按下
@@ -380,7 +583,7 @@ function ToolEditPath(scope: any) {//这个scope相当于this
         }
     }
     tool.onKeyUp = (event: paper.KeyEvent) => {//判断shift是否松开
-        if (event.key == "shift") {
+        if (event.key === "shift") {
             isShiftDown = false
         }
     }
@@ -388,14 +591,14 @@ function ToolEditPath(scope: any) {//这个scope相当于this
     tool.onMouseMove = (event: paper.ToolEvent) => {
         if (!lockState && group) {
             let isEdit, isRotate, isMove;//判断当前的状态
-            isEdit = group.hitTest(event.point, {//如果在边角就是可以编辑
+            isEdit = !!group.hitTest(event.point, {//如果在边角就是可以编辑
                 bounds: true
-            }) ? true : false
-            isRotate = group.hitTest(event.point, {//如果在范围较大的边角就是可以旋转
+            })
+            isRotate = !!group.hitTest(event.point, {//如果在范围较大的边角就是可以旋转
                 bounds: true,
                 tolerance: 16
-            }) ? true : false
-            isMove = group.bounds.contains(event.point) ? true : false
+            })
+            isMove = group.bounds.contains(event.point)
             if (isEdit) {//编辑的优先级最高
                 myCanvas.className = "edit"
             } else if (isMove) {//然后移动
@@ -408,7 +611,7 @@ function ToolEditPath(scope: any) {//这个scope相当于this
         }
     }
     //以下三个事件函数触发动作
-    tool.onMouseDown = (event: paper.ToolEvent) => {
+    tool.onMouseDown = () => {
         pageChange.pageChangeBefore()
         lockState = true
         switch (myCanvas.className) {
@@ -461,12 +664,3 @@ function ToolEditPath(scope: any) {//这个scope相当于this
         pageChange.pageChangeAfter()
     }
 }
-
-
-
-
-
-
-
-
-
