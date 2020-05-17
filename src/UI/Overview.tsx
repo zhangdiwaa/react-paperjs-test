@@ -5,6 +5,7 @@ import {PageChangeAfter, PageChangeBefore} from "../Common/UndoAndRedo";
 import {Refresh} from "./Layers";
 import {createFromIconfontCN} from '@ant-design/icons';
 import Config from "../Common/Config";
+import * as PerspT from 'perspective-transform';
 
 const IconFont = createFromIconfontCN({
     scriptUrl: Config.IconUrl,
@@ -19,13 +20,13 @@ let inner = 0.3;
 //外径占多少
 let outer = 0.8;
 //glyph的数量
-let glyphNum = 20;
+let glyphNum = 15;
 //每个glyph之间相隔的角度之和
 let gap = 0.05;
 //开始的角度
 let begin = 0;
 //结束的角度
-let end = 360;
+let end = 180;
 
 //每个图源所占的角度
 let singleAngle;
@@ -37,6 +38,15 @@ let tan;
 //bounds的左上点
 let topPointY;
 let topPointX;
+//透射变换
+let perspT;
+
+//copy
+export interface RigidTransform {
+    x: number;
+    y: number;
+    angle: number;
+}
 
 const RefreshOverview = () => {
     //求图表的范围
@@ -49,7 +59,12 @@ const RefreshOverview = () => {
     let outerEdge = chartEdge / 2 * outer;
     singleAngle = chartRange * (1 - gap) / glyphNum;
     //每个glyph之间间距
-    let singleGap = chartRange * gap / glyphNum;
+    let singleGap = 0;
+    if (Math.abs(chartRange) === 360) {
+        singleGap = chartRange * gap / glyphNum
+    } else {
+        singleGap = chartRange * gap / (glyphNum - 1)
+    }
     //下底的长度
     bottomEdge = 2 * innerEdge * Math.sin(singleAngle / 360 * 3.1415926);
     //上底的长度
@@ -67,24 +82,30 @@ const RefreshOverview = () => {
     });
     //复制一份Layer
     let item = layer.addChild(paper.projects[0].layers[0].clone());
-    let angle: number = begin;
+    let angle: number = begin + singleAngle / 2;
     for (let i: number = 0; i < glyphNum; i++) {
         let single = item.clone();
         topPointX = single.bounds.x;
         topPointY = single.bounds.y;
         //对glyph进行缩放
-        single.scale(bottomEdge / single.bounds.width, (outerEdge - innerEdge) / single.bounds.height)
+        single.scale(topEdge / single.bounds.width, (outerEdge - innerEdge) / single.bounds.height)
         // let scaleV = Math.min((outerEdge - innerEdge) / single.bounds.height, topEdge / single.bounds.width)
         // single.scale(scaleV, scaleV)
-        //对glyph进行形变
-        Reshape(single);
         //添加到展示图源
         finishLayer.addChild(single);
+        //对glyph进行形变
+        let bounds = single.bounds
+        let bottomLeft = bounds.bottomLeft
+        let bottomRight = bounds.bottomRight
+        let topLeft = bounds.topLeft
+        let topRight = bounds.topRight
+        let bottomRate = (1 - innerEdge / outerEdge) / 2
+        let srcCorners = [bottomLeft.x, bottomLeft.y, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomRight.x, bottomRight.y]
+        let distCorners = [bottomLeft.x - (bottomLeft.x - bottomRight.x) * bottomRate, bottomLeft.y - (bottomLeft.y - bottomRight.y) * bottomRate, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomRight.x + (bottomLeft.x - bottomRight.x) * bottomRate, bottomRight.y + (bottomLeft.y - bottomRight.y) * bottomRate]
+        perspT = PerspT(srcCorners, distCorners)
+        Reshape(single);
         //对glyph进行旋转
-        single.translate(new paper.Point(-single.bounds.width / 2, -single.bounds.height / 2 - innerEdge))
-        //对glyph进行移位
-        single.rotate(angle, new paper.Point(single.position.x, single.position.y + single.bounds.height / 2 + innerEdge));
-        // item = item.clone();
+        single.rotate(-angle, new paper.Point(single.position.x, single.position.y + single.bounds.height / 2 + innerEdge));
         //调整角度
         angle += singleAngle + singleGap;
     }
@@ -121,22 +142,15 @@ function Reshape(item) {
             Reshape(item.children[i])
         }
     } else {
-        if (item.name.indexOf('Rectangle') != -1) {
-            // let numbers = new paper.Matrix().transform([1, 1, 101, 1, 1, 101, 101, 101], [1, 1, 101, 1, 21, 101, 81, 101], 4);
-            // console.log(numbers)
-            // item.transform(new paper.Matrix(1, 0, 0, 1, -topPointX, -topPointY))
-            // let segments = item.segments;
-            // console.log(segments[0].point)
-            // segments[0].point.x = (segments[0].point.x + 0 * segments[0].point.y + 0) / (-0.2 + 0 + 1)
-            // segments[3].point.x = (segments[3].point.x + 0 * segments[3].point.y + 0) / (0.12 + 0 + 1)
-            // segments[0].point.x = Math.abs(topPointY - segments[0].point.y) * tan + segments[0].point.x;
-            // segments[1].point.x = Math.abs(topPointY - segments[1].point.y) * tan + segments[1].point.x;
-            // segments[2].point.x = -Math.abs(topPointY - segments[2].point.y) * tan + segments[2].point.x;
-            // segments[3].point.x = -Math.abs(topPointY - segments[3].point.y) * tan + segments[3].point.x;
-        } else if (item.name.indexOf('Circle') != -1) {
+        if (item.name.indexOf('Rectangle') !== -1 || item.name.indexOf('Segment') !== -1 || item.name.indexOf('Path') !== -1) {
             let segments = item.segments;
-            item.transform(new paper.Matrix(1, 0, tan, 1, -topPointX, -topPointY))
-            // item.transform(new paper.Matrix(1, 0, -tan, 1, 0, 0))
+            for (let i = 0; i < segments.length; i++) {
+                let transformPoint = perspT.transform(segments[i].point.x, segments[i].point.y);
+                segments[i].point.x = transformPoint[0]
+                segments[i].point.y = transformPoint[1]
+            }
+        } else if (item.name.indexOf('Circle') !== -1) {
+        } else if (item.name.indexOf('Text') != -1) {
         }
     }
 }

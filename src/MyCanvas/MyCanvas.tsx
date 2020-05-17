@@ -26,6 +26,7 @@ const MyCanvas = () => {
         Paper.settings.handleSize = 8//设置选中时的四个点的大小
         Paper.settings.hitTolerance = 4//设置hitTest的容忍度
 
+
         //使用React提供的onWheel会提示“渲染过多”
         //下面这段代码是实现缩放功能的初始化
         MyCanvas.onwheel = (event) => {
