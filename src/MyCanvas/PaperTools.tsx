@@ -127,7 +127,8 @@ const BezierTool = () => {
                     saturation: 1,
                     brightness: 1,
                     alpha: 0.5
-                }
+                },
+                name:'Bezier'
             });
         }
 
@@ -167,6 +168,10 @@ const BezierTool = () => {
             //console.log("delta2:",delta);
         }
     }
+
+    tool.onMouseUp = () => {
+        pageChange.pageChangeAfter()
+    }
 }
 /**
  * 画云
@@ -184,12 +189,16 @@ const Clouds = () => {
             strokeColor: getColor(),
             strokeWidth: 5,
             strokeJoin: 'round',
-            strokeCap: 'round'
+            strokeCap: 'round',
+            name:'Clouds'
         })
         path.add(event.point);
     }
     tool.onMouseDrag = (event) => {
         path.arcTo(event.point, true);
+    }
+    tool.onMouseUp = () => {
+        pageChange.pageChangeAfter()
     }
 }
 /**
@@ -213,7 +222,8 @@ const MultiLines=()=>{
         paths = [];
         for (let i = 0; i < values.lines; i++) {
             let path = new paper.Path({
-                strokeColor:getColor()
+                strokeColor:getColor(),
+                name:'Path'
             })
             paths.push(path);
         }
@@ -229,6 +239,9 @@ const MultiLines=()=>{
             path.add(event.middlePoint.add(offset));
             path.smooth();
         }
+    }
+    tool.onMouseUp = () => {
+        pageChange.pageChangeAfter()
     }
 }
 /**
@@ -247,7 +260,8 @@ const DrippingBrush = () => {
             // If there is no path, make one:
             if (!path) {
                 path = new paper.Path({
-                    fillColor: getColor()
+                    fillColor: getColor(),
+                    name:'Dripping'
                 });
                 path.add(event.lastPoint);
             }
@@ -283,6 +297,7 @@ const DrippingBrush = () => {
             // will force a new path next time the user drags fast enough:
             path = null;
         }
+        pageChange.pageChangeAfter()
     }
 }
 /**

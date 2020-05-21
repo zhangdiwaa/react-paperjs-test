@@ -16,50 +16,43 @@ let canvas: HTMLCanvasElement = null;
 //问题：我们的内外径使用百分比计算
 
 //内径占多少
-let inner = 0.3;
+let inner: number = 0.3;
 //外径占多少
-let outer = 0.8;
+let outer: number = 0.8;
 //glyph的数量
-let glyphNum = 15;
+let glyphNum: number = 15;
 //每个glyph之间相隔的角度之和
-let gap = 0.05;
+let gap: number = 0.05;
 //开始的角度
-let begin = 0;
+let begin: number = 0;
 //结束的角度
-let end = 180;
+let end: number = 360;
 
 //每个图源所占的角度
-let singleAngle;
+let singleAngle: number;
 //上底、下底的理论长度
-let topEdge;
-let bottomEdge;
+let topEdge: number;
+let bottomEdge: number;
 //仿射变换的tan值
-let tan;
+let tan: number;
 //bounds的左上点
-let topPointY;
-let topPointX;
+let topPointY: number;
+let topPointX: number;
 //透射变换
-let perspT;
-
-//copy
-export interface RigidTransform {
-    x: number;
-    y: number;
-    angle: number;
-}
+let perspT: any;
 
 const RefreshOverview = () => {
     //求图表的范围
-    let chartRange = end - begin;
+    let chartRange: number = end - begin;
     //查看概览视图的最短边
-    let chartEdge = canvas.width > canvas.height ? canvas.height : canvas.width;
+    let chartEdge: number = canvas.width > canvas.height ? canvas.height : canvas.width;
     //求内径
-    let innerEdge = chartEdge / 2 * inner;
+    let innerEdge: number = chartEdge / 2 * inner;
     //求外径
-    let outerEdge = chartEdge / 2 * outer;
+    let outerEdge: number = chartEdge / 2 * outer;
     singleAngle = chartRange * (1 - gap) / glyphNum;
     //每个glyph之间间距
-    let singleGap = 0;
+    let singleGap: number = 0;
     if (Math.abs(chartRange) === 360) {
         singleGap = chartRange * gap / glyphNum
     } else {
@@ -74,17 +67,17 @@ const RefreshOverview = () => {
     paper.projects[1].activate();
     paper.projects[1].clear();
     //创建两个Layer,一个是用于复制，另一个用于保存
-    let finishLayer = new paper.Layer({
+    let finishLayer: paper.Layer = new paper.Layer({
         name: 'Layer1'
     });
-    let layer = new paper.Layer({
+    let layer: paper.Layer = new paper.Layer({
         name: 'Layer2'
     });
     //复制一份Layer
-    let item = layer.addChild(paper.projects[0].layers[0].clone());
+    let item: any = layer.addChild(paper.projects[0].layers[0].clone());
     let angle: number = begin + singleAngle / 2;
     for (let i: number = 0; i < glyphNum; i++) {
-        let single = item.clone();
+        let single: any = item.clone();
         topPointX = single.bounds.x;
         topPointY = single.bounds.y;
         //对glyph进行缩放
@@ -93,15 +86,18 @@ const RefreshOverview = () => {
         // single.scale(scaleV, scaleV)
         //添加到展示图源
         finishLayer.addChild(single);
+        if (single.children.length == 0) {
+            continue
+        }
         //对glyph进行形变
-        let bounds = single.bounds
-        let bottomLeft = bounds.bottomLeft
-        let bottomRight = bounds.bottomRight
-        let topLeft = bounds.topLeft
-        let topRight = bounds.topRight
-        let bottomRate = (1 - innerEdge / outerEdge) / 2
-        let srcCorners = [bottomLeft.x, bottomLeft.y, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomRight.x, bottomRight.y]
-        let distCorners = [bottomLeft.x - (bottomLeft.x - bottomRight.x) * bottomRate, bottomLeft.y - (bottomLeft.y - bottomRight.y) * bottomRate, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomRight.x + (bottomLeft.x - bottomRight.x) * bottomRate, bottomRight.y + (bottomLeft.y - bottomRight.y) * bottomRate]
+        let bounds: any = single.bounds
+        let bottomLeft: paper.Point = bounds.bottomLeft
+        let bottomRight: paper.Point = bounds.bottomRight
+        let topLeft: paper.Point = bounds.topLeft
+        let topRight: paper.Point = bounds.topRight
+        let bottomRate: number = (1 - innerEdge / outerEdge) / 2
+        let srcCorners: number[] = [bottomLeft.x, bottomLeft.y, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomRight.x, bottomRight.y]
+        let distCorners: number[] = [bottomLeft.x - (bottomLeft.x - bottomRight.x) * bottomRate, bottomLeft.y - (bottomLeft.y - bottomRight.y) * bottomRate, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomRight.x + (bottomLeft.x - bottomRight.x) * bottomRate, bottomRight.y + (bottomLeft.y - bottomRight.y) * bottomRate]
         perspT = PerspT(srcCorners, distCorners)
         Reshape(single);
         //对glyph进行旋转
@@ -142,15 +138,21 @@ function Reshape(item) {
             Reshape(item.children[i])
         }
     } else {
-        if (item.name.indexOf('Rectangle') !== -1 || item.name.indexOf('Segment') !== -1 || item.name.indexOf('Path') !== -1) {
-            let segments = item.segments;
+        if (item.name.indexOf('Rectangle') !== -1 || item.name.indexOf('Segment') !== -1 ||
+            item.name.indexOf('Path') !== -1 || item.name.indexOf('Bezier') != -1 || item.name.indexOf('Clouds') != -1
+            || item.name.indexOf('Dripping') != -1) {
+            let segments: paper.Segment[] = item.segments;
             for (let i = 0; i < segments.length; i++) {
-                let transformPoint = perspT.transform(segments[i].point.x, segments[i].point.y);
+                let transformPoint: number[] = perspT.transform(segments[i].point.x, segments[i].point.y);
                 segments[i].point.x = transformPoint[0]
                 segments[i].point.y = transformPoint[1]
             }
         } else if (item.name.indexOf('Circle') !== -1) {
-        } else if (item.name.indexOf('Text') != -1) {
+            let transformPoint: number[] = perspT.transform(item.position.x, item.position.y);
+            item.position.x = transformPoint[0];
+            item.position.y = transformPoint[1];
+        } else if (item.name.indexOf('Dripping') != -1) {
+            console.log(item)
         }
     }
 }
