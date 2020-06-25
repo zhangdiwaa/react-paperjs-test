@@ -42,6 +42,36 @@ let topPointX: number;
 let perspT: any;
 
 const RefreshOverview = () => {
+    paper.projects[1].activate();
+    paper.projects[1].clear();
+    let overview = new paper.Layer({
+        name: 'Layer'
+    });
+    let items = paper.projects[0].layers[0].clone({insert: false});
+    overview.addChild(useLayout(items))
+    //位移到中心
+    paper.projects[1].layers[0].fitBounds(paper.projects[1].view.bounds);
+    //清除选中和边框选中
+    paper.projects[1].deselectAll();
+    paper.projects[1].getItems({
+        match: function (item) {
+            if (item.bounds.selected == true) {
+                item.bounds.selected = false;
+            }
+        }
+    })
+    //组件保持再激活状态，（目前看来是对某个project做出更改之后，就会激活对应的project，因此需要重新激活）
+    paper.projects[0].activate()
+}
+
+const useLayout = (item) => {
+    if (item.data.layerLayout !== undefined && item.data.layerLayout !== null) {
+        item = RadialLayout(item)
+    }
+    return item;
+}
+
+const RadialLayout = (items) => {
     //求图表的范围
     let chartRange: number = end - begin;
     //查看概览视图的最短边
@@ -64,28 +94,20 @@ const RefreshOverview = () => {
     topEdge = 2 * outerEdge * Math.sin(singleAngle / 360 * 3.1415926);
     //仿射变换的tan值
     tan = (1 - bottomEdge / topEdge) / 2 * topEdge / (outerEdge - innerEdge);
-    paper.projects[1].activate();
-    paper.projects[1].clear();
     //创建两个Layer,一个是用于复制，另一个用于保存
-    let finishLayer: paper.Layer = new paper.Layer({
-        name: 'Layer1'
-    });
     let layer: paper.Layer = new paper.Layer({
-        name: 'Layer2'
+        name: 'Layer',
+        insert: false
     });
-    //复制一份Layer
-    let item: any = layer.addChild(paper.projects[0].layers[0].clone());
     let angle: number = begin + singleAngle / 2;
     for (let i: number = 0; i < glyphNum; i++) {
-        let single: any = item.clone();
+        let single: any = items.clone({insert: false});
         topPointX = single.bounds.x;
         topPointY = single.bounds.y;
         //对glyph进行缩放
         single.scale(topEdge / single.bounds.width, (outerEdge - innerEdge) / single.bounds.height)
-        // let scaleV = Math.min((outerEdge - innerEdge) / single.bounds.height, topEdge / single.bounds.width)
-        // single.scale(scaleV, scaleV)
         //添加到展示图源
-        finishLayer.addChild(single);
+        layer.addChild(single);
         if (single.children.length == 0) {
             continue
         }
@@ -105,23 +127,7 @@ const RefreshOverview = () => {
         //调整角度
         angle += singleAngle + singleGap;
     }
-    //清空canvas
-    paper.projects[1].clear();
-    //添加展示layer
-    paper.projects[1].addLayer(finishLayer)
-    //位移到中心
-    paper.projects[1].layers[0].fitBounds(paper.projects[1].view.bounds);
-    //清除选中和边框选中
-    paper.projects[1].deselectAll();
-    paper.projects[1].getItems({
-        match: function (item) {
-            if (item.bounds.selected == true) {
-                item.bounds.selected = false;
-            }
-        }
-    })
-    //组件保持再激活状态，（目前看来是对某个project做出更改之后，就会激活对应的project，因此需要重新激活）
-    paper.projects[0].activate()
+    return layer
 }
 
 /**

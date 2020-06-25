@@ -223,6 +223,28 @@ const Layer = () => {
                     padding: '0px'
                 }}/>
                 <Button type='link'>Edit</Button>
+                <hr style={{
+                    margin: '0px',
+                    padding: '0px'
+                }}/>
+                <Button onClick={(e) => {
+                    EventHub.emit('pageChangeBefore', null)
+                    let item = paper.project.getItem({id: id});
+                    item.data.layerLayout='radialLayout'
+                    ClearRightData()
+                    EventHub.emit('pageChangeAfter', null)
+                }} type='link'>Set RadialLayout</Button>
+                <hr style={{
+                    margin: '0px',
+                    padding: '0px'
+                }}/>
+                <Button onClick={(e) => {
+                    EventHub.emit('pageChangeBefore', null)
+                    let item = paper.project.getItem({id: id});
+                    delete item.data.layerLayout
+                    ClearRightData()
+                    EventHub.emit('pageChangeAfter', null)
+                }} type='link'>Clear Layout</Button>
             </div>
         )
         return rightData.isSelected ? menu : ''
@@ -234,7 +256,7 @@ const Layer = () => {
      * @constructor
      */
     const RightClick = ({event, node}) => {
-        if(event.clientY * 0.10 <= 68){
+        if (event.clientY * 0.10 <= 68) {
             setRightData({
                 pageX: event.currentTarget.offsetLeft,
                 pageY: event.currentTarget.offsetTop,
@@ -243,7 +265,7 @@ const Layer = () => {
             })
         }
 
-        if(event.clientY * 0.10 > 68){
+        if (event.clientY * 0.10 > 68) {
             setRightData({
                 pageX: event.currentTarget.offsetLeft,
                 pageY: event.currentTarget.offsetTop - 40,
